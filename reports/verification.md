@@ -21,6 +21,7 @@
 | Unit tests | `npm test` | **37 / 37 pass** |
 | Browser tests, Chrome | `npx playwright test --project=chrome` | **61 / 61 pass** (stable across three consecutive full runs) |
 | Engine tests, WebKit | `npx playwright test --project=webkit` | **35 / 35 pass** (foundation, story, projects specs; Safari keyboard model uses Option+Tab) |
+| Combined run (Chrome + WebKit, 3 workers) | `npx playwright test` | 96 / 96 in the last two consecutive runs. One earlier combined run had a single intermittent failure that did not reproduce and was not captured; timing-sensitive checks under shared CPU/GPU load are the likely cause |
 | Engine tests, Firefox | `PW_FIREFOX=1 npx playwright test --project=firefox` | **pending** — Playwright's Firefox (Nightly) build exits with code 1 on macOS 27; Firefox is not installed on this Mac |
 | Accessibility (axe, WCAG 2.0/2.1/2.2 A+AA rules) | in `tests/e2e/release.spec.mjs` | 0 violations: dark + light × desktop + mobile, reduced-motion page, and with the skills board pinned + NFC field shown |
 | Contrast | `node scripts/check-contrast.mjs` | all required pairs pass in both themes (`reports/contrast.md`) |

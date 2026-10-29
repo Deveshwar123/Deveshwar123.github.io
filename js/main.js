@@ -66,18 +66,30 @@ async function startStory() {
   refreshNav();
 }
 
+// After-content motion (count-ups, timeline trace, line reveals): not under
+// reduced motion, and torn down if reduced motion switches on.
+let reveals = null;
+async function startReveals() {
+  if (reveals) { attempt('reveals teardown', () => reveals.destroy()); reveals = null; }
+  if (motionMode().reduced) return;
+  await fontsSettled;
+  const mod = await attemptAsync('reveals module', () => import('./reveal.js'));
+  reveals = mod ? attempt('reveals', () => mod.initReveals(cfg)) : null;
+}
+
 async function boot() {
   await startStory();
   await fontsSettled;
   refreshNav();
   restoreHash();
+  await startReveals();
 }
 boot();
 
 // Reduced motion switched on or off while the page is open: rebuild the tier.
 let lastReduced = motionMode().reduced;
 onMotionChange((m) => {
-  if (m.reduced !== lastReduced) { lastReduced = m.reduced; startStory(); }
+  if (m.reduced !== lastReduced) { lastReduced = m.reduced; startStory(); startReveals(); }
 });
 
 // Returning from the back-forward cache: re-measure without replaying the intro.

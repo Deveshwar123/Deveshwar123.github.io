@@ -370,3 +370,16 @@ html.has-reveals [data-reveal] .reveal-line > span {
   transition: opacity var(--dur-reveal) var(--ease-ui), transform var(--dur-reveal) var(--ease-ui);
   transition-delay: calc(var(--i, 0) * 60ms);
 }
+html.has-reveals [data-reveal]:not(.is-revealed) .reveal-unit { opacity: 0; transform: translateY(24px); }
+html.has-reveals [data-reveal] .reveal-unit {
+  transition: opacity var(--dur-reveal) var(--ease-ui), transform var(--dur-reveal) var(--ease-ui);
+  transition-delay: var(--d, 0ms);
+}
+
+/* Count-up: the real value stays in the DOM for assistive technology; a
+   decorative overlay counts over it, then is removed. */
+.stat-value.has-count { position: relative; color: transparent; }
+.stat-count { position: absolute; left: 0; top: 0; color: var(--ink); }
+
+.closing-art.is-armed path { transition: stroke-dashoffset var(--dur-reveal) var(--ease-scene); }
+.closing-art.is-drawn path { stroke-dashoffset: 0 !important; }

@@ -302,7 +302,7 @@ ${d.resume.skills.tools.map(item)}          </ul>
         <ul class="cert-items">
 ${d.resume.certifications.map((c) => html`          <li>${c.label}</li>\n`)}        </ul>
       </div>
-      <script type="application/json" id="skills-data">${raw(jsonForScript({ ...g, labels: { hint: K.boardHint, clear: K.clear, noLink: K.noLink, filterLabel: K.filterLabel, filterAll: K.filterAll, languages: K.languages, tools: K.tools } }))}</script>
+      <script type="application/json" id="skills-data">${raw(jsonForScript({ ...g, labels: { hint: K.boardHint, clear: K.clear, noLink: K.noLink, filterLabel: K.filterLabel, filterAll: K.filterAll, languages: K.languages, tools: K.tools, entities: K.entities, linkedTo: K.linkedTo } }))}</script>
     </section>`;
 }
 

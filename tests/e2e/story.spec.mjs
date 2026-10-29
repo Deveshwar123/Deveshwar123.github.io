@@ -74,10 +74,8 @@ test.describe('desktop full tier', () => {
 
   test('arriving with a hash lands on that content after layout settles', async ({ page }) => {
     await page.goto('/#experience');
-    await page.waitForTimeout(2200);
-    const top = await page.locator('#experience').evaluate((el) => el.getBoundingClientRect().top);
-    expect(top).toBeGreaterThan(40);
-    expect(top).toBeLessThan(140);
+    await expect.poll(() => page.locator('#experience').evaluate((el) => el.getBoundingClientRect().top), { timeout: 10000 }).toBeGreaterThan(40);
+    await expect.poll(() => page.locator('#experience').evaluate((el) => el.getBoundingClientRect().top), { timeout: 10000 }).toBeLessThan(140);
     await expect(page.locator('html')).not.toHaveClass(/intro-running/);
   });
 

@@ -93,6 +93,8 @@ async function boot() {
   restoreHash();
   await startReveals();
   await startProjects();
+  const skills = await attemptAsync('skills module', () => import('./skills-board.js'));
+  if (skills) attempt('skills', () => skills.initSkills(cfg));
 }
 boot();
 

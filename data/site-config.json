@@ -131,7 +131,9 @@
       "boardHint": "Select a skill or a role to trace its documented links.",
       "clear": "Clear selection",
       "filterLabel": "Show links for",
-      "filterAll": "All skills and roles"
+      "filterAll": "All skills and roles",
+      "entities": "Roles & projects",
+      "linkedTo": "linked to"
     },
     "contact": {
       "emailLabel": "Email",

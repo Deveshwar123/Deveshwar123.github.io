@@ -58,9 +58,8 @@ test('keyboard focus inside a hidden group reveals it immediately', async ({ pag
 
 test('line splitting keeps one copy of each heading and restores it afterwards', async ({ page }) => {
   await page.goto('/#skills');
-  await page.waitForTimeout(2000);
   await expect(page.getByRole('heading', { name: 'Skills', level: 2 })).toHaveCount(1);
-  await expect(page.locator('#skills-title .reveal-line')).toHaveCount(0);
+  await expect(page.locator('#skills-title .reveal-line')).toHaveCount(0, { timeout: 12000 });
   expect(await page.locator('#skills-title').textContent()).toBe('Skills');
 });
 

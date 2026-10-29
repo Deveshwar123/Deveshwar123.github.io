@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "person": {
+    "name": "Deveshwar Vankeswaram",
+    "heroSubtitle": "Computer Engineering · Texas A&M · Builds software, hardware & the things between.",
+    "major": "Computer Engineering",
+    "university": "Texas A&M University"
+  },
+  "links": {
+    "email": "deveshwarvankeswaram@tamu.edu",
+    "linkedin": { "url": "https://linkedin.com/in/deveshwarv", "display": "linkedin.com/in/deveshwarv" },
+    "github": { "url": "https://github.com/Deveshwar123", "display": "github.com/Deveshwar123" }
+  },
+  "education": [
+    {
+      "id": "tamu",
+      "institution": "Texas A&M University",
+      "location": "College Station, TX",
+      "degree": "B.S. Computer Engineering",
+      "minor": "Minor in Computer Science",
+      "dateDisplay": "Expected May 2030",
+      "dateRange": { "start": null, "end": "2030-05" },
+      "gpa": "4.0/4.0",
+      "honors": ["Business of Technology Certificate", "University Honors Program"]
+    }
+  ],
+  "experience": [
+    {
+      "id": "vantashala",
+      "organization": "VantaShala.com",
+      "role": "Software Engineer Intern",
+      "location": "Remote",
+      "dateDisplay": "Oct 2025 – Oct 2026",
+      "dateRange": { "start": "2025-10", "end": "2026-10" },
+      "bullets": [
+        { "id": "b1", "text": "Automated QA across core user flows with Playwright test suites for an AI-powered chef platform." },
+        { "id": "b2", "text": "Designed and shipped UI/UX improvements to the platform's web interface." },
+        { "id": "b3", "text": "Interviewed 20+ candidates and assigned roles to staff an offshore engineering team." }
+      ]
+    },
+    {
+      "id": "quant-research",
+      "organization": "Quantitative Finance Research",
+      "role": "Data Science Researcher (ISM)",
+      "location": "Frisco, TX",
+      "dateDisplay": "Aug 2024 – May 2026",
+      "dateRange": { "start": "2024-08", "end": "2026-05" },
+      "bullets": [
+        { "id": "b1", "text": "Published a Pine Script trading indicator on TradingView combining EMA, RSI and MACD signals." },
+        {
+          "id": "b2",
+          "text": "Backtested 20 years of MCHP data: 500% return vs. 389% for buy-and-hold (~9.4% annualized).",
+          "sourceText": "Backtested 20 years of MCHP data: 500% return vs. 389% for buy-and-hold (~9.5% annualized).",
+          "revision": {
+            "approvedBy": "owner",
+            "date": "2026-10-29",
+            "reason": "A 500% gain over 20 years compounds to about 9.37% a year; 9.5% would need about a 514% gain. Owner approved the corrected rounding."
+          }
+        },
+        { "id": "b3", "text": "Ran a 10-trial study comparing AI vs. manual market research; AI answered about 2× faster." }
+      ]
+    },
+    {
+      "id": "radicubs",
+      "organization": "Radicubs Robotics (FIRST)",
+      "role": "Software Engineer",
+      "location": "Frisco, TX",
+      "dateDisplay": "Aug 2023 – May 2026",
+      "dateRange": { "start": "2023-08", "end": "2026-05" },
+      "bullets": [
+        { "id": "b1", "text": "Coded autonomous routines in Java/Python; team made State and won the Sustainability & Spirit Awards." },
+        { "id": "b2", "text": "Raised and allocated team funds through grant writing and budget planning." }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "tidecast",
+      "title": "TideCast",
+      "role": "Full Stack Developer",
+      "dateDisplay": "Oct 2026",
+      "dateRange": { "start": "2026-10", "end": "2026-10" },
+      "liveUrl": "https://tidecast-kdl9.onrender.com/backbone/",
+      "codeUrl": "https://github.com/Deveshwar123/HowdyHackathon",
+      "bullets": [
+        { "id": "b1", "text": "Co-built a web app identifying a fish's species, length and weight from a single photo." },
+        { "id": "b2", "text": "Ran a 1.1B-parameter vision model in-browser via 4/8-bit ONNX quantization and WebGPU." },
+        { "id": "b3", "text": "Engineered a Python/SQLite back end proxying Gemini, OBIS and Global Fishing Watch APIs." }
+      ]
+    },
+    {
+      "id": "vedam",
+      "title": "Vedam",
+      "role": "Full Stack Developer",
+      "dateDisplay": "Sep 2026 – Present",
+      "dateRange": { "start": "2026-09", "end": null },
+      "liveUrl": "https://wearvedam.com",
+      "codeUrl": null,
+      "bullets": [
+        { "id": "b1", "text": "Launched a brand website in HTML and JavaScript on a custom domain." }
+      ]
+    },
+    {
+      "id": "nfc-card",
+      "title": "NFC Business Card",
+      "role": "PCB Hardware Designer",
+      "dateDisplay": "May 2026",
+      "dateRange": { "start": "2026-05", "end": "2026-05" },
+      "liveUrl": null,
+      "codeUrl": "https://github.com/Deveshwar123/nfc-pcb-business-card",
+      "codeUrlNote": "Owner's public hardware repository (Gerbers, BOM, v1.0 release); added with owner go-ahead 2026-10-29.",
+      "bullets": [
+        { "id": "b1", "text": "Designed a 2-layer NFC business card PCB in EasyEDA Pro around an NXP NTAG I2C chip." },
+        { "id": "b2", "text": "Added an energy-harvesting LED powered by a phone's NFC field to signal each contact share." },
+        { "id": "b3", "text": "Produced Gerbers, a BOM and custom silkscreen art; fabricated through JLCPCB." }
+      ]
+    }
+  ],
+  "leadership": [
+    {
+      "id": "rha",
+      "organization": "Residence Hall Association (RHA), Texas A&M",
+      "role": "President",
+      "dateDisplay": "Sep 2026 – Present",
+      "description": "Lead the executive board; SWACURH Regional Leadership Conference delegate (Oct 2026).",
+      "glyph": "arch"
+    },
+    {
+      "id": "aggies-in-tech",
+      "organization": "Aggies in Tech, Mays Business School",
+      "role": "High Impact Program",
+      "dateDisplay": "Oct 2026 – Present",
+      "description": null,
+      "glyph": "chip"
+    },
+    {
+      "id": "aggie-data-science",
+      "organization": "Aggie Data Science Club",
+      "role": "Journal Board Member",
+      "dateDisplay": "Oct 2026 – Present",
+      "description": null,
+      "glyph": "scatter"
+    },
+    {
+      "id": "maroon-investment",
+      "organization": "Maroon Investment Club, Texas A&M",
+      "role": "Member",
+      "dateDisplay": "Sep 2026 – Present",
+      "description": null,
+      "glyph": "candles"
+    },
+    {
+      "id": "goldman-steam",
+      "organization": "Goldman Sachs",
+      "role": "Selected Participant, STEAM Workshop",
+      "dateDisplay": "Oct 2025",
+      "description": "Prototyped fintech tools with Raspberry Pi and AI.",
+      "glyph": "board"
+    },
+    {
+      "id": "engin",
+      "organization": "ENGin",
+      "role": "Volunteer English Tutor",
+      "dateDisplay": "Jun 2023 – Aug 2026",
+      "description": "120+ hours of 1:1 lessons for Ukrainian students.",
+      "glyph": "speech"
+    }
+  ],
+  "skills": {
+    "languages": [
+      { "id": "python", "label": "Python" },
+      { "id": "java", "label": "Java" },
+      { "id": "javascript", "label": "JavaScript" },
+      { "id": "html-css", "label": "HTML/CSS" },
+      { "id": "pine-script", "label": "Pine Script" }
+    ],
+    "tools": [
+      { "id": "playwright", "label": "Playwright" },
+      { "id": "git-github", "label": "Git/GitHub" },
+      { "id": "easyeda", "label": "EasyEDA (PCB design)" },
+      { "id": "onnx", "label": "ONNX" },
+      { "id": "webgpu", "label": "WebGPU" },
+      { "id": "threejs", "label": "Three.js" },
+      { "id": "sqlite", "label": "SQLite" },
+      { "id": "raspberry-pi", "label": "Raspberry Pi" },
+      { "id": "bloomberg", "label": "Bloomberg" },
+      { "id": "cad", "label": "CAD" }
+    ]
+  },
+  "certifications": [
+    { "id": "lifeguard", "label": "Lifeguard" },
+    { "id": "lts", "label": "Lifeguard Training Specialist (LTS)" },
+    { "id": "wsi", "label": "American Red Cross WSI" }
+  ],
+  "interests": [
+    { "id": "viola", "label": "Viola (6+ years)", "glyph": "viola" },
+    { "id": "ironman", "label": "Ironman training (2.4-mi swim, 112-mi bike, 26.2-mi run)", "glyph": "triathlon" },
+    { "id": "chess", "label": "chess", "glyph": "chess" },
+    { "id": "cooking", "label": "cooking", "glyph": "cooking" }
+  ],
+  "snapshot": [
+    { "id": "gpa", "value": "4.0", "label": "GPA", "basis": "education.tamu.gpa" },
+    { "id": "shipped", "value": "3", "label": "shipped projects", "basis": "TideCast, Vedam and the NFC Business Card (owner confirmed 2026-10-29)" },
+    { "id": "tutoring", "value": "120+", "label": "tutoring hours", "basis": "leadership.engin.description" },
+    { "id": "backtest", "value": "20", "label": "yrs backtested", "basis": "experience.quant-research.b2" }
+  ],
+  "assets": {
+    "resumePdf": { "path": "assets/Deveshwar_Vankeswaram_Resume.pdf", "approved": false }
+  },
+  "skillRelations": [
+    { "skillId": "python", "entityId": "radicubs", "evidenceRef": "experience.radicubs.b1", "sourceType": "supplied" },
+    { "skillId": "java", "entityId": "radicubs", "evidenceRef": "experience.radicubs.b1", "sourceType": "supplied" },
+    { "skillId": "pine-script", "entityId": "quant-research", "evidenceRef": "experience.quant-research.b1", "sourceType": "supplied" },
+    { "skillId": "playwright", "entityId": "vantashala", "evidenceRef": "experience.vantashala.b1", "sourceType": "supplied" },
+    { "skillId": "html-css", "entityId": "vedam", "evidenceRef": "projects.vedam.b1", "sourceType": "supplied" },
+    { "skillId": "javascript", "entityId": "vedam", "evidenceRef": "projects.vedam.b1", "sourceType": "supplied" },
+    { "skillId": "easyeda", "entityId": "nfc-card", "evidenceRef": "projects.nfc-card.b1", "sourceType": "supplied" },
+    { "skillId": "onnx", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b2", "sourceType": "supplied" },
+    { "skillId": "webgpu", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b2", "sourceType": "supplied" },
+    { "skillId": "python", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b3", "sourceType": "supplied" },
+    { "skillId": "sqlite", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b3", "sourceType": "supplied" },
+    { "skillId": "raspberry-pi", "entityId": "goldman-steam", "evidenceRef": "leadership.goldman-steam.description", "sourceType": "supplied" }
+  ],
+  "projectChips": {
+    "tidecast": [
+      { "label": "ONNX", "evidenceRef": "projects.tidecast.b2" },
+      { "label": "WebGPU", "evidenceRef": "projects.tidecast.b2" },
+      { "label": "Python", "evidenceRef": "projects.tidecast.b3" },
+      { "label": "SQLite", "evidenceRef": "projects.tidecast.b3" }
+    ],
+    "vedam": [
+      { "label": "HTML", "evidenceRef": "projects.vedam.b1" },
+      { "label": "JavaScript", "evidenceRef": "projects.vedam.b1" }
+    ],
+    "nfc-card": [
+      { "label": "EasyEDA Pro", "evidenceRef": "projects.nfc-card.b1" },
+      { "label": "NXP NTAG I2C", "evidenceRef": "projects.nfc-card.b1" },
+      { "label": "JLCPCB", "evidenceRef": "projects.nfc-card.b3" }
+    ]
+  }
+}

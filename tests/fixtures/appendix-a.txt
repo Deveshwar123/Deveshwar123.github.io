@@ -1,0 +1,46 @@
+Name: Deveshwar Vankeswaram
+Links: deveshwarvankeswaram@tamu.edu · linkedin.com/in/deveshwarv · github.com/Deveshwar123
+Education
+Texas A&M University, College Station, TX. B.S. Computer Engineering, Minor in Computer Science.
+Expected May 2030. GPA 4.0/4.0 · Business of Technology Certificate · University Honors Program
+Experience
+• VantaShala.com, Software Engineer Intern, Remote, Oct 2025 – Oct 2026
+• Automated QA across core user flows with Playwright test suites for an AI-powered chef platform.
+• Designed and shipped UI/UX improvements to the platform's web interface.
+• Interviewed 20+ candidates and assigned roles to staff an offshore engineering team.
+• Quantitative Finance Research, Data Science Researcher (ISM), Frisco, TX, Aug 2024 – May 2026
+• Published a Pine Script trading indicator on TradingView combining EMA, RSI and MACD signals.
+• Backtested 20 years of MCHP data: 500% return vs. 389% for buy-and-hold (~9.5% annualized).
+• Ran a 10-trial study comparing AI vs. manual market research; AI answered about 2× faster.
+• Radicubs Robotics (FIRST), Software Engineer, Frisco, TX, Aug 2023 – May 2026
+• Coded autonomous routines in Java/Python; team made State and won the Sustainability & Spirit
+Awards.
+• Raised and allocated team funds through grant writing and budget planning.
+Projects
+• TideCast, Full Stack Developer, Oct 2026. Live: https://tidecast-kdl9.onrender.com/backbone/ · Code:
+github.com/Deveshwar123/HowdyHackathon
+• Co-built a web app identifying a fish's species, length and weight from a single photo.
+• Ran a 1.1B-parameter vision model in-browser via 4/8-bit ONNX quantization and WebGPU.
+• Engineered a Python/SQLite back end proxying Gemini, OBIS and Global Fishing Watch APIs.
+• Vedam, Full Stack Developer, Sep 2026 – Present. Live: https://wearvedam.com
+• Launched a brand website in HTML and JavaScript on a custom domain.
+• NFC Business Card, PCB Hardware Designer, May 2026
+• Designed a 2-layer NFC business card PCB in EasyEDA Pro around an NXP NTAG I2C chip.
+• Added an energy-harvesting LED powered by a phone's NFC field to signal each contact share.
+• Produced Gerbers, a BOM and custom silkscreen art; fabricated through JLCPCB.
+Leadership & Activities
+• Residence Hall Association (RHA), Texas A&M: President, Sep 2026 – Present. Lead the executive
+board; SWACURH Regional Leadership Conference delegate (Oct 2026).
+• Aggies in Tech, Mays Business School: High Impact Program, Oct 2026 – Present.
+• Aggie Data Science Club: Journal Board Member, Oct 2026 – Present.
+• Maroon Investment Club, Texas A&M: Member, Sep 2026 – Present.
+• Goldman Sachs: Selected Participant, STEAM Workshop, Oct 2025. Prototyped fintech tools with
+Raspberry Pi and AI.
+• ENGin: Volunteer English Tutor, Jun 2023 – Aug 2026. 120+ hours of 1:1 lessons for Ukrainian
+students.
+Skills
+• Languages: Python, Java, JavaScript, HTML/CSS, Pine Script
+• Tools: Playwright, Git/GitHub, EasyEDA (PCB design), ONNX, WebGPU, Three.js, SQLite, Raspberry
+Pi, Bloomberg, CAD
+• Certifications: Lifeguard; Lifeguard Training Specialist (LTS); American Red Cross WSI
+• Interests: Viola (6+ years), Ironman training (2.4-mi swim, 112-mi bike, 26.2-mi run), chess, cooking

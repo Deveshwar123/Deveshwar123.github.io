@@ -1,0 +1,10 @@
+{
+  "note": "Committed, non-sensitive exclusion patterns. Private phrases go in qa/exclusions.local.json (gitignored).",
+  "patterns": [
+    { "id": "major-electrical", "pattern": "Electrical\\s+Engineering" },
+    { "id": "major-data-eng", "pattern": "Data\\s+Engineering" },
+    { "id": "phone-number", "pattern": "(?<![\\d.\\-/])\\(?\\d{3}\\)?[\\s.\\-]\\d{3}[\\s.\\-]\\d{4}(?![\\d])" },
+    { "id": "street-address", "pattern": "\\b\\d{2,6}\\s+[A-Z][a-z]+(\\s+[A-Z][a-z]+)?\\s+(Street|St\\.|Avenue|Ave\\.|Drive|Dr\\.|Lane|Ln\\.|Road|Rd\\.|Boulevard|Blvd\\.|Court|Ct\\.|Way|Parkway|Pkwy)\\b", "flags": "" },
+    { "id": "high-school", "pattern": "\\bHigh\\s+School\\b" }
+  ]
+}

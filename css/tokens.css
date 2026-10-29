@@ -1,0 +1,177 @@
+/* Design tokens: fonts, colour themes, spacing, radii and motion.
+   Dark is the reference palette; the light theme defines its own accessible
+   values instead of inverting. System preference applies until the visitor
+   picks a theme, which the inline initializer writes to data-theme. */
+
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader-latin-var.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('../assets/fonts/dm-sans-latin-var.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Metric-matched fallbacks (measured from the font files) keep text from
+   shifting when the web fonts arrive. */
+@font-face {
+  font-family: 'Newsreader Fallback';
+  src: local('Georgia');
+  size-adjust: 95%;
+  ascent-override: 77.4%;
+  descent-override: 27.9%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'DM Sans Fallback';
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 106.9%;
+  ascent-override: 92.8%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Colour: dark reference palette */
+  --bg: #06121e;
+  --bg-raise: #0b1b2b;
+  --surface: rgb(15 33 51 / 0.72);
+  --surface-solid: #0f2133;
+  --ink: #f3eadc;
+  --ink-soft: #d8cfc1;
+  --muted: #9fb0bd;
+  --border: rgb(159 176 189 / 0.22);
+  --border-strong: rgb(159 176 189 / 0.42);
+  --copper: #c98a4b;
+  --copper-strong: #dc9d5d;
+  --gold: #d9b36a;
+  --accent-a: #b90101;
+  --accent-b: #8c0327;
+  --on-copper: #06121e;
+  --header-glass: rgb(6 18 30 / 0.72);
+  --focus-inner: #e3a868;
+  --focus-outer: #06121e;
+  --shadow: 0 24px 60px rgb(0 0 0 / 0.35);
+  --led: #ff6a3d;
+
+  /* Line art */
+  --line-frame: rgb(159 176 189 / 0.45);
+  --line-arch: var(--copper);
+  --line-wave: rgb(217 179 106 / 0.78);
+  --line-ornament: var(--gold);
+  --line-silk: rgb(243 234 220 / 0.72);
+  --line-board: rgb(159 176 189 / 0.6);
+  --board-fill: #0b1a14;
+
+  /* Type */
+  --font-display: 'Newsreader', 'Newsreader Fallback', Georgia, serif;
+  --font-body: 'DM Sans', 'DM Sans Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-body: 1.0625rem;
+  --text-small: 0.9375rem;
+  --text-kicker: 0.75rem;
+  --leading: 1.6;
+  --measure: 66ch;
+  --name-size: clamp(54px, 6.4vw, 132px);
+
+  /* Space: an 8px grid with fluid section rhythm */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+  --s7: 96px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --content-max: 1280px;
+  --section-pad: clamp(80px, 12vh, 152px);
+  --header-h: 64px;
+
+  /* Shape */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+  --stroke: 1.25px;
+
+  /* Motion (mirrors data/site-config.json → motion) */
+  --dur-hover: 180ms;
+  --dur-state: 320ms;
+  --dur-reveal: 560ms;
+  --ease-ui: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-scene: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Light theme values (applied for system-light visitors and explicit choice). */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+    --bg: #f6efe3;
+    --bg-raise: #efe5d4;
+    --surface: rgb(255 250 242 / 0.8);
+    --surface-solid: #fffaf2;
+    --ink: #3e0b17;
+    --ink-soft: #57212d;
+    --muted: #5f5352;
+    --border: rgb(62 11 23 / 0.16);
+    --border-strong: rgb(62 11 23 / 0.36);
+    --copper: #8f4d17;
+    --copper-strong: #7a3f10;
+    --gold: #806015;
+    --accent-a: #b90101;
+    --accent-b: #8c0327;
+    --on-copper: #fffaf2;
+    --header-glass: rgb(246 239 227 / 0.78);
+    --focus-inner: #8f4d17;
+    --focus-outer: #fffaf2;
+    --shadow: 0 24px 60px rgb(62 11 23 / 0.14);
+    --led: #c42b0a;
+    --line-frame: rgb(62 11 23 / 0.32);
+    --line-wave: rgb(128 96 21 / 0.75);
+    --line-silk: rgb(62 11 23 / 0.6);
+    --line-board: rgb(62 11 23 / 0.45);
+    --board-fill: #e6dcc6;
+  }
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6efe3;
+  --bg-raise: #efe5d4;
+  --surface: rgb(255 250 242 / 0.8);
+  --surface-solid: #fffaf2;
+  --ink: #3e0b17;
+  --ink-soft: #57212d;
+  --muted: #5f5352;
+  --border: rgb(62 11 23 / 0.16);
+  --border-strong: rgb(62 11 23 / 0.36);
+  --copper: #8f4d17;
+  --copper-strong: #7a3f10;
+  --gold: #806015;
+  --accent-a: #b90101;
+  --accent-b: #8c0327;
+  --on-copper: #fffaf2;
+  --header-glass: rgb(246 239 227 / 0.78);
+  --focus-inner: #8f4d17;
+  --focus-outer: #fffaf2;
+  --shadow: 0 24px 60px rgb(62 11 23 / 0.14);
+  --led: #c42b0a;
+  --line-frame: rgb(62 11 23 / 0.32);
+  --line-wave: rgb(128 96 21 / 0.75);
+  --line-silk: rgb(62 11 23 / 0.6);
+  --line-board: rgb(62 11 23 / 0.45);
+  --board-fill: #e6dcc6;
+}
+
+@media (max-width: 599px) {
+  :root {
+    --header-h: 56px;
+    --text-body: 1rem;
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+qa/exclusions.local.json
+scripts/.shot-tmp.mjs
+reports/lighthouse/*.json
+test-results/
+playwright-report/
+.DS_Store

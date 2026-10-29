@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "title": "Deveshwar Vankeswaram — Computer Engineering, Texas A&M",
+    "description": "Deveshwar Vankeswaram is a Computer Engineering student at Texas A&M University who builds software, hardware and the things between. Projects: TideCast, Vedam and an NFC business card PCB.",
+    "deployUrl": "https://deveshwar123.github.io/",
+    "deployApproved": false,
+    "socialImage": "assets/social-card.png",
+    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, drawn over an illustrated circuit board in copper line art.",
+    "themeColorDark": "#06121e",
+    "themeColorLight": "#f6efe3"
+  },
+  "theme": {
+    "default": "system",
+    "storageKey": "dv-theme",
+    "motionStorageKey": "dv-motion"
+  },
+  "labels": {
+    "skipLink": "Skip to content",
+    "homeLink": "Deveshwar Vankeswaram",
+    "primaryNav": "Primary",
+    "nav": [
+      {
+        "label": "Work",
+        "href": "#experience"
+      },
+      {
+        "label": "Projects",
+        "href": "#projects"
+      },
+      {
+        "label": "Skills",
+        "href": "#skills"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    ],
+    "menu": "Menu",
+    "chaptersNav": "Chapters",
+    "chapters": [
+      {
+        "label": "Intro",
+        "href": "#story-intro"
+      },
+      {
+        "label": "Board",
+        "href": "#story-board"
+      },
+      {
+        "label": "Layers",
+        "href": "#story-layers"
+      },
+      {
+        "label": "Experience",
+        "href": "#experience"
+      },
+      {
+        "label": "Projects",
+        "href": "#projects"
+      },
+      {
+        "label": "Skills",
+        "href": "#skills"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    ],
+    "pauseMotion": "Pause motion",
+    "hero": {
+      "kicker": "Tradition → Circuit",
+      "factsLabel": "At a glance",
+      "majorTerm": "Major",
+      "universityTerm": "University",
+      "gpaTerm": "GPA",
+      "projectsLabel": "Selected work",
+      "seeWork": "See my work",
+      "resume": "Résumé ↓"
+    },
+    "journey": {
+      "title": "Tradition → Circuit",
+      "intro": "How the line art works: one scroll value turns a jali lattice into the routed copper of an illustrated circuit board."
+    },
+    "sections": {
+      "snapshot": {
+        "kicker": "01",
+        "title": "Snapshot"
+      },
+      "education": "Education",
+      "experience": {
+        "kicker": "02",
+        "title": "Experience"
+      },
+      "projects": {
+        "kicker": "03",
+        "title": "Projects"
+      },
+      "skills": {
+        "kicker": "04",
+        "title": "Skills"
+      },
+      "leadership": {
+        "kicker": "05",
+        "title": "Leadership & Activities"
+      },
+      "beyond": {
+        "kicker": "06",
+        "title": "Beyond"
+      },
+      "contact": {
+        "kicker": "07 · Contact",
+        "title": "Let’s build something."
+      }
+    },
+    "project": {
+      "live": "Live site",
+      "code": "Source code",
+      "hardware": "Hardware files",
+      "chipsLabel": "Technologies"
+    },
+    "skills": {
+      "languages": "Languages",
+      "tools": "Tools",
+      "certifications": "Certifications",
+      "relationsTitle": "Where each skill shows up",
+      "relationsIntro": "Each link below points to a résumé line that names the skill. Skills without a documented project link are still listed.",
+      "noLink": "No documented project link for this skill",
+      "boardHint": "Select a skill or a role to trace its documented links.",
+      "clear": "Clear selection",
+      "filterLabel": "Show links for",
+      "filterAll": "All skills and roles"
+    },
+    "contact": {
+      "emailLabel": "Email",
+      "emailAction": "Email me",
+      "copy": "Copy email",
+      "copied": "Email copied",
+      "copyFailed": "Copy unavailable; select the address",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "footer": {
+      "theme": "Theme",
+      "themeSystem": "System",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "motion": "Motion",
+      "motionSystem": "System",
+      "motionReduced": "Reduced",
+      "note": "Line art and 3D are original illustrations. Content is generated from one résumé data file."
+    }
+  },
+  "illustrations": {
+    "beats": [
+      {
+        "id": "story-intro",
+        "chapter": "Intro",
+        "title": "Tradition",
+        "caption": "A jali lattice, the carved stone screen of Indian architecture, drawn on an 8px grid.",
+        "p": 0.07
+      },
+      {
+        "id": "story-board",
+        "chapter": "Board",
+        "title": "Circuit",
+        "caption": "The same lines, rerouted as copper traces on an illustrated two-layer NFC business card.",
+        "p": 0.3
+      },
+      {
+        "id": "story-layers",
+        "chapter": "Layers",
+        "title": "Layers",
+        "caption": "Four construction layers, four kinds of work: Software, Hardware, Data & Finance and Leadership. An illustration, not a manufacturing-accurate model.",
+        "p": 0.5
+      }
+    ],
+    "layerLabels": [
+      "Software",
+      "Hardware",
+      "Data & Finance",
+      "Leadership"
+    ],
+    "projects": {
+      "tidecast": {
+        "description": "Illustration: a wireframe globe with a schematic ping at College Station, and the knuckle-reference measuring mode drawn as four steps.",
+        "modeLabel": "Knuckle-reference mode (illustrative)",
+        "steps": [
+          "Photo",
+          "Species ID",
+          "Length via knuckle scale",
+          "Weight & points"
+        ]
+      },
+      "vedam": {
+        "description": "Illustration: an original jali arch, drawn stroke by stroke and then filled."
+      },
+      "nfc-card": {
+        "description": "Illustration of the two-layer card, not a manufacturing-accurate model. Drag sideways or use the buttons to turn it.",
+        "hotspot": "Illustrative NFC field and energy harvesting.",
+        "fieldToggle": "Show NFC field",
+        "rotateLeft": "Rotate left",
+        "rotateRight": "Rotate right",
+        "reset": "Reset view",
+        "controlsLabel": "Card view controls"
+      }
+    }
+  },
+  "motion": {
+    "durations": {
+      "hover": 180,
+      "state": 320,
+      "reveal": 560,
+      "countUp": 900,
+      "intro": 1800,
+      "sceneNominal": 900
+    },
+    "easings": {
+      "ui": [
+        0.2,
+        0.7,
+        0.2,
+        1
+      ],
+      "scene": [
+        0.65,
+        0,
+        0.35,
+        1
+      ]
+    },
+    "intro": {
+      "strokeStagger": 50,
+      "maxSiblings": 8,
+      "headerAt": 1200,
+      "chaptersAt": 1400,
+      "hintAt": 1800,
+      "bloomScale": 0.86,
+      "bloomBlur": 18,
+      "bloomBrightness": 2
+    },
+    "reveal": {
+      "rise": 24,
+      "stagger": 60,
+      "timelineStagger": 50,
+      "threshold": 0.15
+    },
+    "spring": {
+      "mass": 1,
+      "stiffness": 170,
+      "damping": 18
+    },
+    "magnet": {
+      "radius": 80,
+      "strength": 0.3,
+      "maxShift": 6
+    },
+    "ambient": {
+      "breatheDeg": 0.5,
+      "breathePeriod": 8000,
+      "sweepPeriod": 6000
+    },
+    "dashSpeed": 240,
+    "headerGlassAt": 40
+  },
+  "journey": {
+    "end": 0.62,
+    "desktopTrack": {
+      "minPx": 2400,
+      "viewports": 4
+    },
+    "mobileTrack": {
+      "minPx": 1400,
+      "viewports": 2.5
+    },
+    "compactBreakpoint": 860,
+    "ranges": {
+      "unravel": [
+        0,
+        0.18
+      ],
+      "ornamentFade": [
+        0.12,
+        0.18
+      ],
+      "vias": [
+        0.14,
+        0.18
+      ],
+      "crossfade": [
+        0.18,
+        0.22
+      ],
+      "pose": [
+        0.18,
+        0.38
+      ],
+      "explode": [
+        0.38,
+        0.58
+      ],
+      "ledBell": [
+        0.58,
+        0.59,
+        0.6,
+        0.61
+      ],
+      "handoff": [
+        0.6,
+        0.62
+      ]
+    },
+    "pose": {
+      "yawDeg": 35,
+      "pitchDeg": 15
+    },
+    "quality": {
+      "fullDpr": 2,
+      "compactDpr": 1.5
+    }
+  },
+  "board": {
+    "widthMm": 88.9,
+    "heightMm": 50.8,
+    "cornerMm": 3.2,
+    "basis": "Proportions of the owner's fabricated card (3.5 × 2 in); everything else is illustrative."
+  }
+}

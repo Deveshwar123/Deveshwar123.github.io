@@ -204,7 +204,14 @@
         "rotateLeft": "Rotate left",
         "rotateRight": "Rotate right",
         "reset": "Reset view",
-        "controlsLabel": "Card view controls"
+        "controlsLabel": "Card view controls",
+        "status": {
+          "left": "Turned left 15°",
+          "right": "Turned right 15°",
+          "reset": "View reset",
+          "fieldOn": "NFC field shown",
+          "fieldOff": "NFC field hidden"
+        }
       }
     }
   },

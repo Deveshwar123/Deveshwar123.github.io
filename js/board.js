@@ -124,22 +124,27 @@ export async function createBoardView({ stage, onLost }) {
     onRelease() { canvas.style.opacity = '0'; },
   };
   let parked = false;
-  let size = { vw: 1, vh: 1 };
+  let size = { vw: 1, vh: 1, ppu: 1 };
   claim(owner, stage);
+
+  function applySize() {
+    const { vw, vh, ppu } = size;
+    const cam = makeCamera(vw, vh, ppu);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(vw, vh, false);
+    camera.aspect = vw / vh;
+    camera.near = cam.D / 20;
+    camera.far = cam.D * 4;
+    camera.position.set(0, 0, cam.D);
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+    board.setResolution(vw, vh);
+  }
 
   return {
     resize(vw, vh, ppu) {
-      size = { vw, vh };
-      const cam = makeCamera(vw, vh, ppu);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.setSize(vw, vh, false);
-      camera.aspect = vw / vh;
-      camera.near = cam.D / 20;
-      camera.far = cam.D * 4;
-      camera.position.set(0, 0, cam.D);
-      camera.lookAt(0, 0, 0);
-      camera.updateProjectionMatrix();
-      board.setResolution(vw, vh);
+      size = { vw, vh, ppu };
+      applySize();
     },
     render(s) {
       if (parked || R.lost) return;
@@ -152,10 +157,64 @@ export async function createBoardView({ stage, onLost }) {
       renderer.render(scene, camera);
     },
     park() { parked = true; release(owner); },
-    unpark() { parked = false; claim(owner, stage); },
+    unpark() { parked = false; if (claim(owner, stage)) applySize(); },
     recolor() { board.recolor(); },
     get size() { return size; },
     get info() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }; },
     dispose() { release(owner); board.dispose(); },
+  };
+}
+
+// NFC panel adapter: borrows the same renderer while the panel is on screen and
+// the story is parked. It never opens a second context.
+export async function createNfcGlView({ container, onRelease }) {
+  const R = await getRenderer();
+  if (!R) throw new Error('WebGL unavailable');
+  const { THREE, renderer, canvas } = R;
+  const scene = new THREE.Scene();
+  const board = createBoardObject(THREE);
+  scene.add(board.root);
+  const camera = new THREE.PerspectiveCamera(FOV_DEG, 1, 1, 10000);
+  let active = false;
+  let size = { w: 1, h: 1, ppu: 1 };
+  const owner = {
+    onLost() { active = false; onRelease(); },
+    onRelease() { active = false; onRelease(); },
+  };
+  function applySize() {
+    const { w, h, ppu } = size;
+    const cam = makeCamera(w, h, ppu);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.near = cam.D / 20;
+    camera.far = cam.D * 4;
+    camera.position.set(0, 0, cam.D);
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+    board.setResolution(w, h);
+  }
+  return {
+    get active() { return active && !R.lost; },
+    activate(w, h, ppu) {
+      size = { w, h, ppu };
+      if (!claim(owner, container)) return false;
+      active = true;
+      canvas.style.opacity = '1';
+      applySize();
+      return true;
+    },
+    deactivate() { if (active) { active = false; release(owner); } },
+    resize(w, h, ppu) { size = { w, h, ppu }; if (active) applySize(); },
+    render(pose, led) {
+      if (!active || R.lost) return;
+      board.root.rotation.set(pose.pitch, pose.yaw, 0, 'XYZ');
+      board.root.position.set(pose.tx, pose.ty, 0);
+      board.setExplode(0);
+      board.setLed(led);
+      renderer.render(scene, camera);
+    },
+    recolor() { board.recolor(); },
+    dispose() { this.deactivate(); board.dispose(); },
   };
 }

@@ -77,19 +77,29 @@ async function startReveals() {
   reveals = mod ? attempt('reveals', () => mod.initReveals(cfg)) : null;
 }
 
+// Project mini-worlds run in every tier (the NFC card stays interactive with
+// stepped poses under reduced motion); WebGL only in the full tier.
+let projects = null;
+async function startProjects() {
+  if (projects) { attempt('projects teardown', () => projects.destroy()); projects = null; }
+  const mod = await attemptAsync('projects module', () => import('./projects.js'));
+  if (mod) projects = await attemptAsync('projects', () => mod.initProjects({ cfg, tier: story?.tier ?? 'static', report }));
+}
+
 async function boot() {
   await startStory();
   await fontsSettled;
   refreshNav();
   restoreHash();
   await startReveals();
+  await startProjects();
 }
 boot();
 
 // Reduced motion switched on or off while the page is open: rebuild the tier.
 let lastReduced = motionMode().reduced;
 onMotionChange((m) => {
-  if (m.reduced !== lastReduced) { lastReduced = m.reduced; startStory(); startReveals(); }
+  if (m.reduced !== lastReduced) { lastReduced = m.reduced; startStory().then(startProjects); startReveals(); }
 });
 
 // Returning from the back-forward cache: re-measure without replaying the intro.

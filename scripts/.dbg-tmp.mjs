@@ -1,9 +1,16 @@
 import { chromium } from '@playwright/test';
+const S = process.argv[2];
 const browser = await chromium.launch({ channel: 'chrome' });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: 'dark' });
-await page.goto('http://127.0.0.1:8080/#skills');
-for (const t of [1000, 2000, 4000]) {
-  await page.waitForTimeout(t === 1000 ? 1000 : t / 2);
-  console.log(t, await page.evaluate(() => { const h = document.getElementById('skills-title'); const r = h.getBoundingClientRect(); return `scrollY=${Math.round(scrollY)} top=${Math.round(r.top)} cls=${h.className} revealed=${h.classList.contains('is-revealed')} split=${!!h.dataset.split} has=${document.documentElement.className}`; }));
-}
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: process.argv[3] || 'dark' });
+page.on('pageerror', e => console.log('pageerror', e.message));
+await page.goto('http://127.0.0.1:8080/#project-nfc-card');
+await page.waitForTimeout(2600);
+await page.screenshot({ path: `${S}/p7-nfc-rest.png`, clip: { x: 720, y: 60, width: 640, height: 560 } });
+await page.getByRole('button', { name: 'Show NFC field' }).click();
+await page.getByRole('button', { name: 'Rotate right' }).click();
+await page.getByRole('button', { name: 'Rotate right' }).click();
+await page.mouse.move(10, 10);
+await page.waitForTimeout(400);
+await page.screenshot({ path: `${S}/p7-nfc-field.png`, clip: { x: 720, y: 60, width: 640, height: 560 } });
+console.log('focus stays on button:', await page.evaluate(() => document.activeElement.textContent.trim()));
 await browser.close();

@@ -6,6 +6,7 @@
 import { trackGeometry, progressAt, scrollYFor, boardFraming, evaluateStory } from './story-state.js';
 import { jaliGeometry, boardGeometry, pathFromPoints, BOARD } from './art.js';
 import { buildMorph, interpolate, arrayToPath } from './morph.js';
+import { createSvgBoard } from './board-svg.js';
 import { makeCamera, rotation, projectPoint, layerZ } from './projection.js';
 import { addTask, removeTask, wake } from './scheduler.js';
 import { setScroller, refreshNav } from './nav.js';
@@ -64,10 +65,7 @@ export async function createStory({ cfg, tier, report }) {
     unpaired: el('path', { class: 'art-traces' }, gFace),
     vias: el('path', { class: 'art-vias' }, gFace),
   };
-  const gBoard = el('g', { class: 'art stage-board' }, svg);
-  const layerPaths = ['art-silk', 'art-traces', 'art-board', 'art-copper-bottom'].map((c) => el('path', { class: c }, gBoard));
-  const boardFillPath = el('path', { class: 'art-board-fill' });
-  gBoard.insertBefore(boardFillPath, layerPaths[0]);
+  const svgBoard = createSvgBoard(svg);
   const gLeaders = el('g', { class: 'art stage-leaders' }, svg);
   const leaders = [0, 1, 2, 3].map(() => el('path', { class: 'stage-leader' }, gLeaders));
   const glow = el('circle', { class: 'led-glow', r: '0', fill: 'url(#led-glow-grad)' }, svg);
@@ -88,16 +86,6 @@ export async function createStory({ cfg, tier, report }) {
   face.silk.setAttribute('d', multiPath(board.silkscreen));
   face.extra.setAttribute('d', multiPath([...tc.feeds, ...tc.pinStubs, ...tc.ledPads, ...tc.ledTraces, ...board.pads.map(([x, y]) => [[x - 12, y - 10], [x + 12, y - 10], [x + 12, y + 10], [x - 12, y + 10], [x - 12, y - 10]])]));
   face.vias.setAttribute('d', board.vias.map(([x, y]) => `M${x + 8} ${y}A8 8 0 1 1 ${x - 8} ${y}A8 8 0 1 1 ${x + 8} ${y}`).join(''));
-  const chipRect = [[board.chip.x, board.chip.y], [board.chip.x + board.chip.w, board.chip.y], [board.chip.x + board.chip.w, board.chip.y + board.chip.h], [board.chip.x, board.chip.y + board.chip.h], [board.chip.x, board.chip.y]];
-  const viaRings = board.vias.map(([x, y]) => Array.from({ length: 13 }, (_, i) => [x + 8 * Math.cos((i / 12) * Math.PI * 2), y + 8 * Math.sin((i / 12) * Math.PI * 2)]));
-  const layerLines = [
-    [board.outline, ...board.silkscreen],
-    [...board.antenna, ...board.busTraces.map((t) => t.pts), ...tc.feeds, ...tc.pinStubs, ...tc.ledTraces, chipRect, ...viaRings],
-    [board.outline],
-    [board.outline, ...board.bottomCopper, board.bridge],
-  ];
-  const faceLines = layerLines[1];
-
   // ---- Lenis smooth scrolling (one scheduler owns its frames) ----
   let lenis = null;
   try {
@@ -207,7 +195,7 @@ export async function createStory({ cfg, tier, report }) {
     gMorph.style.display = morphing ? '' : 'none';
     gOrn.style.display = s.ornament > 0 ? '' : 'none';
     gFace.style.display = morphing ? '' : 'none';
-    gBoard.style.display = morphing || s.svgOpacity <= 0 ? 'none' : '';
+    svgBoard.setVisible(!morphing && s.svgOpacity > 0);
     if (morphing) {
       if (s.morphT === 0) {
         setTransform(gMorph, [1, 0, 0, 1, 0, -s.lift]);
@@ -223,31 +211,9 @@ export async function createStory({ cfg, tier, report }) {
       face.fill.style.opacity = s.boardFill * 0.9;
       for (const k of ['silk', 'extra', 'unpaired', 'vias']) face[k].style.opacity = s.vias;
     } else if (s.svgOpacity > 0) {
-      gBoard.style.opacity = s.svgOpacity;
-      if (s.rot === 0 && s.explode === 0) {
-        setTransform(gBoard, face0);
-        layerPaths[0].setAttribute('d', multiPath(layerLines[0]));
-        layerPaths[1].setAttribute('d', multiPath(faceLines));
-        layerPaths[2].setAttribute('d', '');
-        layerPaths[3].setAttribute('d', '');
-        boardFillPath.setAttribute('d', pathFromPoints(board.outline) + 'Z');
-      } else {
-        setTransform(gBoard, null);
-        const R = rotation(s.pose.yaw, s.pose.pitch);
-        layerLines.forEach((lines, i) => {
-          const z = layerZ(i, s.explode);
-          let d = '';
-          for (const line of lines) {
-            for (let j = 0; j < line.length; j++) {
-              const q = projectPoint(line[j][0], line[j][1], z, s.pose, cam, R, R0);
-              d += (j ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1);
-            }
-          }
-          layerPaths[i].setAttribute('d', d);
-          if (i === 2) boardFillPath.setAttribute('d', d + 'Z');
-        });
-      }
-      boardFillPath.style.opacity = '0.9';
+      svgBoard.setOpacity(s.svgOpacity);
+      if (s.rot === 0 && s.explode === 0) svgBoard.renderFaceOn(face0);
+      else svgBoard.render(s.pose, s.explode, cam);
     }
     renderOverlay(s, cam);
   }

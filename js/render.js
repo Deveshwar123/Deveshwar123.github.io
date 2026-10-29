@@ -254,7 +254,39 @@ ${(d.resume.projectChips[p.id] ?? []).map((c) => html`            <li>${c.label}
           ${projectActions(p, L)}
         </div>
 ${projectWorld(p, d, art)}
-      </article>\n`)}    </section>`;
+      </article>\n`)}${renderMoreProjects(d, art)}
+    </section>`;
+}
+
+// "More on GitHub": my other public repos, each restating its own README.
+function renderMoreProjects(d, art) {
+  const M = d.config.labels.more;
+  const L = d.config.labels.project;
+  const { github } = d.resume.links;
+  return html`
+      <div class="more" id="more-on-github" aria-labelledby="more-title">
+        <header class="more-head">
+          <h3 class="more-title" id="more-title">${M.title}</h3>
+          <p class="more-intro">${M.intro} <a class="more-profile" href="${safeUrl(github.url)}">${M.profile}<span class="visually-hidden"> on GitHub</span>${glyph('external')}</a></p>
+        </header>
+        <ul class="repos">
+${d.github.items.map((p) => html`          <li class="repo-item">
+            <article class="repo repo--${p.picture.kind}" id="repo-${p.id}" aria-labelledby="repo-${p.id}-title">
+              <div class="repo-stage" aria-hidden="true">
+            ${raw(art.repoWindows[p.id])}
+              </div>
+              <div class="repo-body">
+                <ul class="repo-tags" aria-label="${M.fieldsLabel}">${p.disciplines.map((t) => html`<li>${t}</li>`)}</ul>
+                <h4 class="repo-title" id="repo-${p.id}-title">${p.title}</h4>
+                <p class="repo-summary">${p.summary.text}</p>
+                <ul class="repo-points">
+${p.points.map((b) => html`                  <li>${b.text}</li>\n`)}                </ul>
+                <ul class="chips" aria-label="${L.chipsLabel}">${p.stack.map((s) => html`<li>${s}</li>`)}</ul>
+                ${projectActions({ title: p.title, liveUrl: p.liveUrl, codeUrl: p.repo }, L)}
+              </div>
+            </article>
+          </li>\n`)}        </ul>
+      </div>`;
 }
 
 function entityName(d, id) {

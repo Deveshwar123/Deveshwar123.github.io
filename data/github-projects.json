@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "note": "Public repositories shown under “More on GitHub”, below the three featured projects. Each card restates its repo's own README at the pinned commit: every summary and point cites verbatim README phrases (evidence), and every stack chip is named in the README or in GitHub's language stats. scripts/fetch-github-projects.mjs refreshes the README fixtures and screenshots. Private repositories never appear here.",
+  "items": [
+    {
+      "id": "strategy-terminal",
+      "title": "Strategy Terminal",
+      "repo": "https://github.com/Deveshwar123/strategy-terminal",
+      "commit": "d283c0597f247d02dfed1b8e9cee4d5ddb09fbdc",
+      "liveUrl": null,
+      "disciplines": ["Finance", "Computer Science"],
+      "summary": {
+        "text": "Backtest trading strategies written in Python, JavaScript or Ruby on 40+ years of daily Yahoo Finance data.",
+        "evidence": ["Paste a strategy in **Python,\nJavaScript, or Ruby**", "It returns 40+ years of split-adjusted daily bars", "data comes from Yahoo Finance"]
+      },
+      "points": [
+        {
+          "text": "One shared engine does every fill, so all three languages give byte-identical results.",
+          "evidence": ["Every dollar of the\nsimulation — fill prices, slippage, commissions, position accounting, equity, stats —\nhappens in `engine.js`.", "the same strategy gives byte-identical results in\nall three languages"]
+        },
+        {
+          "text": "Each language runs in its own subprocess and only emits orders. Node.js, zero npm dependencies, no API key.",
+          "evidence": ["runners in Python, JavaScript and Ruby, each in its own subprocess", "emits ORDERS only", "Zero npm dependencies, and **no API key to get**"]
+        }
+      ],
+      "stack": ["Node.js", "JavaScript", "Python", "Ruby", "Yahoo Finance"],
+      "picture": { "kind": "shot", "path": "docs/screenshot.png", "width": 2160, "height": 1350, "bar": "localhost:4477" }
+    },
+    {
+      "id": "resume-tailor",
+      "title": "Resume Tailor",
+      "repo": "https://github.com/Deveshwar123/resume-tailor",
+      "commit": "597893959a9da0ea24e1b137c3292ad93f22aa6c",
+      "liveUrl": null,
+      "disciplines": ["Computer Science"],
+      "summary": {
+        "text": "A command-line tool that turns a job posting link into a one-page, ATS-safe résumé built only from verified facts.",
+        "evidence": ["python tailor.py <job_url>", "Give it a job posting link.", "a **one-page, ATS-safe resume tailored to the job**, built only from verified facts about you"]
+      },
+      "points": [
+        {
+          "text": "A validator in code (src/validate.py) blocks any added or enlarged employer, title, date, number, skill or scope.",
+          "evidence": ["It cannot add or enlarge an employer, title, date, number, skill, tool, scope,", "That is enforced in code\n(`src/validate.py`)"]
+        },
+        {
+          "text": "A judge-and-revise loop aims for a 9/10 résumé-quality score and reports job match and keyword coverage separately. 352 pytest tests run offline.",
+          "evidence": ["revise <- judge <- score", "three separate scores: **Resume Quality** (target 9/10), **Job Match**, and **Keyword Coverage**", "352 pytest tests that run offline"]
+        }
+      ],
+      "stack": ["Python", "Claude (Anthropic SDK)", "Pydantic", "pytest", "LibreOffice"],
+      "picture": {
+        "kind": "excerpt",
+        "path": "README.md",
+        "firstLine": 19,
+        "lines": [
+          "link -> fetch -> analyze -> eligibility -> research -> tailor -> validate",
+          "                                                         ^          |",
+          "                                              revise <- judge <- score      (loop until 9.0 or no honest fix is left)",
+          "     -> interview (optional) -> approval -> render + page fit -> ATS check -> reports + archive"
+        ]
+      }
+    },
+    {
+      "id": "insider-tracker",
+      "title": "Insider Tracker",
+      "repo": "https://github.com/Deveshwar123/insider-tracker",
+      "commit": "1f9030e05f0d4ce71e40a5317d4c22d8bb431be2",
+      "liveUrl": null,
+      "disciplines": ["Finance", "Computer Science"],
+      "summary": {
+        "text": "A self-hosted web app that tracks SEC Form 4 insider-trading filings from official EDGAR data.",
+        "evidence": ["self-hosted web app that tracks **SEC Form 4 insider-trading filings** from\nofficial [SEC EDGAR](https://www.sec.gov/edgar) public data"]
+      },
+      "points": [
+        {
+          "text": "A scheduled worker pulls Form 4 filings from EDGAR into Supabase Postgres. The Next.js dashboard only reads that database, so it never hits EDGAR rate limits.",
+          "evidence": ["A scheduled **worker** pulls Form 4 filings from EDGAR and writes normalized rows to\n**Supabase Postgres**; the **Next.js** app only ever *reads* that database.", "never hits rate limits"]
+        },
+        {
+          "text": "Bring your own database: the repo ships with no keys and no data.",
+          "evidence": ["**Bring your own database.** This repo ships with no keys and no data."]
+        }
+      ],
+      "stack": ["TypeScript", "Next.js", "Supabase (Postgres)", "GitHub Actions"],
+      "picture": {
+        "kind": "excerpt",
+        "path": "README.md",
+        "firstLine": 25,
+        "lines": [
+          "insider-tracker/",
+          "├── supabase/migrations/   # SQL schema (run in Supabase)",
+          "├── worker/                # Node/TS ingestion worker (fetches EDGAR → Postgres)",
+          "├── web/                   # Next.js dashboard (reads Postgres)",
+          "└── .github/workflows/     # Scheduled ingestion (GitHub Actions cron)"
+        ]
+      }
+    },
+    {
+      "id": "swim",
+      "title": "Swim Lessons",
+      "repo": "https://github.com/Deveshwar123/Swim",
+      "commit": "ad80ad6ff280883b9533078ea4b3f88a74b1037b",
+      "liveUrl": "https://deveshwar123.github.io/Swim/",
+      "disciplines": ["Web"],
+      "summary": {
+        "text": "The landing page for my private and group swim lessons. I'm an American Red Cross certified instructor and lifeguard.",
+        "evidence": ["The landing page for my private and group swim lessons. I'm an American Red Cross certified instructor and lifeguard"]
+      },
+      "points": [
+        {
+          "text": "A single static page in hand-written HTML, CSS and vanilla JavaScript on GitHub Pages: no frameworks, no build step.",
+          "evidence": ["A single static `index.html` with hand-written HTML, CSS and a little vanilla JavaScript, hosted on GitHub Pages. No frameworks and no build step."]
+        },
+        {
+          "text": "A contact form that opens a pre-filled email, so the page needs no backend.",
+          "evidence": ["A contact form that opens a pre-filled email, so the page needs no backend"]
+        }
+      ],
+      "stack": ["HTML", "CSS", "JavaScript", "GitHub Pages"],
+      "picture": { "kind": "shot", "path": "docs/screenshot.png", "width": 1280, "height": 820, "bar": "deveshwar123.github.io/Swim" }
+    }
+  ]
+}

@@ -350,6 +350,99 @@
             <figcaption class="world-caption">My actual card, rendered in 3D from its fabrication files (Gerbers and BOM). Drag sideways or use the buttons to turn it over.</figcaption>
           </figure>
       </article>
+
+      <div class="more" id="more-on-github" aria-labelledby="more-title">
+        <header class="more-head">
+          <h3 class="more-title" id="more-title">More on GitHub</h3>
+          <p class="more-intro">Other projects I’ve built, each with its source code public. <a class="more-profile" href="https://github.com/Deveshwar123">All repositories<span class="visually-hidden"> on GitHub</span><svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-external"></use></svg></a></p>
+        </header>
+        <ul class="repos">
+          <li class="repo-item">
+            <article class="repo repo--shot" id="repo-strategy-terminal" aria-labelledby="repo-strategy-terminal-title">
+              <div class="repo-stage" aria-hidden="true">
+            <div class="repo-window repo-window--shot">
+              <div class="panel-bar"><span class="panel-dots"><i></i><i></i><i></i></span><span class="panel-title">localhost:4477</span></div>
+              <img class="repo-shot" src="assets/projects/strategy-terminal-1600.webp" srcset="assets/projects/strategy-terminal-800.webp 800w, assets/projects/strategy-terminal-1600.webp 1600w" sizes="(min-width: 960px) 560px, 88vw" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">
+            </div>
+              </div>
+              <div class="repo-body">
+                <ul class="repo-tags" aria-label="Fields"><li>Finance</li><li>Computer Science</li></ul>
+                <h4 class="repo-title" id="repo-strategy-terminal-title">Strategy Terminal</h4>
+                <p class="repo-summary">Backtest trading strategies written in Python, JavaScript or Ruby on 40+ years of daily Yahoo Finance data.</p>
+                <ul class="repo-points">
+                  <li>One shared engine does every fill, so all three languages give byte-identical results.</li>
+                  <li>Each language runs in its own subprocess and only emits orders. Node.js, zero npm dependencies, no API key.</li>
+                </ul>
+                <ul class="chips" aria-label="Technologies"><li>Node.js</li><li>JavaScript</li><li>Python</li><li>Ruby</li><li>Yahoo Finance</li></ul>
+                <p class="project-actions"><a class="button button--small" href="https://github.com/Deveshwar123/strategy-terminal"><span class="visually-hidden">Strategy Terminal </span>Source code<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-external"></use></svg></a></p>
+              </div>
+            </article>
+          </li>
+          <li class="repo-item">
+            <article class="repo repo--excerpt" id="repo-resume-tailor" aria-labelledby="repo-resume-tailor-title">
+              <div class="repo-stage" aria-hidden="true">
+            <div class="repo-window repo-window--code">
+              <div class="panel-bar"><span class="panel-dots"><i></i><i></i><i></i></span><span class="panel-title">resume-tailor <span class="panel-dim">· README.md</span></span></div>
+              <pre class="panel-code"><code><span class="code-line"><span class="code-ln">19</span>link <span class="tok-pun">-&gt;</span> fetch <span class="tok-pun">-&gt;</span> analyze <span class="tok-pun">-&gt;</span> eligibility <span class="tok-pun">-&gt;</span> research <span class="tok-pun">-&gt;</span> tailor <span class="tok-pun">-&gt;</span> validate</span><span class="code-line"><span class="code-ln">20</span>                                                         <span class="tok-pun">^</span>          <span class="tok-pun">|</span></span><span class="code-line"><span class="code-ln">21</span>                                              revise <span class="tok-pun">&lt;-</span> judge <span class="tok-pun">&lt;-</span> score      <span class="tok-com">(loop until 9.0 or no honest fix is left)</span></span><span class="code-line"><span class="code-ln">22</span>     <span class="tok-pun">-&gt;</span> interview <span class="tok-com">(optional)</span> <span class="tok-pun">-&gt;</span> approval <span class="tok-pun">-&gt;</span> render + page fit <span class="tok-pun">-&gt;</span> ATS check <span class="tok-pun">-&gt;</span> reports + archive</span></code></pre>
+            </div>
+              </div>
+              <div class="repo-body">
+                <ul class="repo-tags" aria-label="Fields"><li>Computer Science</li></ul>
+                <h4 class="repo-title" id="repo-resume-tailor-title">Resume Tailor</h4>
+                <p class="repo-summary">A command-line tool that turns a job posting link into a one-page, ATS-safe résumé built only from verified facts.</p>
+                <ul class="repo-points">
+                  <li>A validator in code (src/validate.py) blocks any added or enlarged employer, title, date, number, skill or scope.</li>
+                  <li>A judge-and-revise loop aims for a 9/10 résumé-quality score and reports job match and keyword coverage separately. 352 pytest tests run offline.</li>
+                </ul>
+                <ul class="chips" aria-label="Technologies"><li>Python</li><li>Claude (Anthropic SDK)</li><li>Pydantic</li><li>pytest</li><li>LibreOffice</li></ul>
+                <p class="project-actions"><a class="button button--small" href="https://github.com/Deveshwar123/resume-tailor"><span class="visually-hidden">Resume Tailor </span>Source code<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-external"></use></svg></a></p>
+              </div>
+            </article>
+          </li>
+          <li class="repo-item">
+            <article class="repo repo--excerpt" id="repo-insider-tracker" aria-labelledby="repo-insider-tracker-title">
+              <div class="repo-stage" aria-hidden="true">
+            <div class="repo-window repo-window--code">
+              <div class="panel-bar"><span class="panel-dots"><i></i><i></i><i></i></span><span class="panel-title">insider-tracker <span class="panel-dim">· README.md</span></span></div>
+              <pre class="panel-code"><code><span class="code-line"><span class="code-ln">25</span><span class="tok-fn">insider-tracker/</span></span><span class="code-line"><span class="code-ln">26</span><span class="tok-pun">├──</span> <span class="tok-fn">supabase/</span><span class="tok-fn">migrations/</span>   <span class="tok-com"># SQL schema (run in Supabase)</span></span><span class="code-line"><span class="code-ln">27</span><span class="tok-pun">├──</span> <span class="tok-fn">worker/</span>                <span class="tok-com"># Node/TS ingestion worker (fetches EDGAR → Postgres)</span></span><span class="code-line"><span class="code-ln">28</span><span class="tok-pun">├──</span> <span class="tok-fn">web/</span>                   <span class="tok-com"># Next.js dashboard (reads Postgres)</span></span><span class="code-line"><span class="code-ln">29</span><span class="tok-pun">└──</span> <span class="tok-fn">.github/</span><span class="tok-fn">workflows/</span>     <span class="tok-com"># Scheduled ingestion (GitHub Actions cron)</span></span></code></pre>
+            </div>
+              </div>
+              <div class="repo-body">
+                <ul class="repo-tags" aria-label="Fields"><li>Finance</li><li>Computer Science</li></ul>
+                <h4 class="repo-title" id="repo-insider-tracker-title">Insider Tracker</h4>
+                <p class="repo-summary">A self-hosted web app that tracks SEC Form 4 insider-trading filings from official EDGAR data.</p>
+                <ul class="repo-points">
+                  <li>A scheduled worker pulls Form 4 filings from EDGAR into Supabase Postgres. The Next.js dashboard only reads that database, so it never hits EDGAR rate limits.</li>
+                  <li>Bring your own database: the repo ships with no keys and no data.</li>
+                </ul>
+                <ul class="chips" aria-label="Technologies"><li>TypeScript</li><li>Next.js</li><li>Supabase (Postgres)</li><li>GitHub Actions</li></ul>
+                <p class="project-actions"><a class="button button--small" href="https://github.com/Deveshwar123/insider-tracker"><span class="visually-hidden">Insider Tracker </span>Source code<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-external"></use></svg></a></p>
+              </div>
+            </article>
+          </li>
+          <li class="repo-item">
+            <article class="repo repo--shot" id="repo-swim" aria-labelledby="repo-swim-title">
+              <div class="repo-stage" aria-hidden="true">
+            <div class="repo-window repo-window--shot">
+              <div class="panel-bar"><span class="panel-dots"><i></i><i></i><i></i></span><span class="panel-title">deveshwar123.github.io/Swim</span></div>
+              <img class="repo-shot" src="assets/projects/swim-1280.webp" srcset="assets/projects/swim-640.webp 640w, assets/projects/swim-1280.webp 1280w" sizes="(min-width: 960px) 560px, 88vw" width="1280" height="820" alt="" loading="lazy" decoding="async" fetchpriority="low">
+            </div>
+              </div>
+              <div class="repo-body">
+                <ul class="repo-tags" aria-label="Fields"><li>Web</li></ul>
+                <h4 class="repo-title" id="repo-swim-title">Swim Lessons</h4>
+                <p class="repo-summary">The landing page for my private and group swim lessons. I'm an American Red Cross certified instructor and lifeguard.</p>
+                <ul class="repo-points">
+                  <li>A single static page in hand-written HTML, CSS and vanilla JavaScript on GitHub Pages: no frameworks, no build step.</li>
+                  <li>A contact form that opens a pre-filled email, so the page needs no backend.</li>
+                </ul>
+                <ul class="chips" aria-label="Technologies"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>GitHub Pages</li></ul>
+                <p class="project-actions"><a class="button button--small" href="https://deveshwar123.github.io/Swim/"><span class="visually-hidden">Swim Lessons </span>Live site<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-external"></use></svg></a><a class="button button--small" href="https://github.com/Deveshwar123/Swim"><span class="visually-hidden">Swim Lessons </span>Source code<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-external"></use></svg></a></p>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </div>
     </section>
 
     <section class="section skills" id="skills" aria-labelledby="skills-title">
@@ -572,7 +665,7 @@
           <label class="segment"><input type="radio" name="motion" value="system"><span>System</span></label><label class="segment"><input type="radio" name="motion" value="reduced"><span>Reduced</span></label>
         </fieldset>
       </div>
-      <p class="footer-note">Line art and 3D are original illustrations. Content is generated from one résumé data file.</p>
+      <p class="footer-note">Line art and 3D are original illustrations. Content is generated from my résumé data and my public GitHub READMEs.</p>
       <details class="photo-credits">
         <summary>Photo credits</summary>
         <ul>

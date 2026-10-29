@@ -1,5 +1,5 @@
-// Validates data/resume.json and data/site-config.json before any markup is
-// generated. Exits non-zero with a list of problems when run directly.
+// Validates data/resume.json, data/site-config.json and data/github-projects.json
+// before any markup is generated. Exits non-zero with a list of problems when run directly.
 // Usage: node scripts/validate-content.mjs
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -177,16 +177,63 @@ export function validateConfig(c) {
   return errors;
 }
 
+// "More on GitHub": public repos of my own account, each pinned to a commit.
+export const DISCIPLINES = ['Computer Engineering', 'Computer Science', 'Finance', 'Web'];
+
+export function validateGithub(g) {
+  const errors = [];
+  const err = (m) => errors.push(m);
+  const str = (v, path) => { if (typeof v !== 'string' || !v.trim()) err(`${path} must be a non-empty string`); };
+  const cited = (o, path) => {
+    str(o?.text, `${path}.text`);
+    if (!Array.isArray(o?.evidence) || !o.evidence.length) err(`${path} must cite README evidence`);
+    for (const [k, e] of (o?.evidence ?? []).entries()) str(e, `${path}.evidence[${k}]`);
+  };
+  if (g.schemaVersion !== 1) err('github-projects schemaVersion must be 1');
+  if (!Array.isArray(g.items) || !g.items.length) err('github-projects items must not be empty');
+  const ids = new Set();
+  for (const [i, p] of (g.items ?? []).entries()) {
+    const at = `githubProjects[${i}]`;
+    if (!/^[a-z][a-z0-9-]*$/.test(p.id ?? '')) err(`${at}.id must be a lowercase slug`);
+    if (ids.has(p.id)) err(`duplicate github project id ${p.id}`);
+    ids.add(p.id);
+    str(p.title, `${at}.title`);
+    if (!/^https:\/\/github\.com\/Deveshwar123\/[\w.-]+$/.test(p.repo ?? '')) err(`${at}.repo must be an https URL of a Deveshwar123 repository`);
+    if (!/^[0-9a-f]{40}$/.test(p.commit ?? '')) err(`${at}.commit must be a full commit SHA`);
+    if (p.liveUrl !== null && !isAllowedUrl(p.liveUrl)) err(`${at}.liveUrl must be null or an https URL`);
+    if (!Array.isArray(p.disciplines) || !p.disciplines.length || p.disciplines.some((x) => !DISCIPLINES.includes(x))) err(`${at}.disciplines must come from ${DISCIPLINES.join(', ')}`);
+    cited(p.summary, `${at}.summary`);
+    if (!Array.isArray(p.points) || !p.points.length || p.points.length > 3) err(`${at} must have one to three points`);
+    for (const [j, pt] of (p.points ?? []).entries()) cited(pt, `${at}.points[${j}]`);
+    if (!Array.isArray(p.stack) || !p.stack.length) err(`${at}.stack must not be empty`);
+    for (const [j, s] of (p.stack ?? []).entries()) str(s, `${at}.stack[${j}]`);
+    const pic = p.picture ?? {};
+    if (pic.kind === 'shot') {
+      if (!(Number.isInteger(pic.width) && Number.isInteger(pic.height) && pic.width > 0 && pic.height > 0)) err(`${at}.picture needs its pixel size`);
+      str(pic.path, `${at}.picture.path`);
+      str(pic.bar, `${at}.picture.bar`);
+    } else if (pic.kind === 'excerpt') {
+      str(pic.path, `${at}.picture.path`);
+      if (!(Number.isInteger(pic.firstLine) && pic.firstLine > 0)) err(`${at}.picture.firstLine must be a line number`);
+      if (!Array.isArray(pic.lines) || !pic.lines.length) err(`${at}.picture.lines must not be empty`);
+    } else err(`${at}.picture.kind must be "shot" or "excerpt"`);
+  }
+  const hits = scanExclusions(JSON.stringify(g));
+  for (const h of hits) err(`exclusion "${h.id}" found in github-projects.json: ${h.match}`);
+  return errors;
+}
+
 export function loadData() {
   return {
     resume: JSON.parse(readFileSync(join(root, 'data/resume.json'), 'utf8')),
     config: JSON.parse(readFileSync(join(root, 'data/site-config.json'), 'utf8')),
+    github: JSON.parse(readFileSync(join(root, 'data/github-projects.json'), 'utf8')),
   };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const { resume, config } = loadData();
-  const errors = [...validateResume(resume), ...validateConfig(config)];
+  const { resume, config, github } = loadData();
+  const errors = [...validateResume(resume), ...validateConfig(config), ...validateGithub(github)];
   const n = loadExclusions().length;
   if (errors.length) {
     console.error(`✗ ${errors.length} content problem(s):\n  - ` + errors.join('\n  - '));

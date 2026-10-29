@@ -29,7 +29,7 @@ body {
   overflow-x: clip;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 400;
   line-height: 1.08;
@@ -40,8 +40,8 @@ h1, h2, h3 {
 p, ul, ol, dl, dd, figure { margin: 0; }
 /* Long single words (URLs, names) may break rather than force sideways scrolling
    at 320px wide or with enlarged text. */
-h1, h2, h3, p, li, dd, dt, a, span { overflow-wrap: anywhere; }
-h1, h2, h3 { hyphens: manual; }
+h1, h2, h3, h4, p, li, dd, dt, a, span { overflow-wrap: anywhere; }
+h1, h2, h3, h4 { hyphens: manual; }
 ul, ol { padding: 0; list-style: none; }
 img, svg, canvas { display: block; max-width: 100%; }
 button, input { font: inherit; color: inherit; }

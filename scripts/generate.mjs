@@ -6,20 +6,21 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateResume, validateConfig, loadData, scanExclusions } from './validate-content.mjs';
+import { validateResume, validateConfig, validateGithub, loadData, scanExclusions } from './validate-content.mjs';
 import * as R from '../js/render.js';
 import { codePanel, chartPanel } from './lib/hero-panels.mjs';
+import { repoWindow } from './lib/repo-windows.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => readFileSync(join(root, rel), 'utf8');
 
-const { resume, config } = loadData();
-const errors = [...validateResume(resume), ...validateConfig(config)];
+const { resume, config, github } = loadData();
+const errors = [...validateResume(resume), ...validateConfig(config), ...validateGithub(github)];
 if (errors.length) {
   console.error('✗ refusing to generate; content problems:\n  - ' + errors.join('\n  - '));
   process.exit(1);
 }
-const d = { resume, config };
+const d = { resume, config, github };
 
 // --- SVG artwork ------------------------------------------------------------
 function parseSvg(rel) {
@@ -47,6 +48,8 @@ const art = {
   beatLayers: `<img class="beat-art beat-photo" src="assets/board/card-exploded.webp" width="1600" height="1100" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   nfcStill: `<img class="nfc-static" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   closing: inlineSvg('assets/svg/closing-jali.svg', 'closing-art'),
+  // "More on GitHub": each repo's screenshot or a verbatim README excerpt, in a window.
+  repoWindows: Object.fromEntries(github.items.map((p) => [p.id, repoWindow(p)])),
 };
 const symbols = [];
 {

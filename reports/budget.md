@@ -9,8 +9,8 @@ Measured 2026-10-29 from the files a real Chrome load requests (gzip -9 per file
 | JS excluding Three (app + Lenis + GSAP) | 78.1 KB | 250.0 KB | pass |
 | Three.js subset (deferred) | 144.0 KB | 250.0 KB | pass |
 | All JS including Three | 222.1 KB | — | reported |
-| Initial transfer (before load: HTML, CSS, fonts, entry JS) | 223.1 KB | 600.0 KB | pass |
-| Everything requested | 1245.8 KB | — | reported |
+| Initial transfer (before load: HTML, CSS, fonts, entry JS) | 225.8 KB | 600.0 KB | pass |
+| Everything requested | 1289.2 KB | — | reported |
 
 <details><summary>Files</summary>
 
@@ -29,20 +29,22 @@ Measured 2026-10-29 from the files a real Chrome load requests (gzip -9 per file
 | assets/projects/vedam-phone.webp | 36.7 KB | 36.6 KB |  |
 | assets/projects/tidecast-desktop.webp | 36.7 KB | 36.5 KB |  |
 | assets/fonts/newsreader-latin-var.woff2 | 32.5 KB | 32.5 KB | yes |
+| assets/projects/strategy-terminal-800.webp | 30.8 KB | 30.7 KB |  |
 | assets/fonts/dm-sans-latin-var.woff2 | 29.7 KB | 29.7 KB | yes |
 | vendor/gsap/gsap.min.mjs | 68.9 KB | 27.1 KB |  |
 | assets/projects/tidecast-phone.webp | 26.6 KB | 26.4 KB |  |
-| index.html | 72.9 KB | 21.0 KB | yes |
+| index.html | 83.2 KB | 22.8 KB | yes |
 | assets/board/top-silk-hi.webp | 23.7 KB | 19.7 KB |  |
 | assets/photos/chess-420.webp | 17.0 KB | 16.9 KB |  |
 | assets/board/card-hero-800.webp | 14.7 KB | 14.3 KB | yes |
 | assets/board/top-height-hi.webp | 16.2 KB | 12.5 KB |  |
+| assets/projects/swim-640.webp | 10.3 KB | 10.1 KB |  |
 | assets/board/top-ormNoSilk-hi.webp | 13.9 KB | 9.9 KB |  |
 | assets/board/top-colorNoSilk-hi.webp | 11.1 KB | 7.1 KB |  |
+| css/sections.css | 25.2 KB | 5.8 KB | yes |
 | js/journey.js | 16.5 KB | 5.7 KB |  |
 | vendor/lenis/lenis.min.mjs | 19.0 KB | 5.5 KB |  |
 | css/journey.css | 19.9 KB | 5.3 KB | yes |
-| css/sections.css | 21.4 KB | 5.0 KB | yes |
 | js/art.js | 13.6 KB | 4.9 KB |  |
 | js/projects.js | 11.7 KB | 4.1 KB |  |
 | js/board.js | 11.6 KB | 4.0 KB |  |
@@ -74,8 +76,8 @@ Measured 2026-10-29 from the files a real Chrome load requests (gzip -9 per file
 | JS excluding Three (app + Lenis + GSAP) | 78.1 KB | 250.0 KB | pass |
 | Three.js subset (deferred) | 144.0 KB | 250.0 KB | pass |
 | All JS including Three | 222.1 KB | — | reported |
-| Initial transfer (before load: HTML, CSS, fonts, entry JS) | 223.1 KB | 600.0 KB | pass |
-| Everything requested | 1038.2 KB | — | reported |
+| Initial transfer (before load: HTML, CSS, fonts, entry JS) | 225.8 KB | 600.0 KB | pass |
+| Everything requested | 1081.6 KB | — | reported |
 
 <details><summary>Files</summary>
 
@@ -94,18 +96,20 @@ Measured 2026-10-29 from the files a real Chrome load requests (gzip -9 per file
 | assets/projects/tidecast-desktop.webp | 36.7 KB | 36.5 KB |  |
 | assets/photos/campus-800.webp | 35.4 KB | 35.3 KB |  |
 | assets/fonts/newsreader-latin-var.woff2 | 32.5 KB | 32.5 KB | yes |
+| assets/projects/strategy-terminal-800.webp | 30.8 KB | 30.7 KB |  |
 | assets/fonts/dm-sans-latin-var.woff2 | 29.7 KB | 29.7 KB | yes |
 | vendor/gsap/gsap.min.mjs | 68.9 KB | 27.1 KB |  |
 | assets/projects/tidecast-phone.webp | 26.6 KB | 26.4 KB |  |
-| index.html | 72.9 KB | 21.0 KB | yes |
+| index.html | 83.2 KB | 22.8 KB | yes |
 | assets/photos/chess-420.webp | 17.0 KB | 16.9 KB |  |
 | assets/board/card-hero-800.webp | 14.7 KB | 14.3 KB | yes |
 | assets/board/top-height-hi.webp | 16.2 KB | 12.5 KB |  |
+| assets/projects/swim-640.webp | 10.3 KB | 10.1 KB |  |
 | assets/board/top-silk-lo.webp | 10.0 KB | 8.9 KB |  |
+| css/sections.css | 25.2 KB | 5.8 KB | yes |
 | js/journey.js | 16.5 KB | 5.7 KB |  |
 | vendor/lenis/lenis.min.mjs | 19.0 KB | 5.5 KB |  |
 | css/journey.css | 19.9 KB | 5.3 KB | yes |
-| css/sections.css | 21.4 KB | 5.0 KB | yes |
 | assets/board/top-ormNoSilk-lo.webp | 5.8 KB | 4.9 KB |  |
 | js/art.js | 13.6 KB | 4.9 KB |  |
 | js/projects.js | 11.7 KB | 4.1 KB |  |

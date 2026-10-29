@@ -61,7 +61,7 @@ export function initReveals(cfg) {
   }
 
   const lineTargets = [...document.querySelectorAll('.after .section-title, .skills-intro, .contact-title')];
-  const unitGroups = [...document.querySelectorAll('.after .bullets, .activities, .interests, .stats')];
+  const unitGroups = [...document.querySelectorAll('.after .bullets, .repos, .activities, .interests, .stats')];
   const containers = new Set();
 
   function reveal(container) {

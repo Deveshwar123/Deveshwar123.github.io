@@ -39,11 +39,13 @@ Research validates technology behaviour, not personal achievements. No personal-
 | Snapshot: 4.0 GPA · 3 shipped projects · 120+ tutoring hours · 20 yrs backtested | snapshot | supplied | D3 |
 | Résumé PDF | header, hero, contact | unavailable | D6; reserved path `assets/Deveshwar_Vankeswaram_Resume.pdf` |
 | Social preview image | metadata | supplied derivative | `assets/social-card.png`, rendered from the site's own line art by `scripts/build-social.mjs`; shows only the name, "Computer Engineering · Texas A&M University" and "Tradition → Circuit" (reviewed 29 Oct 2026) |
+| More on GitHub: Strategy Terminal, Resume Tailor, Insider Tracker, Swim Lessons (summaries, points, stack chips, pictures) | projects | externally corroborated (29 Oct 2026) | Each sentence restates the owner's own public README at a pinned commit and cites verbatim phrases (test-enforced against `tests/fixtures/github/`); chips are named in the README or GitHub's language stats ("TypeScript" for Insider Tracker comes from the language stats). Pictures are the repos' own screenshots or verbatim README lines. Resume Tailor's `docs/sample-resume.png` (a fictional "Acme Corp" résumé) is deliberately not used. Not counted in "3 shipped projects" (D3) |
 
 ## Open
 
 - Résumé PDF (D6): must say Computer Engineering and omit phone, street address, high school and the excluded program, including in PDF metadata. Run `npm run validate` and the exclusion scan on it before setting `approved: true`.
 - Publication: canonical URL, `og:url` and JSON-LD `url` appear only after `meta.deployApproved` is set to `true`.
+- Swim Lessons link (owner-confirmation-needed before publishing): the live Swim page shows the owner's phone number. The portfolio itself never shows it, but the card's "Live site" and "Source code" links put it one click away. Keep the card, or remove the `swim` item from `data/github-projects.json` and regenerate.
 
 ## Realism pass (29 Oct 2026)
 

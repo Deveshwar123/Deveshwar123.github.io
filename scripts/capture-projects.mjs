@@ -1,5 +1,7 @@
 // Maintenance: captures the owner's live project sites for the device mockups
 // (desktop 1440×900 and phone 390×844), saved as WebP in assets/projects/.
+// Names of other people shown on a live page (TideCast's top-catch teaser) are
+// blurred in the page before capture.
 // Usage: node scripts/capture-projects.mjs
 import { chromium } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
@@ -12,6 +14,20 @@ const isWaking = (page) => page.evaluate(() => /SERVICE WAKING UP|APPLICATION LO
 const sites = [
   { id: 'tidecast', url: 'https://tidecast-kdl9.onrender.com/backbone/', async ready(page) {
     for (let i = 0; i < 24 && (await isWaking(page)); i++) { await page.waitForTimeout(5000); if (i % 4 === 3) await page.reload({ waitUntil: 'load' }); }
+  }, async redact(page) {
+    // The "top catch" teaser names a leaderboard user ("Name · Place · pts"): blur the name.
+    await page.evaluate(() => {
+      const sub = document.getElementById('teaser-sub');
+      const text = sub?.firstChild;
+      if (!text || text.nodeType !== Node.TEXT_NODE) return;
+      const cut = text.data.indexOf(' · ');
+      if (cut <= 0) return;
+      const name = document.createElement('span');
+      name.textContent = text.data.slice(0, cut);
+      name.style.filter = 'blur(5px)';
+      text.data = text.data.slice(cut);
+      sub.prepend(name);
+    });
   } },
   { id: 'vedam', url: 'https://wearvedam.com', async ready(page) {
     const vp = page.viewportSize();
@@ -29,6 +45,7 @@ for (const s of sites) {
       await s.ready(page);
       await page.waitForTimeout(4000); // let intros, fonts and images settle
       if (await isWaking(page)) throw new Error('site still waking up');
+      await s.redact?.(page);
       const png = await page.screenshot({ type: 'png' });
       const webp = await page.evaluate(async ({ b64, w, h }) => {
         const img = new Image();

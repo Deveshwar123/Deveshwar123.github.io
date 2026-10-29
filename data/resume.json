@@ -123,7 +123,7 @@
       "role": "President",
       "dateDisplay": "Sep 2026 – Present",
       "description": "Lead the executive board; SWACURH Regional Leadership Conference delegate (Oct 2026).",
-      "glyph": "arch"
+      "glyph": "hall"
     },
     {
       "id": "aggies-in-tech",
@@ -221,6 +221,20 @@
     { "skillId": "sqlite", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b3", "sourceType": "supplied" },
     { "skillId": "raspberry-pi", "entityId": "goldman-steam", "evidenceRef": "leadership.goldman-steam.description", "sourceType": "supplied" }
   ],
+  "experienceChips": {
+    "vantashala": [
+      { "label": "Playwright", "evidenceRef": "experience.vantashala.b1" },
+      { "label": "UI/UX", "evidenceRef": "experience.vantashala.b2" }
+    ],
+    "quant-research": [
+      { "label": "Pine Script", "evidenceRef": "experience.quant-research.b1" },
+      { "label": "TradingView", "evidenceRef": "experience.quant-research.b1" }
+    ],
+    "radicubs": [
+      { "label": "Java", "evidenceRef": "experience.radicubs.b1" },
+      { "label": "Python", "evidenceRef": "experience.radicubs.b1" }
+    ]
+  },
   "projectChips": {
     "tidecast": [
       { "label": "ONNX", "evidenceRef": "projects.tidecast.b2" },

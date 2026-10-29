@@ -45,6 +45,12 @@ function sectionHead(id, { kicker, title }, extraClass = '') {
       </header>`;
 }
 
+// A card's heading with its field tags (the hero's disciplines). The heading comes
+// first for screen readers; CSS shows the tags above it.
+function titled(heading, fields, label) {
+  return html`<div class="titled">${heading}${fields?.length ? html`<ul class="field-tags" aria-label="${label}">${fields.map((f) => html`<li>${f}</li>`)}</ul>` : ''}</div>`;
+}
+
 // ---------------------------------------------------------------------------
 
 export function renderHeader(d) {
@@ -162,6 +168,8 @@ ${edu.honors.map((h) => html`          <li>${h}</li>\n`)}        </ul>
 
 export function renderExperience(d) {
   const S = d.config.labels.sections;
+  const F = d.config.fields.items;
+  const L = d.config.labels;
   return html`
     <section class="section experience" id="experience" aria-labelledby="experience-title">
       ${sectionHead('experience', S.experience)}
@@ -170,10 +178,15 @@ export function renderExperience(d) {
 ${d.resume.experience.map((e) => html`          <li class="role" id="role-${e.id}">
             <span class="role-pad" aria-hidden="true"></span>
             <article class="role-card" aria-labelledby="role-${e.id}-title">
-              <h3 class="role-org" id="role-${e.id}-title">${e.organization}</h3>
-              <p class="meta"><span class="role-title">${e.role}</span> · <span>${e.location}</span> · ${time(e.dateDisplay, null)}</p>
-              <ul class="bullets">
-${e.bullets.map((b) => html`                <li>${b.text}</li>\n`)}              </ul>
+              <div class="role-head">
+                ${titled(html`<h3 class="role-org" id="role-${e.id}-title">${e.organization}</h3>`, F[e.id], L.fields)}
+                <p class="meta"><span class="role-title">${e.role}</span> · <span>${e.location}</span> · ${time(e.dateDisplay, null)}</p>
+              </div>
+              <div class="role-main">
+                <ul class="bullets">
+${e.bullets.map((b) => html`                  <li>${b.text}</li>\n`)}                </ul>
+                ${d.resume.experienceChips?.[e.id] ? html`<ul class="chips" aria-label="${L.project.chipsLabel}">${d.resume.experienceChips[e.id].map((c) => html`<li>${c.label}</li>`)}</ul>` : ''}
+              </div>
             </article>
           </li>\n`)}        </ol>
       </div>
@@ -245,7 +258,7 @@ export function renderProjects(d, art) {
       ${sectionHead('projects', S.projects)}
 ${d.resume.projects.map((p) => html`      <article class="project project--${p.id}" id="project-${p.id}" aria-labelledby="project-${p.id}-title">
         <div class="project-text">
-          <h3 class="project-title" id="project-${p.id}-title">${p.title}</h3>
+          ${titled(html`<h3 class="project-title" id="project-${p.id}-title">${p.title}</h3>`, d.config.fields.items[p.id], d.config.labels.fields)}
           <p class="meta"><span>${p.role}</span> · ${time(p.dateDisplay, rangeIso(p.dateRange))}</p>
           <ul class="bullets">
 ${p.bullets.map((b) => html`            <li>${b.text}</li>\n`)}          </ul>
@@ -276,8 +289,7 @@ ${d.github.items.map((p) => html`          <li class="repo-item">
             ${raw(art.repoWindows[p.id])}
               </div>
               <div class="repo-body">
-                <ul class="repo-tags" aria-label="${M.fieldsLabel}">${p.disciplines.map((t) => html`<li>${t}</li>`)}</ul>
-                <h4 class="repo-title" id="repo-${p.id}-title">${p.title}</h4>
+                ${titled(html`<h4 class="repo-title" id="repo-${p.id}-title">${p.title}</h4>`, p.disciplines, d.config.labels.fields)}
                 <p class="repo-summary">${p.summary.text}</p>
                 <ul class="repo-points">
 ${p.points.map((b) => html`                  <li>${b.text}</li>\n`)}                </ul>

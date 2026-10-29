@@ -7,6 +7,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BOARD, boardGeometry, jaliGeometry, pathFromPoints, smoothPathFromPoints, globeGeometry, circlePoints, rosette } from '../js/art.js';
 import { makeCamera, projectPolyline, rotation } from '../js/projection.js';
+import { REAL_BOARD } from '../js/board-data.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = (rel, svg) => {
@@ -25,19 +26,6 @@ const curves = (list) => list.map((pts) => `<path d="${smoothPathFromPoints(pts)
 const curve = (pts) => smoothPathFromPoints(pts);
 const g = (cls, body) => `<g class="${cls}">\n${body}\n</g>`;
 
-// --- Jali arch (the closing ornament above the contact section) ---
-function jaliSvg(frame, box, maxPairs) {
-  const j = jaliGeometry(frame, box, { maxPairs });
-  const body = [
-    g('art-frame', `<path d="${pathFromPoints(j.frame)}"/>`),
-    g('art-arches', j.arches.map((a, k) => `<path data-pair="arch-${k}" d="${curve(a)}"/>`).join('\n')),
-    g('art-waves', j.waves.map((w, i) => `<path data-pair="wave-${i}" d="${curve(w.pts)}"/>`).join('\n')),
-    g('art-ornament', curves(j.ornament)),
-  ].join('\n');
-  return svg(`0 0 ${frame.w} ${frame.h}`, body);
-}
-out('closing-jali.svg', jaliSvg({ x: 0, y: 0, w: 960, h: 240 }, { x: 340, y: 150, w: 280, h: 80 }, 4));
-
 // --- Board, face-on: the real card's copper as line art (from js/board-data.js) ---
 const B = boardGeometry();
 function boardFaceBody() {
@@ -51,6 +39,19 @@ function boardFaceBody() {
   ].join('\n');
 }
 out('traces.svg', svg(`0 0 ${BOARD.W} ${BOARD.H}`, boardFaceBody()));
+
+// --- Closing ornament above the contact section: the same face-on copper, whose
+// job is sharing contact details, with its LED (CSS lights it once drawn) ---
+function closingCardSvg() {
+  const led = REAL_BOARD.parts.LED1.at;
+  const glow = `<g class="art-led" aria-hidden="true">
+<radialGradient id="closing-led-glow"><stop offset="0"/><stop offset="1" stop-opacity="0"/></radialGradient>
+<circle class="art-led-glow" cx="${led[0]}" cy="${led[1]}" r="60" fill="url(#closing-led-glow)" stroke="none"/>
+<circle class="art-led-core" cx="${led[0]}" cy="${led[1]}" r="7" stroke="none"/>
+</g>`;
+  return svg(`0 0 ${BOARD.W} ${BOARD.H}`, `${boardFaceBody()}\n${glow}`);
+}
+out('closing-card.svg', closingCardSvg());
 
 // --- Board, exploded line art (inspectable reference for the four groups) ---
 function explodedSvg() {
@@ -102,7 +103,7 @@ out('board-layers.svg', explodedSvg());
 
 // --- Glyphs: 24 × 24, one consistent stroke family ---
 const glyphs = {
-  arch: 'M5 21V11a7 7 0 0 1 14 0v10M9 21v-8a3 3 0 0 1 6 0v8M3 21h18',
+  hall: 'M4 21V9l8-5 8 5v12M2 21h20M8 12h2M14 12h2M8 16h2M14 16h2M10 21v-3h4v3',
   chip: 'M7 7h10v10H7zM10 4v3M14 4v3M10 17v3M14 17v3M4 10h3M4 14h3M17 10h3M17 14h3',
   scatter: 'M4 4v16h16M8 15h.01M11 11h.01M14 13h.01M17 7h.01M8 15l3-4 3 2 3-6',
   candles: 'M6 6v12M10 4v16M14 8v8M18 5v12M5 9h2v6H5zM9 7h2v8H9zM13 10h2v4h-2zM17 8h2v6h-2z',

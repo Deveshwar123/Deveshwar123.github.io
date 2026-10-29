@@ -1,6 +1,6 @@
 // After-content motion (outside the deterministic journey): snapshot count-ups,
 // the experience trace scrubbed by local scroll, once-only line reveals and the
-// closing jali. Every fact stays in the DOM and readable throughout; focus or an
+// closing card. Every fact stays in the DOM and readable throughout; focus or an
 // anchor jump reveals its target at once. Not started under reduced motion.
 
 import { addTask, removeTask, wake } from './scheduler.js';
@@ -203,7 +203,7 @@ export function initReveals(cfg) {
     cleanups.push(() => { removeTask('timeline'); window.removeEventListener('resize', onResize); svg.remove(); root.classList.remove('has-timeline'); roles.forEach((r) => r.classList.remove('is-reached')); });
   }
 
-  // ---- Closing jali: redraws once, in reverse, when the contact enters --------
+  // ---- Closing card: its copper draws once, then its LED lights, when the contact enters
   const closing = document.querySelector('.closing-art');
   if (closing) {
     const paths = [...closing.querySelectorAll('path')];

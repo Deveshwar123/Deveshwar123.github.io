@@ -115,6 +115,7 @@
         "title": "Let’s build something."
       }
     },
+    "fields": "Fields",
     "project": {
       "live": "Live site",
       "code": "Source code",
@@ -124,7 +125,6 @@
     "more": {
       "title": "More on GitHub",
       "intro": "Other projects I’ve built, each with its source code public.",
-      "fieldsLabel": "Fields",
       "profile": "All repositories"
     },
     "skills": {
@@ -158,7 +158,7 @@
       "motion": "Motion",
       "motionSystem": "System",
       "motionReduced": "Reduced",
-      "note": "Line art and 3D are original illustrations. Content is generated from my résumé data and my public GitHub READMEs.",
+      "note": "The 3D card and its line art are rendered from the card’s real fabrication files. Content is generated from my résumé data and my public GitHub READMEs.",
       "credits": "Photo credits",
       "creditsChanges": "cropped and resized"
     }
@@ -444,6 +444,17 @@
         "source": "https://commons.wikimedia.org/wiki/File:Texas_A%26M_University_Academic_Building.jpg",
         "title": "Texas A&M University Academic Building"
       }
+    }
+  },
+  "fields": {
+    "note": "The hero's three disciplines (plus Web), shown as a tag on each role and featured project.",
+    "items": {
+      "vantashala": ["Computer Science"],
+      "quant-research": ["Finance"],
+      "radicubs": ["Computer Engineering"],
+      "tidecast": ["Computer Science"],
+      "vedam": ["Web"],
+      "nfc-card": ["Computer Engineering"]
     }
   },
   "heroPanels": {

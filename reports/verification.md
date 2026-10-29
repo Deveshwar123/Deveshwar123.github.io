@@ -18,16 +18,16 @@
 |---|---|---|
 | Content validation | `npm run validate` | pass (9 exclusion patterns incl. private list) |
 | Regeneration drift | `npm run check:drift` | pass |
-| Unit tests | `npm test` | **37 / 37 pass** |
-| Browser tests, Chrome | `npx playwright test --project=chrome` | **61 / 61 pass** (stable across three consecutive full runs; re-run after the realism pass) |
-| Engine tests, WebKit | `npx playwright test --project=webkit` | **35 / 35 pass** (foundation, story, projects specs; Safari keyboard model uses Option+Tab) |
-| Combined run (Chrome + WebKit, 3 workers) | `npx playwright test` | 96 / 96 in the last two consecutive runs. One earlier combined run had a single intermittent failure that did not reproduce and was not captured; timing-sensitive checks under shared CPU/GPU load are the likely cause |
+| Unit tests | `npm test` | **55 / 55 pass** (29 Oct, after the More on GitHub block and the section refinements) |
+| Browser tests, Chrome | `npx playwright test --project=chrome` | **67 / 67 pass** |
+| Engine tests, WebKit | `npx playwright test --project=webkit` | **37 / 37 pass** in three consecutive full runs (foundation, story, projects specs; Safari keyboard model uses Option+Tab) |
+| Combined run (Chrome + WebKit, 3 workers) | `npx playwright test` | 103–104 / 104 per run. Under this combined load, single WebKit tests fail intermittently: one was a real bug (PF-1 in `BUGS.md`, two WebGL renderers on a cold start at `#project-nfc-card`, fixed and covered by a new test). Three others failed once each and did not reproduce: "See my work goes straight to projects" (8 / 8 on rerun), "theme follows the OS…" (1 of 12, then 24 / 24), and "keyboard reaches every action…" (8 / 8; the page has 62 tab stops, so 120 presses always reach the end). Checks made: the footer radios do not move after a reload, nothing blocks pointer events during the intro, and the theme controls stay hidden until their script has run. One combined run also stalled three Chrome release checks for ~7.5 min each; they pass 8 / 8 in 15.6 s alone and in the next full run |
 | Engine tests, Firefox | `PW_FIREFOX=1 npx playwright test --project=firefox` | **pending** — Playwright's Firefox (Nightly) build exits with code 1 on macOS 27; Firefox is not installed on this Mac |
 | Accessibility (axe, WCAG 2.0/2.1/2.2 A+AA rules) | in `tests/e2e/release.spec.mjs` | 0 violations: dark + light × desktop + mobile, reduced-motion page, and with the skills board pinned + NFC field shown |
 | Contrast | `node scripts/check-contrast.mjs` | all required pairs pass in both themes (`reports/contrast.md`) |
 | CSP | `release.spec.mjs` | 0 violations in Chrome while scrolling every section, pinning a skill and switching theme. WebKit reports one `style-src-attr` violation whose source is `web-inspector://bootstrap.js` (Playwright's inspector shim), not the site |
 | Subdirectory hosting | `release.spec.mjs` (served at `/portfolio/`) | pass, no 4xx or failed requests |
-| Deploy artifact | `node scripts/build-site.mjs` | 68 allowlisted files, no excluded content, no tests/QA/data/reports |
+| Deploy artifact | `node scripts/build-site.mjs` | 102 allowlisted files, no excluded content, no tests/QA/data/reports |
 
 ## Performance (lab)
 
@@ -35,14 +35,14 @@
 
 | Profile | Perf | A11y | BP | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|
-| Desktop preset (1350×940, no CPU throttling) | 100 (100–100) | 100 | 100 | 100 | 0.44 s | 0 | 13 ms |
-| Mobile default (Moto G Power emulation, 4× CPU, slow 4G) | 97 (97–97) | 100 | 100 | 100 | 1.88 s | 0 | 176 ms |
+| Desktop preset (1350×940, no CPU throttling) | 100 (100–100) | 100 | 100 | 100 | 0.44 s | 0 | 0 ms |
+| Mobile default (Moto G Power emulation, 4× CPU, slow 4G) | 99 (99–99) | 100 | 100 | 100 | 1.95 s | 0 | 0 ms |
 
-Re-measured after the realism pass (photoreal card, project screenshots, photos). One earlier run of that pass reached only mobile 84 / LCP 4.4 s because an SVG image of the silkscreen became the LCP element; it now attaches only when the board appears, and below-the-fold images use `fetchpriority="low"`.
+Re-measured on 29 Oct 2026 after the hero redesign, the More on GitHub block and the section refinements (earlier: after the realism pass, mobile 97). One earlier run of that pass reached only mobile 84 / LCP 4.4 s because an SVG image of the silkscreen became the LCP element; it now attaches only when the board appears, and below-the-fold images use `fetchpriority="low"`.
 
 Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. These are not field Core Web Vitals; no analytics are installed, so there is no field data.
 
-**Bytes** (`reports/budget.md`, gzip of what a real load requests): JS excluding Three 80.3 KB (budget 250 KB) · Three subset 144.0 KB (deferred; budget 250 KB) · all JS 224 KB · initial transfer 157 KB (budget 600 KB) · everything requested after visiting every section 1.19 MB (card textures, screenshots and photos, all lazy).
+**Bytes** (`reports/budget.md`, gzip of what a real load requests): JS excluding Three 78.3 KB (budget 250 KB) · Three subset 144.0 KB (deferred; budget 250 KB) · initial transfer 224 KB desktop / 122 KB mobile (budget 600 KB) · everything requested after visiting every section 1.19 MB (card textures, screenshots and photos, all lazy).
 
 **3D budget**: under 20k triangles and 50 draw calls (asserted in `story.spec.mjs`).
 
@@ -61,6 +61,8 @@ Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. The
 | CLS observer | Intro beat box, menu collapse and Pause button appearing after paint shifted layout | Beat starts below the fold; collapse and Pause space are applied before first paint with a no-JS fail-safe |
 | Unit tests | Cusp normals computed from already-moved points looped the cusped arch | Normals come from the unmodified curve |
 | e2e | Synthetic/fast pointers could throw in `setPointerCapture` | Capture is attempted and safely skipped |
+| e2e (WebKit, combined load) | PF-1: the story and the NFC panel could each create a WebGL renderer on a cold start at `#project-nfc-card`, leaving a stale canvas | `getRenderer()` shares its in-flight creation; regression test added (`BUGS.md`) |
+| Content review | The TideCast screenshot showed a leaderboard user's name | Name blurred in the image and by `capture-projects.mjs` on recapture |
 
 ## Phase gates
 

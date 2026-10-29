@@ -10,10 +10,10 @@ Lighthouse 13.5.0, Google Chrome 156.0.8078.73, headless, three cold runs per pr
 | Accessibility | 100 | 100 – 100 | meets target |
 | Best Practices | 100 | 100 – 100 | meets target |
 | SEO | 100 | 100 – 100 | meets target |
-| LCP | 0.45 s | 0.44 s – 0.45 s | meets target |
+| LCP | 0.44 s | 0.44 s – 0.45 s | meets target |
 | CLS | 0.000 | 0.000 – 0.000 | meets target |
 | TBT | 0 ms | 0 ms – 0 ms | meets target |
-| FCP | 0.33 s | 0.33 s – 0.34 s | meets target |
+| FCP | 0.33 s | 0.33 s – 0.33 s | meets target |
 
 Audits below 0.9 in any run: unminified-javascript, unused-javascript, cache-insight, image-delivery-insight, network-dependency-tree-insight, render-blocking-insight
 
@@ -28,6 +28,6 @@ Audits below 0.9 in any run: unminified-javascript, unused-javascript, cache-ins
 | LCP | 1.95 s | 1.95 s – 1.95 s | meets target |
 | CLS | 0.000 | 0.000 – 0.000 | meets target |
 | TBT | 0 ms | 0 ms – 0 ms | meets target |
-| FCP | 1.22 s | 1.22 s – 1.23 s | meets target |
+| FCP | 1.22 s | 1.22 s – 1.22 s | meets target |
 
 Audits below 0.9 in any run: unminified-javascript, unused-javascript, cache-insight, image-delivery-insight, network-dependency-tree-insight, render-blocking-insight

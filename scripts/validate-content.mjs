@@ -55,6 +55,9 @@ export function resolveEvidence(resume, ref) {
   return bullet?.text ?? null;
 }
 
+// The hero's three disciplines plus Web: the only field tags a card may carry.
+export const DISCIPLINES = ['Computer Engineering', 'Computer Science', 'Finance', 'Web'];
+
 const words = (label) => label.replace(/\(.*?\)/g, '').split(/[\/\s]+/).filter((w) => w.length > 1);
 
 export function validateResume(r) {
@@ -143,11 +146,14 @@ export function validateResume(r) {
       err(`skillRelations[${i}] evidence does not mention "${label}"`);
     }
   }
-  for (const [pid, chips] of Object.entries(r.projectChips ?? {})) {
-    for (const c of chips) {
-      const evidence = resolveEvidence(r, c.evidenceRef);
-      if (!evidence || !c.evidenceRef.startsWith(`projects.${pid}.`)) err(`projectChips.${pid} "${c.label}" lacks project evidence`);
-      else if (!words(c.label).some((w) => evidence.includes(w))) err(`projectChips.${pid} "${c.label}" is not named in its evidence`);
+  // Technology chips on projects and roles: each cites a line of that same entry that names it.
+  for (const [key, section] of [['projectChips', 'projects'], ['experienceChips', 'experience']]) {
+    for (const [id, chips] of Object.entries(r[key] ?? {})) {
+      for (const c of chips) {
+        const evidence = resolveEvidence(r, c.evidenceRef);
+        if (!evidence || !c.evidenceRef.startsWith(`${section}.${id}.`)) err(`${key}.${id} "${c.label}" lacks ${section} evidence`);
+        else if (!words(c.label).some((w) => evidence.includes(w))) err(`${key}.${id} "${c.label}" is not named in its evidence`);
+      }
     }
   }
 
@@ -172,13 +178,15 @@ export function validateConfig(c) {
     if (!Array.isArray(v) || v.some((x, i) => typeof x !== 'number' || x < 0 || x > c.journey.end || (i && x < v[i - 1]))) err(`journey.ranges.${k} must be ascending numbers within 0–end`);
   }
   for (const b of c.illustrations?.beats ?? []) if (!(b.p >= 0 && b.p <= c.journey.end)) err(`beat ${b.id} p out of range`);
+  for (const [id, list] of Object.entries(c.fields?.items ?? {})) {
+    if (!Array.isArray(list) || !list.length || list.some((x) => !DISCIPLINES.includes(x))) err(`fields.items.${id} must come from ${DISCIPLINES.join(', ')}`);
+  }
   const hits = scanExclusions(JSON.stringify(c));
   for (const h of hits) err(`exclusion "${h.id}" found in site-config.json: ${h.match}`);
   return errors;
 }
 
 // "More on GitHub": public repos of my own account, each pinned to a commit.
-export const DISCIPLINES = ['Computer Engineering', 'Computer Science', 'Finance', 'Web'];
 
 export function validateGithub(g) {
   const errors = [];

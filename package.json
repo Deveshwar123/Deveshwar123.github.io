@@ -2,7 +2,7 @@
   "name": "deveshwar-portfolio",
   "private": true,
   "version": "1.0.0",
-  "description": "Tradition → Circuit: a static portfolio generated from data/resume.json.",
+  "description": "A static portfolio (Computer Engineering · Computer Science · Finance) generated from data/resume.json.",
   "type": "module",
   "scripts": {
     "generate": "node scripts/generate.mjs",

@@ -56,12 +56,13 @@ async function startStory() {
   const tier = chooseTier();
   if (story) { attempt('journey teardown', () => story.destroy()); story = null; }
   root.removeAttribute('data-tier');
-  if (tier === 'static') { refreshNav(); return; }
+  if (tier === 'static') { root.classList.remove('intro-pending'); refreshNav(); return; }
   await fontsSettled;
   const mod = await attemptAsync('journey module', () => import('./journey.js'));
-  if (!mod) return;
+  if (!mod) { root.classList.remove('intro-pending'); return; }
   story = await attemptAsync('journey', () => mod.createStory({ cfg, tier, report }));
   if (story) root.setAttribute('data-tier', story.tier);
+  else root.classList.remove('intro-pending');
   refreshNav();
 }
 

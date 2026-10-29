@@ -56,7 +56,7 @@ const THEME_KEY = config.theme.storageKey;
 const MOTION_KEY = config.theme.motionStorageKey;
 // Runs before first paint: applies the saved theme/motion choice and tolerates
 // blocked storage. Its hash is allowed by the Content Security Policy below.
-const themeInit = `(function(){var d=document.documentElement,t='system',m='system';d.classList.remove('no-js');d.classList.add('js');try{t=localStorage.getItem('${THEME_KEY}')||t;m=localStorage.getItem('${MOTION_KEY}')||m}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t);if(m==='reduced')d.setAttribute('data-motion','reduced')})();`;
+const themeInit = `(function(){var d=document.documentElement,t='system',m='system';d.classList.remove('no-js');d.classList.add('js');try{t=localStorage.getItem('${THEME_KEY}')||t;m=localStorage.getItem('${MOTION_KEY}')||m}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t);if(m==='reduced')d.setAttribute('data-motion','reduced');else if(!location.hash&&window.matchMedia&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-pending')})();`;
 const importMap = JSON.stringify({
   imports: {
     three: './vendor/three/three-board.min.js',

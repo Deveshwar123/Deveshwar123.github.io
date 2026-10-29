@@ -33,7 +33,8 @@ function measure() {
 
 // Document Y that places el just below the fixed header.
 export function targetY(el) {
-  const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || headerH + 16;
+  const sm = parseFloat(getComputedStyle(el).scrollMarginTop);
+  const margin = Number.isFinite(sm) ? sm : headerH + 16;
   return Math.max(0, el.getBoundingClientRect().top + window.scrollY - margin);
 }
 

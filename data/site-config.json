@@ -42,7 +42,7 @@
     "chapters": [
       {
         "label": "Intro",
-        "href": "#story-intro"
+        "href": "#top"
       },
       {
         "label": "Board",
@@ -160,14 +160,14 @@
         "chapter": "Intro",
         "title": "Tradition",
         "caption": "A jali lattice, the carved stone screen of Indian architecture, drawn on an 8px grid.",
-        "p": 0.07
+        "p": 0
       },
       {
         "id": "story-board",
         "chapter": "Board",
         "title": "Circuit",
         "caption": "The same lines, rerouted as copper traces on an illustrated two-layer NFC business card.",
-        "p": 0.3
+        "p": 0.27
       },
       {
         "id": "story-layers",
@@ -273,7 +273,7 @@
     },
     "mobileTrack": {
       "minPx": 1400,
-      "viewports": 2.5
+      "viewports": 3.2
     },
     "compactBreakpoint": 860,
     "ranges": {

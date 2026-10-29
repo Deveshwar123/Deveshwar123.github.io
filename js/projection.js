@@ -6,6 +6,13 @@ import { BOARD } from './art.js';
 
 export const FOV_DEG = 30;
 
+// Board-local z of the four visual construction groups (silkscreen, top copper,
+// substrate, bottom copper) for an explode distance in board units. These are
+// visual groups of a two-copper-layer board, not four electrical layers.
+const LAYER_Z = [12, 11, 0, -11];
+const LAYER_SPREAD = [2.4, 1.2, 0, -1.2];
+export const layerZ = (i, explode) => LAYER_Z[i] + LAYER_SPREAD[i] * explode;
+
 // Camera for a viewport. `ppu` is CSS pixels per board unit when the board is
 // face-on at z = 0, which fixes the camera distance.
 export function makeCamera(vw, vh, ppu, fovDeg = FOV_DEG) {

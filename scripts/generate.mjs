@@ -8,6 +8,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateResume, validateConfig, loadData, scanExclusions } from './validate-content.mjs';
 import * as R from '../js/render.js';
+import { codePanel, chartPanel } from './lib/hero-panels.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => readFileSync(join(root, rel), 'utf8');
@@ -31,13 +32,18 @@ function inlineSvg(rel, cls, extra = '') {
   const { viewBox, inner } = parseSvg(rel);
   return `<svg class="art ${cls}" viewBox="${viewBox}"${extra} aria-hidden="true" focusable="false">\n${inner}\n</svg>`;
 }
+const HP = config.heroPanels;
 const art = {
-  heroWide: inlineSvg('assets/svg/jali-arch-wide.svg', 'hero-art hero-art--wide', ' preserveAspectRatio="none"'),
-  heroTall: inlineSvg('assets/svg/jali-arch-tall.svg', 'hero-art hero-art--tall', ' preserveAspectRatio="none"'),
-  beatPanel: inlineSvg('assets/svg/jali-panel.svg', 'beat-art'),
+  // The hero's three disciplines: real code (CS), real prices (Finance), the real card (CE).
+  heroCode: codePanel(HP.code),
+  heroChart: chartPanel(HP.chart, JSON.parse(readFileSync(join(root, HP.chart.data), 'utf8'))),
+  // The hero's card: a photoreal still, replaced by the live 3D card when it runs.
+  // It is often the largest thing on the first screen, so it loads early and small.
+  heroCard: `<img class="hero-card" src="assets/board/card-hero-800.webp" srcset="assets/board/card-hero-800.webp 800w, assets/board/card-hero.webp 1600w" sizes="(min-width: 860px) 48vw, 84vw" width="1600" height="1100" alt="" fetchpriority="high">`,
   // Photoreal stills of the real card (scripts/render-stills.mjs); decorative, the
   // captions carry the meaning.
   beatBoard: `<img class="beat-art beat-photo" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
+  beatBack: `<img class="beat-art beat-photo" src="assets/board/card-back.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   beatLayers: `<img class="beat-art beat-photo" src="assets/board/card-exploded.webp" width="1600" height="1100" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   nfcStill: `<img class="nfc-static" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   closing: inlineSvg('assets/svg/closing-jali.svg', 'closing-art'),

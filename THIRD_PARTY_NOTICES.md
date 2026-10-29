@@ -1,6 +1,13 @@
 # Third-party notices
 
-The jali arch, ogee lattice, line-art board, glyphs and the social image are original artwork generated from `js/art.js`. The 3D card is rendered from the owner's own NFC card fabrication files (`hardware/gerbers/`, EasyEDA Pro export). Its back-side bull-and-bear engraving and card suits are the owner's silkscreen design; their original source was not supplied, so confirm you hold the rights to that artwork before publishing. Screenshots of TideCast and wearvedam.com are of the owner's own live projects. No code or assets were copied from those sites.
+The line-art board, the closing ornament, glyphs and the social image are original artwork generated from `js/art.js` and `scripts/build-social.mjs`. The 3D card is rendered from the owner's own NFC card fabrication files (`hardware/gerbers/`, EasyEDA Pro export). Its back-side bull-and-bear engraving and card suits are the owner's silkscreen design; their original source was not supplied, so confirm you hold the rights to that artwork before publishing. Screenshots of TideCast and wearvedam.com are of the owner's own live projects. No code or assets were copied from those sites.
+
+## Hero panels
+
+| Item | Source | Notes |
+|---|---|---|
+| Code excerpt (11 lines) | The owner's TideCast project, [`TideCast/Backbone/tidecast-model-worker.js` lines 78–88](https://github.com/Deveshwar123/HowdyHackathon/blob/0e1b2023924edcb74cc9352a3ccf1c5634b8d301/TideCast/Backbone/tidecast-model-worker.js#L78-L88) (public repository) | Shown verbatim; only syntax colouring is added |
+| MCHP daily prices | Yahoo Finance, snapshot in `data/market/mchp-daily.json` (fetched 29 Oct 2026, finished sessions only) | Public market data shown as a chart with its source and dates on the panel; EMA and RSI are computed locally. The backtest figures are the owner's résumé result |
 
 ## Shipped with the site
 

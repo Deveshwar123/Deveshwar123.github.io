@@ -23,7 +23,7 @@ const ready = new Promise((resolve) => {
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(FOV_DEG, 1, 1, 10000);
 
-window.renderStill = async ({ w, h, ppu, yaw, pitch, tx = 0, ty = 0, explode = 0, led = 0, env = 0.45 }) => {
+window.renderStill = async ({ w, h, ppu, yaw, pitch, roll = 0, tx = 0, ty = 0, explode = 0, led = 0, env = 0.45, quality = 0.88 }) => {
   await ready;
   const board = window.__board;
   if (!board.root.parent) { scene.add(board.root); scene.environment = board.environment(); }
@@ -33,12 +33,12 @@ window.renderStill = async ({ w, h, ppu, yaw, pitch, tx = 0, ty = 0, explode = 0
   const cam = makeCamera(w, h, ppu);
   camera.aspect = w / h; camera.near = cam.D / 20; camera.far = cam.D * 4;
   camera.position.set(0, 0, cam.D); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
-  board.root.rotation.set((pitch * Math.PI) / 180, (yaw * Math.PI) / 180, 0, 'XYZ');
+  board.root.rotation.set((pitch * Math.PI) / 180, (yaw * Math.PI) / 180, (roll * Math.PI) / 180, 'XYZ');
   board.root.position.set(tx, ty, 0);
   board.setExplode(explode);
   board.setLed(led);
   renderer.render(scene, camera);
-  return canvas.toDataURL('image/webp', 0.88);
+  return canvas.toDataURL('image/webp', quality);
 };
 window.stillsReady = true;
 </script></body></html>

@@ -1,22 +1,30 @@
-// Story determinism, morph integrity and motion helpers (phases 3–5 gates).
+// Story determinism, the hero pose, captions and motion helpers (phases 3–5 gates).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { evaluateStory, trackGeometry, progressAt, scrollYFor, boardFraming } from '../../js/story-state.js';
-import { jaliGeometry, boardGeometry, BOARD } from '../../js/art.js';
-import { buildMorph, validatePair, interpolate, resampleVertices } from '../../js/morph.js';
+import { evaluateStory, trackGeometry, progressAt, scrollYFor, boardFraming, heroPose } from '../../js/story-state.js';
+import { boardGeometry, BOARD } from '../../js/art.js';
 import { cubicBezier, easeOut, smoothstep, bell, u, createSpring, easeScene } from '../../js/motion.js';
-import { makeCamera, projectPoint, faceOnMatrix, rotation } from '../../js/projection.js';
+import { makeCamera, projectPoint, rotation } from '../../js/projection.js';
 
 const cfg = JSON.parse(readFileSync(new URL('../../data/site-config.json', import.meta.url)));
 const J = cfg.journey;
-const P = [0, 0.09, 0.18, 0.22, 0.28, 0.38, 0.48, 0.58, 0.59, 0.6, 0.61, 0.62];
+const P = [0, 0.03, 0.09, 0.18, 0.22, 0.28, 0.32, 0.38, 0.48, 0.58, 0.59, 0.6, 0.61, 0.62];
+const RAD = Math.PI / 180;
 
-function viewport(vw, vh, tier) {
+function viewport(vw, vh, tier, webgl = true) {
   const geo = trackGeometry({ vw, vh, startY: 0, tier, journeyCfg: J });
-  return { geo, vc: { vw, vh, travel: geo.travel, end: geo.end, ranges: J.ranges, yawDeg: J.pose.yawDeg, pitchDeg: J.pose.pitchDeg, framing: boardFraming(vw, vh, tier), webgl: tier === 'full', explodeDistance: 150 } };
+  // Where the hero column puts the card (as journey.js measures it from the DOM).
+  const hero = tier === 'full' ? { cx: vw * 0.72, cy: vh * 0.5, w: vw * 0.46 * J.hero.widthRatio } : { cx: vw / 2, cy: vh * 0.52, w: vw * 0.76 * J.hero.widthRatio };
+  return {
+    geo,
+    vc: {
+      vw, vh, travel: geo.travel, end: geo.end, ranges: J.ranges, yawDeg: J.pose.yawDeg, pitchDeg: J.pose.pitchDeg,
+      framing: boardFraming(vw, vh, tier), webgl, explodeDistance: 150, captionWindows: J.captionWindows, hero, heroCfg: J.hero,
+    },
+  };
 }
-const flat = (s) => [s.morphT, s.lift, s.ornament, s.vias, s.boardFill, s.svgOpacity, s.glOpacity, s.rot, s.pose.yaw, s.pose.pitch, s.pose.tx, s.pose.ty, s.explode, s.labels, s.led, s.stageOpacity, s.stageScale];
+const flat = (s) => [s.arrive, s.heroLive, s.heroShadow, s.svgOpacity, s.glOpacity, s.pose.yaw, s.pose.pitch, s.pose.roll, s.pose.tx, s.pose.ty, s.pose.tz, s.explode, s.labels, s.led, s.stageOpacity, s.stageScale, ...s.captions];
 const close = (a, b, eps = 1e-6) => a.every((x, i) => Math.abs(x - b[i]) <= eps);
 
 for (const [vw, vh, tier] of [[1440, 900, 'full'], [390, 844, 'compact'], [1024, 700, 'full']]) {
@@ -25,7 +33,7 @@ for (const [vw, vh, tier] of [[1440, 900, 'full'], [390, 844, 'compact'], [1024,
   test(`${vw}×${vh}: forward, reverse and random orders give identical states`, () => {
     const forward = P.map((p) => flat(evaluateStory(p, vc)));
     const reverse = [...P].reverse().map((p) => flat(evaluateStory(p, vc))).reverse();
-    const order = [5, 0, 11, 3, 8, 1, 10, 6, 2, 9, 4, 7];
+    const order = [5, 0, 13, 3, 8, 1, 12, 10, 6, 2, 11, 9, 4, 7];
     const shuffled = [];
     for (const i of order) shuffled[i] = flat(evaluateStory(P[i], vc));
     P.forEach((p, i) => {
@@ -44,8 +52,8 @@ for (const [vw, vh, tier] of [[1440, 900, 'full'], [390, 844, 'compact'], [1024,
     assert.equal(geo.trackH, Math.round(Math.max(t.minPx, t.viewports * vh)));
   });
 
-  test(`${vw}×${vh}: no discontinuity at any range boundary`, () => {
-    const bounds = new Set(Object.values(J.ranges).flat());
+  test(`${vw}×${vh}: no discontinuity at any range or caption boundary`, () => {
+    const bounds = new Set([...Object.values(J.ranges).flat(), ...J.captionWindows.flat()]);
     for (const b of bounds) {
       const before = flat(evaluateStory(b - 1e-6, vc));
       const after = flat(evaluateStory(b + 1e-6, vc));
@@ -53,40 +61,61 @@ for (const [vw, vh, tier] of [[1440, 900, 'full'], [390, 844, 'compact'], [1024,
     }
   });
 
+  test(`${vw}×${vh}: the card starts in the hero column at the hero size`, () => {
+    // Unrotated, the hero pose's translation and depth put the card's centre at
+    // the measured spot, exactly the measured width across.
+    const cam = makeCamera(vw, vh, vc.framing.ppu);
+    const H = heroPose(vc);
+    const pose = { yaw: 0, pitch: 0, roll: 0, ...H };
+    const c = projectPoint(BOARD.CX, BOARD.CY, 0, pose, cam);
+    const l = projectPoint(0, BOARD.CY, 0, pose, cam), r = projectPoint(BOARD.W, BOARD.CY, 0, pose, cam);
+    assert.ok(Math.abs(c[0] - vc.hero.cx) < 1e-6 && Math.abs(c[1] - vc.hero.cy) < 1e-6, 'centre');
+    assert.ok(Math.abs(r[0] - l[0] - vc.hero.w) < 1e-6, 'width');
+    const s0 = evaluateStory(0, vc);
+    assert.deepEqual([s0.pose.tx, s0.pose.ty, s0.pose.tz], [H.tx, H.ty, H.tz]);
+    assert.ok(Math.abs(s0.pose.yaw - J.hero.yawDeg * RAD) < 1e-12 && Math.abs(s0.pose.roll - J.hero.rollDeg * RAD) < 1e-12);
+  });
+
   test(`${vw}×${vh}: channel endpoints`, () => {
     const s0 = evaluateStory(0, vc), s18 = evaluateStory(0.18, vc), s62 = evaluateStory(0.62, vc);
-    assert.equal(s0.morphT, 0);
-    assert.equal(s18.morphT, 1);
-    assert.equal(s0.ornament, 1);
-    assert.equal(s18.ornament, 0);
-    assert.equal(s0.lift, 0);
-    assert.equal(evaluateStory(0.38, vc).rot, 1);
-    assert.equal(evaluateStory(0.38, vc).explode, 0);
+    assert.equal(s0.arrive, 0);
+    assert.equal(s18.arrive, 1);
+    assert.equal(s0.heroLive, 1);
+    assert.equal(evaluateStory(0.06, vc).heroLive, 0);
+    assert.equal(s0.heroShadow, 1);
+    assert.equal(s18.heroShadow, 0);
+    assert.equal(s18.pose.tz, 0);
+    assert.equal(s18.pose.roll, 0);
+    // Flipped to the back between the flip and unflip ranges, face-on again after.
+    assert.ok(Math.abs(evaluateStory(0.32, vc).pose.yaw - Math.PI) < 1e-12);
+    assert.ok(Math.abs(evaluateStory(0.4, vc).pose.yaw - J.pose.yawDeg * RAD) < 1e-12);
+    assert.equal(evaluateStory(0.4, vc).explode, 0);
     assert.equal(evaluateStory(0.58, vc).explode, 150);
     assert.equal(s62.stageOpacity, 1 - 0.82);
     assert.equal(s62.led, 0);
     assert.deepEqual(flat(evaluateStory(0.7, vc)), flat(s62), 'story holds after handoff');
-    if (tier === 'full') {
-      assert.equal(evaluateStory(0.18, vc).glOpacity, 0);
-      assert.equal(evaluateStory(0.22, vc).glOpacity, 1);
-      assert.equal(evaluateStory(0.2, vc).glOpacity + evaluateStory(0.2, vc).svgOpacity, 1, 'complementary crossfade');
+    for (const p of P) {
+      const s = evaluateStory(p, vc);
+      assert.equal(s.glOpacity, 1);
+      assert.equal(s.svgOpacity, 0);
     }
   });
 
-  test(`${vw}×${vh}: morph pairs are finite, spike-free and keep exact endpoints`, () => {
-    const frame = { x: vw * 0.06, y: 80, w: vw * 0.88, h: vh * 0.6 };
-    const box = { x: vw * 0.25, y: 80 + vh * 0.28, w: vw * 0.5, h: vh * 0.25 };
-    const jali = jaliGeometry(frame, box, { maxPairs: vw >= 860 ? 3 : 1 });
-    const morph = buildMorph(jali, boardGeometry());
-    assert.ok(morph.pairs.length >= 6);
-    for (const pair of morph.pairs) assert.deepEqual(validatePair(pair), [], pair.id);
-    // Rendering at t = 1 lands exactly on the face-on board transform of the trace.
-    const m = [0.5, 0, 0, 0.5, 100, 50];
-    const arch = morph.pairs.find((p) => p.id === 'arch-0');
-    const out = interpolate(arch, 1, 123, m, new Float32Array(arch.n * 2));
-    assert.ok(Math.abs(out[0] - (arch.toPts[0][0] * 0.5 + 100)) < 1e-3);
+  test(`${vw}×${vh}: one caption at a time, each fully shown inside its window`, () => {
+    for (let p = 0; p <= 0.62; p += 0.0025) {
+      const shown = evaluateStory(p, vc).captions.filter((o) => o > 0);
+      assert.ok(shown.length <= 1, `two captions at p=${p.toFixed(4)}`);
+    }
+    J.captionWindows.forEach(([s, e], i) => assert.equal(evaluateStory((s + e) / 2, vc).captions[i], 1));
   });
 }
+
+test('without WebGL the hero keeps its still and the line-art card fades in as it arrives', () => {
+  const { vc } = viewport(390, 844, 'compact', false);
+  assert.equal(evaluateStory(0, vc).svgOpacity, 0);
+  assert.equal(evaluateStory(0.18, vc).svgOpacity, 1);
+  assert.equal(evaluateStory(0.3, vc).glOpacity, 0);
+});
 
 test('the narrative LED is a single progress-defined pulse that reverses', () => {
   const { vc } = viewport(1440, 900, 'full');
@@ -101,13 +130,6 @@ test('the narrative LED is a single progress-defined pulse that reverses', () =>
   let rises = 0;
   for (let i = 1; i < led.length; i++) if (led[i] > led[i - 1] && (i < 2 || led[i - 1] <= led[i - 2])) rises++;
   assert.equal(rises, 1, 'one pulse');
-});
-
-test('trace corners survive resampling', () => {
-  const pts = [[0, 0], [100, 0], [150, 50], [300, 50]];
-  const out = resampleVertices(pts, 32);
-  assert.equal(out.length, 32);
-  for (const v of pts) assert.ok(out.some((q) => q[0] === v[0] && q[1] === v[1]), `lost corner ${v}`);
 });
 
 test('the real board traces route on 45°/90° bends without crossings', () => {
@@ -139,14 +161,15 @@ test('the real board traces route on 45°/90° bends without crossings', () => {
   }
 });
 
-test('face-on projection matches the SVG board transform (registration)', () => {
-  const cam = makeCamera(1440, 900, 0.6);
-  const pose = { yaw: 0, pitch: 0, tx: 37, ty: -12 };
-  const m = faceOnMatrix(pose, cam);
-  for (const [x, y] of [[0, 0], [BOARD.W, BOARD.H], [300, 500]]) {
-    const q = projectPoint(x, y, 0, pose, cam, rotation(0, 0));
-    assert.ok(Math.abs(q[0] - (m[0] * x + m[4])) < 1e-9 && Math.abs(q[1] - (m[3] * y + m[5])) < 1e-9);
-  }
+test('roll follows Three.js Euler XYZ (pitch · yaw · roll)', () => {
+  const r = 0.3;
+  const R = rotation(0, 0, r);
+  assert.ok(Math.abs(R[0] - Math.cos(r)) < 1e-12 && Math.abs(R[3] - Math.sin(r)) < 1e-12 && Math.abs(R[6]) < 1e-12);
+  // Composite: X axis under pitch p and yaw y with roll 0 matches the old two-angle matrix.
+  const [y, p] = [0.4, -0.2];
+  const A = rotation(y, p), B = rotation(y, p, 0);
+  assert.deepEqual(A, B);
+  assert.ok(Math.abs(A[2] - Math.sin(y)) < 1e-12 && Math.abs(A[5] + Math.sin(p) * Math.cos(y)) < 1e-12);
 });
 
 test('easing helpers are numerically defined', () => {

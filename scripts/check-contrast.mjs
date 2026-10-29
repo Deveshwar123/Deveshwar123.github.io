@@ -57,8 +57,6 @@ const PAIRS = [
   ['focus-outer', ['copper'], 3, 'halo separating the ring from a copper button'],
   ['border-strong@bg', ['bg'], 1.5, 'decorative borders (informational only; controls have text labels)'],
   ['muted', ['bg'], 3, 'chapter dot outline (non-text, 3:1)'],
-  ['accent-a', ['bg'], 0, 'accent gradient start (ornamental only)'],
-  ['accent-b', ['bg'], 0, 'accent gradient end (ornamental only)'],
 ];
 
 function resolve(theme, token) {

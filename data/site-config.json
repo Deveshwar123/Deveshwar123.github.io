@@ -6,9 +6,9 @@
     "deployUrl": "https://deveshwar123.github.io/",
     "deployApproved": false,
     "socialImage": "assets/social-card.png",
-    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, beside a rendering of his NFC business card circuit board.",
-    "themeColorDark": "#06121e",
-    "themeColorLight": "#f6efe3"
+    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, beside a 3D rendering of his NFC business card.",
+    "themeColorDark": "#0b0c0e",
+    "themeColorLight": "#f4f3f0"
   },
   "theme": {
     "default": "system",
@@ -71,7 +71,7 @@
     ],
     "pauseMotion": "Pause motion",
     "hero": {
-      "kicker": "Tradition → Circuit",
+      "kicker": "Computer Engineering · Computer Science · Finance",
       "factsLabel": "At a glance",
       "majorTerm": "Major",
       "universityTerm": "University",
@@ -81,8 +81,8 @@
       "resume": "Résumé ↓"
     },
     "journey": {
-      "title": "Tradition → Circuit",
-      "intro": "How the line art works: one scroll value turns a jali lattice into the routed copper of an illustrated circuit board."
+      "title": "Inside the card",
+      "intro": "My NFC business card, rendered from its real fabrication files. Scroll to turn it over, take it apart and power its LED."
     },
     "sections": {
       "snapshot": {
@@ -160,18 +160,18 @@
   "illustrations": {
     "beats": [
       {
-        "id": "story-intro",
-        "chapter": "Intro",
-        "title": "Tradition",
-        "caption": "A jali lattice, the carved stone screen of Indian architecture, drawn on an 8px grid.",
-        "p": 0
-      },
-      {
         "id": "story-board",
         "chapter": "Board",
-        "title": "Circuit",
-        "caption": "The same lines become the real copper of my NFC business card: its five-turn antenna and routed traces, taken from the board's own Gerber files.",
-        "p": 0.27
+        "title": "The card",
+        "caption": "My NFC business card, rendered from its real fabrication files: an NXP NTAG I²C chip, a five-turn antenna and a yellow LED on a two-layer board.",
+        "p": 0.2
+      },
+      {
+        "id": "story-back",
+        "chapter": "Back",
+        "title": "The back",
+        "caption": "The back carries a bull-and-bear engraving with card suits, printed in white silkscreen.",
+        "p": 0.3
       },
       {
         "id": "story-layers",
@@ -288,28 +288,24 @@
     },
     "compactBreakpoint": 860,
     "ranges": {
-      "unravel": [
+      "arrive": [
         0,
         0.18
       ],
-      "ornamentFade": [
-        0.12,
-        0.18
+      "flip": [
+        0.235,
+        0.3
       ],
-      "vias": [
-        0.14,
-        0.18
-      ],
-      "crossfade": [
-        0.18,
-        0.22
+      "unflip": [
+        0.345,
+        0.4
       ],
       "pose": [
-        0.18,
-        0.38
+        0.345,
+        0.4
       ],
       "explode": [
-        0.38,
+        0.4,
         0.58
       ],
       "ledBell": [
@@ -333,18 +329,24 @@
     },
     "captionWindows": [
       [
-        0.1,
-        0.2
+        0.18,
+        0.235
       ],
       [
-        0.235,
-        0.39
+        0.3,
+        0.345
       ],
       [
-        0.42,
+        0.43,
         0.585
       ]
-    ]
+    ],
+    "hero": {
+      "yawDeg": -19,
+      "pitchDeg": -13,
+      "rollDeg": -4,
+      "widthRatio": 0.8
+    }
   },
   "board": {
     "widthMm": 88.9,
@@ -436,6 +438,42 @@
         "source": "https://commons.wikimedia.org/wiki/File:Texas_A%26M_University_Academic_Building.jpg",
         "title": "Texas A&M University Academic Building"
       }
+    }
+  },
+  "heroPanels": {
+    "code": {
+      "discipline": "Computer Science",
+      "project": "TideCast",
+      "file": "tidecast-model-worker.js",
+      "firstLine": 78,
+      "source": "https://github.com/Deveshwar123/HowdyHackathon/blob/0e1b2023924edcb74cc9352a3ccf1c5634b8d301/TideCast/Backbone/tidecast-model-worker.js#L78-L88",
+      "lines": [
+        "const eps = self.navigator.gpu ? ['webgpu', 'wasm'] : ['wasm'];",
+        "let ep = eps[0];",
+        "try {",
+        "  session = await rt.InferenceSession.create(model, opts(eps));",
+        "} catch (e) {",
+        "  if (eps[0] !== 'webgpu') throw e;",
+        "  ep = 'wasm';",
+        "  session = await rt.InferenceSession.create(model, opts(['wasm']));",
+        "}",
+        "model = data = null;                          // the runtime has its own copy now",
+        "return ep;"
+      ]
+    },
+    "chart": {
+      "discipline": "Finance",
+      "data": "data/market/mchp-daily.json",
+      "sessions": 96,
+      "emas": [
+        20,
+        50
+      ],
+      "note": "My 20-year MCHP backtest: 500% vs. 389% buy-and-hold"
+    },
+    "card": {
+      "discipline": "Computer Engineering",
+      "caption": "NFC card PCB"
     }
   }
 }

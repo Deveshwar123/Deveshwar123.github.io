@@ -48,7 +48,10 @@ export function initCursor(cfg) {
       }
       m.sx.target = tx; m.sy.target = ty;
       const a = m.sx.step(dt), b = m.sy.step(dt);
-      m.inner.style.transform = m.sx.value || m.sy.value ? `translate(${m.sx.value.toFixed(2)}px, ${m.sy.value.toFixed(2)}px)` : '';
+      // The spring may overshoot its target; the label never passes the bound.
+      const x = Math.max(-M.maxShift, Math.min(M.maxShift, m.sx.value));
+      const y = Math.max(-M.maxShift, Math.min(M.maxShift, m.sy.value));
+      m.inner.style.transform = x || y ? `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)` : '';
       busy ||= !(a && b);
     }
     return busy;

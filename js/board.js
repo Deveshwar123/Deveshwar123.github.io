@@ -48,8 +48,13 @@ export function createBoardObject(THREE, renderer, { quality = 'hi', onUpdate } 
   const disposables = [];
   const loader = new THREE.TextureLoader();
   const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  // `ready` settles once every texture has loaded (or failed), so a view can
+  // wait for a finished card before it shows.
+  const pending = [];
   const tex = (name, srgb, q = quality) => {
-    const t = loader.load(texUrl(name, q), () => onUpdate?.());
+    let done;
+    pending.push(new Promise((r) => { done = r; }));
+    const t = loader.load(texUrl(name, q), () => { done(); onUpdate?.(); }, undefined, () => done());
     t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     t.anisotropy = aniso;
     disposables.push(t);
@@ -135,6 +140,7 @@ export function createBoardObject(THREE, renderer, { quality = 'hi', onUpdate } 
   return {
     root,
     layers,
+    ready: Promise.all(pending),
     setExplode(explode) { layers.forEach((g, i) => { g.position.z = layerZ(i, explode); }); },
     setLed(v) { ledBody.emissiveIntensity = v * 3.2; ledLight.intensity = v * 900; },
     environment: () => environment(THREE, renderer),
@@ -171,6 +177,23 @@ export async function createBoardView({ stage, onLost, quality = 'hi', onUpdate 
   scene.environmentIntensity = 0.45;
   scene.add(board.root);
   const camera = new THREE.PerspectiveCamera(FOV_DEG, 1, 1, 10000);
+  // Soft contact shadow behind the floating hero card (fades as the card leaves).
+  const shadowTex = (() => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const g = c.getContext('2d');
+    const r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    r.addColorStop(0, 'rgba(0,0,0,0.75)');
+    r.addColorStop(0.55, 'rgba(0,0,0,0.25)');
+    r.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = r;
+    g.fillRect(0, 0, 128, 128);
+    return new THREE.CanvasTexture(c);
+  })();
+  const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, toneMapped: false, opacity: 0 });
+  const shadowGeo = new THREE.PlaneGeometry(1, 1);
+  const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+  scene.add(shadow);
   const owner = {
     onLost() { canvas.style.opacity = '0'; onLost(); },
     onRelease() { canvas.style.opacity = '0'; },
@@ -182,13 +205,20 @@ export async function createBoardView({ stage, onLost, quality = 'hi', onUpdate 
   const applySize = () => fitCamera(camera, renderer, size.vw, size.vh, size.ppu, dprCap);
 
   return {
+    // Textures loaded and shaders compiled: the card can be shown.
+    ready: board.ready.then(() => { if (!R.lost) renderer.compile(scene, camera); }),
     resize(vw, vh, ppu) { size = { vw, vh, ppu }; applySize(); },
     render(s) {
       if (parked || R.lost) return;
       canvas.style.opacity = String(s.glOpacity);
       if (s.glOpacity <= 0) return;
-      board.root.rotation.set(s.pose.pitch, s.pose.yaw, 0, 'XYZ');
-      board.root.position.set(s.pose.tx, s.pose.ty, 0);
+      board.root.rotation.set(s.pose.pitch, s.pose.yaw, s.pose.roll || 0, 'XYZ');
+      board.root.position.set(s.pose.tx, s.pose.ty, s.pose.tz || 0);
+      const sh = 0.55 * (s.heroShadow || 0);
+      shadow.visible = sh > 0.01;
+      shadowMat.opacity = sh;
+      shadow.position.set(s.pose.tx + 20, s.pose.ty - BOARD.H * 0.62, (s.pose.tz || 0) - 140);
+      shadow.scale.set(BOARD.W * 1.15, BOARD.H * 0.42, 1);
       board.setExplode(s.explode);
       board.setLed(s.led);
       renderer.render(scene, camera);
@@ -197,7 +227,7 @@ export async function createBoardView({ stage, onLost, quality = 'hi', onUpdate 
     unpark() { parked = false; if (claim(owner, stage)) applySize(); },
     recolor() {},
     get size() { return size; },
-    dispose() { release(owner); board.dispose(); },
+    dispose() { release(owner); board.dispose(); shadowTex.dispose(); shadowMat.dispose(); shadowGeo.dispose(); },
   };
 }
 

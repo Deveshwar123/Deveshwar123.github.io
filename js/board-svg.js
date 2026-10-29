@@ -2,7 +2,7 @@
 // by the story on narrow screens and as the NFC panel's fallback when WebGL is
 // unavailable or busy. Same geometry and layer offsets as the WebGL board.
 
-import { boardGeometry, pathFromPoints } from './art.js';
+import { boardGeometry } from './art.js';
 import { rotation, projectPoint, layerZ } from './projection.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
@@ -64,7 +64,7 @@ export function createSvgBoard(parent) {
     // Projected render for any pose and explode distance.
     render(pose, explode, cam) {
       group.removeAttribute('transform');
-      const R = rotation(pose.yaw, pose.pitch);
+      const R = rotation(pose.yaw, pose.pitch, pose.roll || 0);
       // Draw back to front so the slab fill covers whatever lies behind it.
       lines.forEach((layer, i) => {
         const z = layerZ(i, explode);
@@ -78,15 +78,6 @@ export function createSvgBoard(parent) {
         paths[i].setAttribute('d', d);
         if (i === 2) fill.setAttribute('d', d + 'Z');
       });
-    },
-    // Exact face-on render (board units under an SVG matrix): no projection error.
-    renderFaceOn(m) {
-      group.setAttribute('transform', `matrix(${m.map((v) => +v.toFixed(4)).join(' ')})`);
-      paths[0].setAttribute('d', lines[0].map((l) => pathFromPoints(l)).join(''));
-      paths[1].setAttribute('d', lines[1].map((l) => pathFromPoints(l)).join(''));
-      paths[2].setAttribute('d', '');
-      paths[3].setAttribute('d', '');
-      fill.setAttribute('d', pathFromPoints(lines[2][0]) + 'Z');
     },
     setOpacity(v) { group.style.opacity = v; },
     setVisible(v) { group.style.display = v ? '' : 'none'; },

@@ -24,16 +24,16 @@ test.describe('without JavaScript', () => {
 
 test('theme follows the OS until chosen, persists, and returns to System', async ({ page }) => {
   await page.goto('/');
-  expect(await bg(page)).toBe('rgb(6, 18, 30)');
+  expect(await bg(page)).toBe('rgb(11, 12, 14)');
   await page.getByRole('radio', { name: 'Light' }).check();
-  expect(await bg(page)).toBe('rgb(246, 239, 227)');
+  expect(await bg(page)).toBe('rgb(244, 243, 240)');
   await page.reload();
-  expect(await bg(page)).toBe('rgb(246, 239, 227)');
+  expect(await bg(page)).toBe('rgb(244, 243, 240)');
   await expect(page.getByRole('radio', { name: 'Light' })).toBeChecked();
   await page.getByRole('radio', { name: 'System' }).first().check();
-  expect(await bg(page)).toBe('rgb(6, 18, 30)');
+  expect(await bg(page)).toBe('rgb(11, 12, 14)');
   await page.emulateMedia({ colorScheme: 'light' });
-  expect(await bg(page)).toBe('rgb(246, 239, 227)');
+  expect(await bg(page)).toBe('rgb(244, 243, 240)');
 });
 
 test('blocked storage does not break theme or motion controls', async ({ page }) => {

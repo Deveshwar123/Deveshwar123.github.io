@@ -41,35 +41,58 @@
 :root {
   color-scheme: dark;
 
-  /* Colour: dark reference palette */
-  --bg: #06121e;
-  --bg-raise: #0b1b2b;
-  --surface: rgb(15 33 51 / 0.72);
-  --surface-solid: #0f2133;
-  --ink: #f3eadc;
-  --ink-soft: #d8cfc1;
-  --muted: #9fb0bd;
-  --border: rgb(159 176 189 / 0.22);
-  --border-strong: rgb(159 176 189 / 0.42);
+  /* Colour: dark reference palette (neutral graphite, copper accent) */
+  --bg: #0b0c0e;
+  --bg-raise: #131417;
+  --surface: rgb(23 24 28 / 0.74);
+  --surface-solid: #17181c;
+  --ink: #f2f1ee;
+  --ink-soft: #d2d1cd;
+  --muted: #9d9ea4;
+  --border: rgb(255 255 255 / 0.12);
+  --border-strong: rgb(255 255 255 / 0.3);
   --copper: #c98a4b;
   --copper-strong: #dc9d5d;
-  --gold: #d9b36a;
-  --accent-a: #b90101;
-  --accent-b: #8c0327;
-  --on-copper: #06121e;
-  --header-glass: rgb(6 18 30 / 0.72);
+  --gold: #cfb27a;
+  --on-copper: #0b0c0e;
+  --header-glass: rgb(11 12 14 / 0.72);
   --focus-inner: #e3a868;
-  --focus-outer: #06121e;
-  --shadow: 0 24px 60px rgb(0 0 0 / 0.35);
+  --focus-outer: #0b0c0e;
+  --shadow: 0 24px 60px rgb(0 0 0 / 0.4);
   --led: #ffb63a; /* the card's LED is yellow (KT-0805Y) */
 
+  /* Hero studio: a soft key light behind the card and a faint grid */
+  --studio-key: rgb(255 246 232 / 0.2);
+  --studio-fill: rgb(201 138 75 / 0.09);
+  --studio-grid: rgb(255 255 255 / 0.05);
+  --studio-shadow: rgb(0 0 0 / 0.75);
+
+  /* Hero panels: code window and market chart */
+  --panel-bg: rgb(21 22 26 / 0.9);
+  --panel-bar: rgb(255 255 255 / 0.035);
+  --panel-border: rgb(255 255 255 / 0.11);
+  --panel-shadow: 0 34px 70px -24px rgb(0 0 0 / 0.75);
+  --code-ink: #e4e3df;
+  --code-kw: #d99a5c;
+  --code-str: #a6cc9f;
+  --code-num: #dcbf7f;
+  --code-fn: #93b7dd;
+  --code-com: #8d8f96;
+  --code-pun: #a9aab0;
+  --chart-up: #4fb08b;
+  --chart-down: #e46d5e;
+  --chart-ema-1: #d99a5c;
+  --chart-ema-2: #a9aab0;
+  --chart-rsi: #93b7dd;
+  --chart-grid: rgb(255 255 255 / 0.07);
+
   /* Line art */
-  --line-frame: rgb(159 176 189 / 0.45);
+  --line-frame: rgb(157 158 164 / 0.45);
   --line-arch: var(--copper);
-  --line-wave: rgb(217 179 106 / 0.78);
+  --line-wave: rgb(207 178 122 / 0.78);
   --line-ornament: var(--gold);
-  --line-silk: rgb(243 234 220 / 0.72);
-  --line-board: rgb(159 176 189 / 0.6);
+  --line-silk: rgb(242 241 238 / 0.72);
+  --line-board: rgb(157 158 164 / 0.6);
   --board-fill: #0d0f0e; /* the real card's black solder mask */
 
   /* Type */
@@ -80,7 +103,7 @@
   --text-kicker: 0.75rem;
   --leading: 1.6;
   --measure: 66ch;
-  --name-size: clamp(54px, 6.4vw, 132px);
+  --name-size: clamp(46px, 6.1vw, 108px);
 
   /* Space: an 8px grid with fluid section rhythm */
   --s1: 8px;
@@ -113,59 +136,97 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
     color-scheme: light;
-    --bg: #f6efe3;
-    --bg-raise: #efe5d4;
-    --surface: rgb(255 250 242 / 0.8);
-    --surface-solid: #fffaf2;
-    --ink: #3e0b17;
-    --ink-soft: #57212d;
-    --muted: #5f5352;
-    --border: rgb(62 11 23 / 0.16);
-    --border-strong: rgb(62 11 23 / 0.36);
+    --bg: #f4f3f0;
+    --bg-raise: #eae9e5;
+    --surface: rgb(255 255 255 / 0.8);
+    --surface-solid: #ffffff;
+    --ink: #141518;
+    --ink-soft: #33353a;
+    --muted: #5c5e65;
+    --border: rgb(20 21 24 / 0.13);
+    --border-strong: rgb(20 21 24 / 0.32);
     --copper: #8f4d17;
     --copper-strong: #7a3f10;
-    --gold: #806015;
-    --accent-a: #b90101;
-    --accent-b: #8c0327;
-    --on-copper: #fffaf2;
-    --header-glass: rgb(246 239 227 / 0.78);
+    --gold: #765a17;
+    --on-copper: #ffffff;
+    --header-glass: rgb(244 243 240 / 0.8);
     --focus-inner: #8f4d17;
-    --focus-outer: #fffaf2;
-    --shadow: 0 24px 60px rgb(62 11 23 / 0.14);
+    --focus-outer: #ffffff;
+    --shadow: 0 24px 60px rgb(20 21 24 / 0.12);
     --led: #d98a00;
-    --line-frame: rgb(62 11 23 / 0.32);
-    --line-wave: rgb(128 96 21 / 0.75);
-    --line-silk: rgb(62 11 23 / 0.6);
-    --line-board: rgb(62 11 23 / 0.45);
+    --studio-key: rgb(255 255 255 / 0.95);
+    --studio-fill: rgb(201 138 75 / 0.08);
+    --studio-grid: rgb(20 21 24 / 0.06);
+  --studio-shadow: rgb(20 21 24 / 0.38);
+  --panel-bg: rgb(255 255 255 / 0.92);
+  --panel-bar: rgb(20 21 24 / 0.03);
+  --panel-border: rgb(20 21 24 / 0.1);
+  --panel-shadow: 0 30px 60px -24px rgb(20 21 24 / 0.28);
+  --code-ink: #24262b;
+  --code-kw: #8f4d17;
+  --code-str: #3b7348;
+  --code-num: #765a17;
+  --code-fn: #2d5c8c;
+  --code-com: #6c6e75;
+  --code-pun: #55575e;
+  --chart-up: #23805d;
+  --chart-down: #c2402f;
+  --chart-ema-1: #a85d1f;
+  --chart-ema-2: #6c6e75;
+  --chart-rsi: #2d5c8c;
+  --chart-grid: rgb(20 21 24 / 0.08);
+    --line-frame: rgb(20 21 24 / 0.3);
+    --line-wave: rgb(118 90 23 / 0.75);
+    --line-silk: rgb(20 21 24 / 0.6);
+    --line-board: rgb(20 21 24 / 0.45);
     --board-fill: #0d0f0e;
   }
 }
 :root[data-theme='light'] {
   color-scheme: light;
-  --bg: #f6efe3;
-  --bg-raise: #efe5d4;
-  --surface: rgb(255 250 242 / 0.8);
-  --surface-solid: #fffaf2;
-  --ink: #3e0b17;
-  --ink-soft: #57212d;
-  --muted: #5f5352;
-  --border: rgb(62 11 23 / 0.16);
-  --border-strong: rgb(62 11 23 / 0.36);
+  --bg: #f4f3f0;
+  --bg-raise: #eae9e5;
+  --surface: rgb(255 255 255 / 0.8);
+  --surface-solid: #ffffff;
+  --ink: #141518;
+  --ink-soft: #33353a;
+  --muted: #5c5e65;
+  --border: rgb(20 21 24 / 0.13);
+  --border-strong: rgb(20 21 24 / 0.32);
   --copper: #8f4d17;
   --copper-strong: #7a3f10;
-  --gold: #806015;
-  --accent-a: #b90101;
-  --accent-b: #8c0327;
-  --on-copper: #fffaf2;
-  --header-glass: rgb(246 239 227 / 0.78);
+  --gold: #765a17;
+  --on-copper: #ffffff;
+  --header-glass: rgb(244 243 240 / 0.8);
   --focus-inner: #8f4d17;
-  --focus-outer: #fffaf2;
-  --shadow: 0 24px 60px rgb(62 11 23 / 0.14);
+  --focus-outer: #ffffff;
+  --shadow: 0 24px 60px rgb(20 21 24 / 0.12);
   --led: #d98a00;
-  --line-frame: rgb(62 11 23 / 0.32);
-  --line-wave: rgb(128 96 21 / 0.75);
-  --line-silk: rgb(62 11 23 / 0.6);
-  --line-board: rgb(62 11 23 / 0.45);
+  --studio-key: rgb(255 255 255 / 0.95);
+  --studio-fill: rgb(201 138 75 / 0.08);
+  --studio-grid: rgb(20 21 24 / 0.06);
+  --studio-shadow: rgb(20 21 24 / 0.38);
+  --panel-bg: rgb(255 255 255 / 0.92);
+  --panel-bar: rgb(20 21 24 / 0.03);
+  --panel-border: rgb(20 21 24 / 0.1);
+  --panel-shadow: 0 30px 60px -24px rgb(20 21 24 / 0.28);
+  --code-ink: #24262b;
+  --code-kw: #8f4d17;
+  --code-str: #3b7348;
+  --code-num: #765a17;
+  --code-fn: #2d5c8c;
+  --code-com: #6c6e75;
+  --code-pun: #55575e;
+  --chart-up: #23805d;
+  --chart-down: #c2402f;
+  --chart-ema-1: #a85d1f;
+  --chart-ema-2: #6c6e75;
+  --chart-rsi: #2d5c8c;
+  --chart-grid: rgb(20 21 24 / 0.08);
+  --line-frame: rgb(20 21 24 / 0.3);
+  --line-wave: rgb(118 90 23 / 0.75);
+  --line-silk: rgb(20 21 24 / 0.6);
+  --line-board: rgb(20 21 24 / 0.45);
   --board-fill: #0d0f0e;
 }
 

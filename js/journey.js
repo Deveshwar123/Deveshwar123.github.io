@@ -1,23 +1,21 @@
 // The scroll story. One value, p = .62 × clamp((scrollY − startY) / travel, 0, 1),
 // drives a pure evaluateStory(p, viewport) whose output the render adapters draw:
-// the SVG adapter (morph + projected board, every tier) and the WebGL adapter
-// (full tier, via board.js). No résumé strings live here.
+// the WebGL card (board.js) on every tier that supports WebGL2, and the
+// projected SVG board otherwise. On top of the pure state, an optional hero layer
+// (pointer tilt and a slow idle float) applies only while the hero is in view and
+// motion is allowed. No résumé strings live here.
 
 import { trackGeometry, progressAt, scrollYFor, boardFraming, evaluateStory } from './story-state.js';
-import { jaliGeometry, boardGeometry, pathFromPoints, BOARD } from './art.js';
-import { buildMorph, interpolate, arrayToPath } from './morph.js';
+import { boardGeometry, BOARD } from './art.js';
 import { createSvgBoard } from './board-svg.js';
 import { makeCamera, rotation, projectPoint, layerZ } from './projection.js';
 import { addTask, removeTask, wake } from './scheduler.js';
 import { setScroller, refreshNav } from './nav.js';
-import { motionMode, onMotionChange } from './motion.js';
+import { motionMode, onMotionChange, createSpring } from './motion.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
+const RAD = Math.PI / 180;
 export { trackGeometry, progressAt, scrollYFor, boardFraming, evaluateStory };
-
-// ---------------------------------------------------------------------------
-// DOM story
-// ---------------------------------------------------------------------------
 
 function el(name, attrs = {}, parent) {
   const n = document.createElementNS(SVGNS, name);
@@ -26,16 +24,14 @@ function el(name, attrs = {}, parent) {
   return n;
 }
 
-const multiPath = (lines) => lines.map((l) => pathFromPoints(l)).join('');
-
 export async function createStory({ cfg, tier, report }) {
   const root = document.documentElement;
   const J = cfg.journey;
   const stage = document.getElementById('stage');
   const journey = document.getElementById('journey');
   const hero = document.querySelector('.hero');
-  const crest = hero.querySelector('.hero-crest');
-  const archBox = hero.querySelector('[data-arch-box]');
+  const heroVisual = hero.querySelector('.hero-visual');
+  const heroStill = hero.querySelector('.hero-card');
   const beats = [...journey.querySelectorAll('.beat')];
   const captionEls = beats.map((b) => b.querySelector('.beat-caption'));
   const beatCfg = cfg.illustrations.beats;
@@ -43,7 +39,7 @@ export async function createStory({ cfg, tier, report }) {
   const cleanups = [];
   const on = (target, type, fn, opts) => { target.addEventListener(type, fn, opts); cleanups.push(() => target.removeEventListener(type, fn, opts)); };
 
-  // ---- Stage DOM ----
+  // ---- Stage DOM: SVG fallback board, layer leaders, LED glow, labels ----
   stage.replaceChildren();
   const svg = el('svg', { class: 'stage-svg', 'aria-hidden': 'true', focusable: 'false' }, stage);
   const defs = el('defs', {}, svg);
@@ -54,23 +50,6 @@ export async function createStory({ cfg, tier, report }) {
     stop.style.stopColor = 'var(--led)';
     stop.style.stopOpacity = alpha;
   }
-
-  const gMorph = el('g', { class: 'art stage-morph' }, svg);
-  const gOrn = el('g', { class: 'art art-ornament' }, svg);
-  const ornPath = el('path', {}, gOrn);
-  const gOrphans = el('g', { class: 'art art-waves' }, svg);
-  const orphanPath = el('path', {}, gOrphans);
-  const gFace = el('g', { class: 'art stage-face' }, svg);
-  const face = {
-    fill: el('path', { class: 'art-board-fill' }, gFace),
-    // The card's real silkscreen (your name in calligraphy), as rendered from the Gerbers.
-    // Its source is attached only once the board starts to appear, so it never
-    // competes with the page's first paint.
-    silk: el('image', { x: 0, y: 0, width: BOARD.W, height: BOARD.H, preserveAspectRatio: 'none' }, gFace),
-    extra: el('path', { class: 'art-copper-extra' }, gFace),
-    unpaired: el('path', { class: 'art-traces' }, gFace),
-    vias: el('path', { class: 'art-vias' }, gFace),
-  };
   const svgBoard = createSvgBoard(svg);
   const gLeaders = el('g', { class: 'art stage-leaders' }, svg);
   const leaders = [0, 1, 2, 3].map(() => el('path', { class: 'stage-leader' }, gLeaders));
@@ -86,10 +65,6 @@ export async function createStory({ cfg, tier, report }) {
   });
   stage.appendChild(labelBox);
 
-  // Static board strings (board units) for the face-on transform.
-  face.fill.setAttribute('d', pathFromPoints(board.outline) + 'Z');
-  face.extra.setAttribute('d', multiPath(board.padPolys));
-  face.vias.setAttribute('d', multiPath(board.viaRings));
   // ---- Lenis smooth scrolling (one scheduler owns its frames) ----
   let lenis = null;
   try {
@@ -103,34 +78,48 @@ export async function createStory({ cfg, tier, report }) {
     report('smooth scrolling', err);
   }
 
-  // ---- WebGL board (full tier) ----
+  // ---- The photoreal card (narrow screens get lighter textures) ----
+  // Its textures and shaders cost main-thread time, so it starts on the
+  // visitor's first scroll, pointer move, touch or key (or once the page is
+  // idle). Until it is ready the hero shows the identical still and the story
+  // draws the SVG card.
   let gl = null;
-  // The photoreal card renders on every story tier; narrow screens get the lighter
-  // texture set and a lower pixel-ratio cap. Without WebGL2 the line art stays.
-  if (tier === 'full' || tier === 'compact') {
-    try {
-      const mod = await import('./board.js');
-      gl = await mod.createBoardView({
-        stage,
-        quality: tier === 'full' ? 'hi' : 'lo',
-        onUpdate: () => { dirty = true; wake(); },
-        onLost: () => { gl = null; if (vc) vc.webgl = false; dirty = true; wake(); },
-      });
-    } catch (err) {
-      report('3D board', err);
-      gl = null;
-    }
+  let vc = null;
+  let dirty = true;
+  let destroyed = false;
+  let glStart = null;
+  function startGl() {
+    if (glStart || destroyed) return glStart;
+    glStart = (async () => {
+      try {
+        const mod = await import('./board.js');
+        const view = await mod.createBoardView({
+          stage,
+          quality: tier === 'full' ? 'hi' : 'lo',
+          onUpdate: () => { dirty = true; wake(); },
+          onLost: () => { gl = null; if (vc) vc.webgl = false; root.removeAttribute('data-card'); dirty = true; wake(); },
+        });
+        await view.ready;
+        if (destroyed) { view.dispose(); return; }
+        gl = view;
+        if (vc) { vc.webgl = true; gl.resize(vc.vw, vc.vh, vc.framing.ppu); }
+        // The still steps aside only once the live card is drawing.
+        root.setAttribute('data-card', 'live');
+        dirty = true;
+        wake();
+      } catch (err) {
+        report('3D card', err);
+      }
+    })();
+    return glStart;
   }
-  const effectiveTier = tier;
+  for (const type of ['pointermove', 'wheel', 'touchstart', 'keydown', 'scroll']) on(window, type, startGl, { passive: true, once: true });
+  const idleStart = setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(startGl, { timeout: 2000 }) : startGl()), 2500);
 
   // ---- Measurement ----
-  let vc = null;
   let geo = null;
-  let morph = null;
-  let jali = null;
   let lastW = 0, lastH = 0;
   let stableVh = window.innerHeight;
-  let originals = [];
 
   function measure() {
     const vw = document.documentElement.clientWidth;
@@ -146,99 +135,79 @@ export async function createStory({ cfg, tier, report }) {
     journey.style.setProperty('--journey-h', `${Math.max(vh, geo.trackH - hero.offsetHeight)}px`);
     const journeyTop = journey.getBoundingClientRect().top + y0;
     beats.forEach((b, i) => {
-      const bc = beatCfg[i];
-      // A beat never starts above the journey: the hero itself is the intro, and a
-      // box placed over it would count as a layout shift when the tier switches.
-      const y = Math.max(scrollYFor(bc.p, geo), journeyTop);
-      const next = i + 1 < beatCfg.length ? scrollYFor(beatCfg[i + 1].p, geo) : geo.endY - vh * 0.6;
+      const y = Math.max(scrollYFor(beatCfg[i].p, geo), journeyTop);
       b.style.setProperty('--beat-y', `${y - journeyTop}px`);
-      // Each caption leaves before the next arrives, so only one is ever pinned.
-      b.style.setProperty('--beat-h', `${Math.max(vh * 0.6, next - y - vh * 0.62)}px`);
     });
 
+    // Where the card sits in the hero at p = 0: exactly over its still image
+    // (screen = document at the top).
+    const r = heroStill.getBoundingClientRect();
     const framing = boardFraming(vw, vh, tier === 'full' ? 'full' : 'compact');
     vc = {
       vw, vh, travel: geo.travel, end: geo.end, ranges: J.ranges,
       yawDeg: J.pose.yawDeg, pitchDeg: J.pose.pitchDeg,
       framing, webgl: !!gl, explodeDistance: tier === 'full' ? 150 : 110, captionWindows: J.captionWindows,
+      hero: { cx: r.left + r.width / 2, cy: r.top + y0 - startY + r.height / 2, w: r.width * J.hero.widthRatio },
+      heroCfg: J.hero,
     };
-
-    // Jali geometry around the measured crest text (document coordinates).
-    const cr = crest.getBoundingClientRect();
-    const br = archBox.getBoundingClientRect();
-    const frame = { x: cr.left, y: cr.top + y0, w: cr.width, h: cr.height };
-    const box = { x: br.left, y: br.top + y0, w: br.width, h: br.height };
-    jali = jaliGeometry(frame, box, { maxPairs: vw >= 860 ? 3 : 1 });
-    morph = buildMorph(jali, board);
-
-    gMorph.replaceChildren();
-    originals = morph.pairs.map((pair) => {
-      const cls = pair.id === 'frame' ? 'art-frame' : pair.id.startsWith('arch') ? 'art-arches' : 'art-waves';
-      const path = el('path', { class: cls, 'data-pair': pair.id }, gMorph);
-      return { path, fromD: pathFromPoints(pair.fromPts), toD: pathFromPoints(pair.toPts) };
-    });
-    ornPath.setAttribute('d', multiPath(jali.ornament));
-    orphanPath.setAttribute('d', multiPath(morph.orphans));
-    face.unpaired.setAttribute('d', multiPath(morph.unpaired));
     svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
     gl?.resize(vw, vh, framing.ppu);
     lastP = -1;
     dirty = true;
   }
 
+  // ---- Optional hero layer: pointer tilt and a slow idle float ----
+  const tiltYaw = createSpring(cfg.motion.spring, 0);
+  const tiltPitch = createSpring(cfg.motion.spring, 0);
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  // Touch screens keep a still hero card (it still moves with the scroll).
+  const heroAllowed = () => finePointer.matches && !motionMode().reduced && !motionMode().paused;
+  on(window, 'pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || !finePointer.matches || !vc) return;
+    tiltYaw.target = (e.clientX / vc.vw - 0.5) * 16;
+    tiltPitch.target = (e.clientY / vc.vh - 0.5) * 10;
+    wake();
+  }, { passive: true });
+
+  function livePose(s, time) {
+    const w = s.heroLive;
+    if (w <= 0.001 || !heroAllowed()) return s;
+    return {
+      ...s,
+      pose: {
+        ...s.pose,
+        yaw: s.pose.yaw + w * tiltYaw.value * RAD,
+        pitch: s.pose.pitch + w * tiltPitch.value * RAD,
+        roll: s.pose.roll + w * Math.sin(time / 2300) * 0.7 * RAD,
+        ty: s.pose.ty + w * Math.sin(time / 1900) * 9,
+      },
+    };
+  }
+
   // ---- Rendering ----
   let lastP = -1;
-  let dirty = true;
   let parked = false;
   let state = null;
   const R0 = [0, 0, 0];
 
-  function setTransform(g, m) { g.setAttribute('transform', m ? `matrix(${m.map((v) => +v.toFixed(4)).join(' ')})` : ''); }
-
   function renderSvg(s) {
     const cam = makeCamera(vc.vw, vc.vh, vc.framing.ppu);
-    const face0 = [cam.ppu, 0, 0, cam.ppu, vc.vw / 2 + s.pose.tx * cam.ppu - BOARD.CX * cam.ppu, vc.vh / 2 - s.pose.ty * cam.ppu - BOARD.CY * cam.ppu];
-    const morphing = s.phase === 'morph';
-    gMorph.style.display = morphing ? '' : 'none';
-    gOrn.style.display = s.ornament > 0 ? '' : 'none';
-    gOrphans.style.display = morphing ? '' : 'none';
-    gFace.style.display = morphing ? '' : 'none';
-    svgBoard.setVisible(!morphing && s.svgOpacity > 0);
-    if (morphing) {
-      if (s.morphT === 0) {
-        setTransform(gMorph, [1, 0, 0, 1, 0, -s.lift]);
-        originals.forEach((o) => o.path.setAttribute('d', o.fromD));
-      } else {
-        setTransform(gMorph, null);
-        morph.pairs.forEach((pair, i) => originals[i].path.setAttribute('d', arrayToPath(interpolate(pair, s.morphT, s.lift, face0), pair.n)));
-      }
-      setTransform(gOrn, [1, 0, 0, 1, 0, -s.lift]);
-      gOrn.style.opacity = s.ornament;
-      // Lattice lines with no real trace to become fade as the others route.
-      setTransform(gOrphans, [1, 0, 0, 1, 0, -s.lift]);
-      gOrphans.style.opacity = Math.max(0, 1 - s.morphT * 1.6);
-      setTransform(gFace, face0);
-      gFace.style.opacity = '1';
-      face.fill.style.opacity = s.boardFill * 0.9;
-      for (const k of ['silk', 'extra', 'unpaired', 'vias']) face[k].style.opacity = s.vias;
-      if (s.vias > 0 && !face.silk.hasAttribute('href')) face.silk.setAttribute('href', 'assets/board/top-silk-lo.webp');
-    } else if (s.svgOpacity > 0) {
+    svgBoard.setVisible(s.svgOpacity > 0);
+    if (s.svgOpacity > 0) {
       svgBoard.setOpacity(s.svgOpacity);
-      if (s.rot === 0 && s.explode === 0) svgBoard.renderFaceOn(face0);
-      else svgBoard.render(s.pose, s.explode, cam);
+      svgBoard.render(s.pose, s.explode, cam);
     }
     renderOverlay(s, cam);
   }
 
-  // Layer labels with leader lines, and the LED glow (both tiers).
+  // Layer labels with leader lines, and the LED glow (every tier).
   function renderOverlay(s, cam) {
-    const R = rotation(s.pose.yaw, s.pose.pitch);
+    const R = rotation(s.pose.yaw, s.pose.pitch, s.pose.roll);
     const showLabels = s.labels > 0.001;
     labelBox.style.display = showLabels ? '' : 'none';
     gLeaders.style.display = showLabels ? '' : 'none';
     if (showLabels) {
-      const compact = vc.vw < 860;
-      if (compact) {
+      if (vc.vw < 860) {
         // A row above the board: each label points straight down to its layer's
         // back edge at a different x, so leaders never cross.
         const anchors = [0, 1, 2, 3].map((i) => projectPoint(BOARD.W * (0.13 + 0.25 * i), 0, layerZ(i, s.explode), s.pose, cam, R, [0, 0, 0]));
@@ -246,7 +215,7 @@ export async function createStory({ cfg, tier, report }) {
         let prevRight = -Infinity;
         anchors.forEach(([ax, ay], i) => {
           const w = labels[i].offsetWidth || 90;
-          let lx = Math.min(vc.vw - w - 8, Math.max(8, ax - w / 2));
+          const lx = Math.min(vc.vw - w - 8, Math.max(8, ax - w / 2));
           const row = lx < prevRight + 6 ? 1 : 0;
           const ly = top - 44 - row * 34;
           if (!row) prevRight = lx + w;
@@ -273,7 +242,7 @@ export async function createStory({ cfg, tier, report }) {
       }
     }
     if (s.led > 0.001) {
-      const q = projectPoint(board.led.x, board.led.y, layerZ(1, s.explode) + 6, s.pose, cam, R);
+      const q = projectPoint(board.led.x, board.led.y, layerZ(1, s.explode) + 6, s.pose, cam, R, R0);
       glow.setAttribute('cx', q[0].toFixed(1));
       glow.setAttribute('cy', q[1].toFixed(1));
       glow.setAttribute('r', (cam.ppu * 70 * (0.55 + 0.45 * s.led)).toFixed(1));
@@ -283,7 +252,8 @@ export async function createStory({ cfg, tier, report }) {
     }
   }
 
-  function render() {
+  // Returns true while the hero layer still needs frames.
+  function render(time, dt) {
     const y = window.scrollY;
     const p = progressAt(y, geo);
     const offTrack = y > geo.endY + vc.vh * 0.6;
@@ -293,30 +263,41 @@ export async function createStory({ cfg, tier, report }) {
       if (parked) gl?.park(); else gl?.unpark();
       dirty = true;
     }
-    if (parked || (!dirty && Math.abs(p - lastP) < 1e-7)) return;
-    lastP = p;
-    dirty = false;
-    state = evaluateStory(p, vc);
-    stage.dataset.p = p.toFixed(4);
-    captionEls.forEach((c, i) => {
-      const o = state.captions[i] ?? 0;
-      c.style.opacity = o.toFixed(3);
-      c.style.visibility = o > 0.001 ? 'visible' : 'hidden';
-    });
-    // Optional ambient motion only once the story has handed off (CSS-driven,
-    // paused by Pause motion; the story's own channels stay frozen).
-    stage.classList.toggle('is-ambient', p >= J.end - 1e-6 && !motionMode().paused);
-    stage.style.opacity = state.stageOpacity;
-    stage.style.transform = state.stageScale === 1 ? '' : `scale(${state.stageScale.toFixed(4)})`;
-    renderSvg(state);
-    if (gl) gl.render(state, vc);
+    if (parked) return false;
+    const changed = dirty || Math.abs(p - lastP) >= 1e-7;
+    if (changed) {
+      lastP = p;
+      dirty = false;
+      state = evaluateStory(p, vc);
+      stage.dataset.p = p.toFixed(4);
+      captionEls.forEach((c, i) => {
+        const o = state.captions[i] ?? 0;
+        c.style.opacity = o.toFixed(3);
+        c.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+      });
+      // Optional ambient motion only once the story has handed off (CSS-driven,
+      // paused by Pause motion; the story's own channels stay frozen).
+      stage.classList.toggle('is-ambient', p >= J.end - 1e-6 && !motionMode().paused);
+      stage.style.setProperty('--stage-o', state.stageOpacity.toFixed(4));
+      stage.style.transform = state.stageScale === 1 ? '' : `scale(${state.stageScale.toFixed(4)})`;
+      renderSvg(state);
+    }
+    const live = !!gl && state.heroLive > 0.001 && heroAllowed();
+    if (live) {
+      tiltYaw.step(dt); tiltPitch.step(dt);
+      // The panels behind the card drift the other way, for depth.
+      heroVisual.style.setProperty('--px', (tiltYaw.value / 8).toFixed(3));
+      heroVisual.style.setProperty('--py', (tiltPitch.value / 5).toFixed(3));
+    }
+    if (gl && (changed || live)) gl.render(live ? livePose(state, time) : state);
+    return live;
   }
 
   // ---- Frame task: Lenis first, then the story ----
-  addTask('story', (time) => {
+  addTask('story', (time, dt) => {
     lenis?.raf(time);
-    render();
-    return !!lenis?.isScrolling;
+    const live = render(time, dt);
+    return !!lenis?.isScrolling || live;
   });
   for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown']) on(window, type, wake, { passive: true });
   on(window, 'scroll', wake, { passive: true });
@@ -349,20 +330,14 @@ export async function createStory({ cfg, tier, report }) {
   on(window, 'orientationchange', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(remeasure, 250); });
 
   measure();
-  render();
+  render(performance.now(), 16.7);
 
-  // Theme changes recolour the WebGL materials (SVG follows CSS on its own).
   const offTheme = (await import('./theme.js')).onThemeChange(() => { gl?.recolor(); dirty = true; wake(); });
   cleanups.push(offTheme);
-
-  // Pause motion stops Lenis' inertia from being the only thing moving; nothing in
-  // the story itself is autonomous, so there is nothing else to pause here.
   cleanups.push(onMotionChange(() => { dirty = true; wake(); }));
   cleanups.push(() => stage.classList.remove('is-ambient'));
 
-  // ---- Intro (first view only, skipped when arriving mid-page or by hash) ----
-  // The data-tier attribute (which hides the static hero art) is set by main.js
-  // after this returns, so the stage art takes over without a visible gap.
+  // ---- Scroll hint and intro (first view only; skipped mid-page or by hash) ----
   const hint = document.createElementNS(SVGNS, 'svg');
   hint.setAttribute('class', 'scroll-hint');
   hint.setAttribute('viewBox', '0 0 20 44');
@@ -376,7 +351,7 @@ export async function createStory({ cfg, tier, report }) {
   if (root.classList.contains('intro-pending') && window.scrollY < 4 && !location.hash && !motionMode().reduced) {
     try {
       const mod = await import('./intro.js');
-      intro = mod.runIntro({ cfg, paths: [...originals.map((o) => o.path), orphanPath], ornament: gOrn, name: document.getElementById('hero-name'), report });
+      intro = mod.runIntro({ cfg, name: document.getElementById('hero-name'), report });
     } catch (err) {
       report('intro', err);
     }
@@ -387,11 +362,13 @@ export async function createStory({ cfg, tier, report }) {
   }
 
   return {
-    tier: effectiveTier,
+    tier,
     remeasure,
     get state() { return state; },
     get geometry() { return { ...geo }; },
     destroy() {
+      destroyed = true;
+      clearTimeout(idleStart);
       intro?.cancel();
       removeTask('story');
       cleanups.forEach((fn) => fn());
@@ -404,9 +381,12 @@ export async function createStory({ cfg, tier, report }) {
       delete stage.dataset.p;
       stage.classList.remove('is-parked');
       journey.style.removeProperty('--journey-h');
-      beats.forEach((b) => { b.style.removeProperty('--beat-y'); b.style.removeProperty('--beat-h'); });
+      beats.forEach((b) => b.style.removeProperty('--beat-y'));
       captionEls.forEach((c) => { c.style.opacity = ''; c.style.visibility = ''; });
       root.removeAttribute('data-tier');
+      root.removeAttribute('data-card');
+      heroVisual.style.removeProperty('--px');
+      heroVisual.style.removeProperty('--py');
     },
   };
 }

@@ -84,16 +84,11 @@ export function renderHero(d, art) {
   const [first, ...rest] = person.name.split(' ');
   return html`
     <section class="hero" id="top" aria-labelledby="hero-name">
-      <div class="hero-crest">
-        ${raw(art.heroWide)}
-        ${raw(art.heroTall)}
-        <div class="hero-crest-content" data-arch-box>
-          <p class="kicker hero-kicker">${H.kicker}</p>
-          <h1 class="hero-name" id="hero-name"><span class="hero-name-line">${first}</span> <span class="hero-name-line">${rest.join(' ')}</span></h1>
-          <p class="hero-subtitle">${person.heroSubtitle}</p>
-        </div>
-      </div>
-      <div class="hero-details">
+      <div class="hero-backdrop" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="kicker hero-kicker">${H.kicker.split(' · ').map((k, i) => html`${i ? ' · ' : ''}<span class="kicker-item">${k}</span>`)}</p>
+        <h1 class="hero-name" id="hero-name"><span class="hero-name-line">${first}</span> <span class="hero-name-line">${rest.join(' ')}</span></h1>
+        <p class="hero-subtitle">${person.heroSubtitle}</p>
         <dl class="hero-facts">
           <div class="hero-fact"><dt>${H.majorTerm}</dt><dd>${edu.degree}, ${edu.minor}</dd></div>
           <div class="hero-fact"><dt>${H.universityTerm}</dt><dd>${edu.institution}</dd></div>
@@ -109,13 +104,19 @@ ${d.resume.projects.map((p) => html`            <li><a href="#project-${p.id}">$
           ${resume.approved ? html`<a class="button" href="${resume.path}" type="application/pdf">${H.resume}</a>` : ''}
         </div>
       </div>
+      <div class="hero-visual" aria-hidden="true">
+        ${raw(art.heroCode)}
+        ${raw(art.heroChart)}
+        <div class="hero-card-slot">${raw(art.heroCard)}</div>
+        <p class="hero-card-tag"><span class="panel-tag">${d.config.heroPanels.card.discipline}</span> <span>${d.config.heroPanels.card.caption}</span></p>
+      </div>
     </section>`;
 }
 
 export function renderJourney(d, art) {
   const J = d.config.labels.journey;
   const beats = d.config.illustrations.beats;
-  const figures = [art.beatPanel, art.beatBoard, art.beatLayers];
+  const figures = [art.beatBoard, art.beatBack, art.beatLayers];
   return html`
     <section class="journey" id="journey" aria-labelledby="journey-title">
       <header class="journey-head">
@@ -130,7 +131,7 @@ ${beats.map((b, i) => html`        <li class="beat beat--${i + 1}" id="${b.id}" 
               <p class="kicker" aria-hidden="true">${b.chapter}</p>
               <h3 class="beat-title">${b.title}</h3>
               <p>${b.caption}</p>
-              ${i === 2 ? html`<ul class="layer-list">${d.config.illustrations.layerLabels.map((l) => html`<li>${l}</li>`)}</ul>` : ''}
+              ${i === beats.length - 1 ? html`<ul class="layer-list">${d.config.illustrations.layerLabels.map((l) => html`<li>${l}</li>`)}</ul>` : ''}
             </figcaption>
           </figure>
         </li>\n`)}      </ol>

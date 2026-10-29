@@ -25,6 +25,19 @@ test.describe('desktop full tier', () => {
     await expect(page.locator('.name-bloom')).toHaveCount(0);
   });
 
+  test('the hero shows the real card beside the name, then hands over to the live 3D card', async ({ page }) => {
+    await page.goto('/');
+    // Everything a recruiter needs is on the first screen.
+    for (const sel of ['#hero-name', '.hero-facts', '.hero-projects', '.hero-actions', '.hero-visual']) await expect(page.locator(sel)).toBeInViewport({ ratio: 1 });
+    const still = page.locator('.hero-card');
+    await expect(still).toHaveAttribute('fetchpriority', 'high');
+    await expect(page.locator('html')).toHaveAttribute('data-card', 'live');
+    await expect(still).toHaveCSS('opacity', '0');
+    // The copy and the card never overlap.
+    const [copy, card] = await Promise.all([page.locator('.hero-copy').boundingBox(), page.locator('.hero-visual').boundingBox()]);
+    expect(copy.x + copy.width).toBeLessThanOrEqual(card.x);
+  });
+
   test('scrolling cancels the intro immediately', async ({ page }) => {
     await page.goto('/');
     await page.waitForFunction(() => document.documentElement.classList.contains('intro-running'), null, { timeout: 5000 });
@@ -121,7 +134,7 @@ test.describe('reduced motion', () => {
     await expect(page.locator('.beat-art')).toHaveCount(3);
     for (const art of await page.locator('.beat-art').all()) await expect(art).toBeVisible();
     await expect(page.locator('#stage')).toBeHidden();
-    await expect(page.locator('.hero-art--wide')).toBeVisible();
+    await expect(page.locator('.hero-card')).toBeVisible();
     await expect(page.locator('.name-bloom')).toHaveCount(0);
   });
 

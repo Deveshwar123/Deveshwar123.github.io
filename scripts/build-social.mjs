@@ -1,46 +1,41 @@
-// Maintenance: renders the 1200×630 Open Graph image from the site's own line
-// art (a jali arch) and a render of the real NFC card, with the name and major, using the
-// self-hosted fonts. The PNG is a derivative export, not a new illustration style.
-// Usage: node scripts/serve.mjs 8080 & node scripts/build-social.mjs
+// Maintenance: renders the 1200×630 Open Graph image to match the hero: the name
+// and major on the left, a render of the real NFC card in a soft studio light on
+// the right, using the self-hosted fonts.
+// Usage: node scripts/serve.mjs 8080 & node scripts/render-stills.mjs && node scripts/build-social.mjs
 import { chromium } from '@playwright/test';
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { jaliGeometry, pathFromPoints } from '../js/art.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const resume = JSON.parse(readFileSync(join(root, 'data/resume.json'), 'utf8'));
-const inner = (rel) => readFileSync(join(root, rel), 'utf8').replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const fontUrl = (f) => 'data:font/woff2;base64,' + readFileSync(join(root, 'assets/fonts', f)).toString('base64');
-
-const jali = jaliGeometry({ x: 24, y: 24, w: 560, h: 582 }, { x: 110, y: 250, w: 388, h: 250 }, { maxPairs: 1 });
-const arch = [jali.frame, ...jali.arches, ...jali.waves.map((w) => w.pts)].map((l) => `<path d="${pathFromPoints(l)}"/>`).join('');
-const orn = jali.ornament.map((l) => `<path d="${pathFromPoints(l)}"/>`).join('');
 const [first, ...rest] = resume.person.name.split(' ');
 const edu = resume.education[0];
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face { font-family: N; src: url(${fontUrl('newsreader-latin-var.woff2')}) format('woff2'); font-weight: 400 600; }
 @font-face { font-family: D; src: url(${fontUrl('dm-sans-latin-var.woff2')}) format('woff2'); font-weight: 400 600; }
-html, body { margin: 0; width: 1200px; height: 630px; background: #06121e; overflow: hidden; }
-svg { position: absolute; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-svg path, svg circle, svg rect { vector-effect: non-scaling-stroke; stroke-width: 1.6; }
-.arch { left: 0; top: 0; width: 608px; height: 630px; stroke: #c98a4b; }
-.arch .orn { stroke: #d9b36a; }
-.card { position: absolute; right: 10px; top: 120px; width: 620px; height: auto; filter: drop-shadow(0 24px 30px rgba(0,0,0,.55)); }
-.board .art-silk { stroke: rgba(243,234,220,.6); } .board .art-traces, .board .art-antenna, .board .art-copper-extra { stroke: #c98a4b; }
-.board .art-vias, .board .art-pads { stroke: #d9b36a; } .board .art-board, .board .art-chip { stroke: rgba(159,176,189,.6); }
-.board .art-board-edge { fill: #0b1a14; }
-.text { position: absolute; left: 0; width: 608px; top: 286px; text-align: center; color: #f3eadc; }
-h1 { font: 500 58px/0.95 N, Georgia, serif; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; }
-p { font: 500 23px/1.4 D, Arial, sans-serif; margin: 22px 0 0; color: #d8cfc1; }
-.k { font: 500 14px D, Arial, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: #c98a4b; margin: 0 0 16px; }
+html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #0b0c0e; }
+body {
+  background:
+    radial-gradient(ellipse 34% 46% at 72% 50%, rgb(255 246 232 / 0.2), transparent 72%),
+    radial-gradient(ellipse 46% 30% at 76% 88%, rgb(201 138 75 / 0.09), transparent 70%),
+    #0b0c0e;
+}
+.grid { position: absolute; inset: 0; background-image: linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px); background-size: 56px 56px; -webkit-mask-image: radial-gradient(ellipse 50% 62% at 72% 50%, #000 15%, transparent 78%); }
+.card { position: absolute; right: 18px; top: 92px; width: 640px; height: auto; filter: drop-shadow(0 34px 34px rgb(0 0 0 / 0.5)); }
+.text { position: absolute; left: 72px; top: 150px; width: 520px; color: #f2f1ee; }
+.k { font: 500 15px D, Arial, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #c98a4b; margin: 0 0 18px; }
+h1 { font: 450 84px/0.96 N, Georgia, serif; letter-spacing: -0.035em; margin: 0; }
+h1 span { display: block; } h1 span + span { color: #d2d1cd; }
+p { font: 400 24px/1.4 D, Arial, sans-serif; margin: 28px 0 0; color: #d2d1cd; }
 </style></head><body>
-<svg class="arch" viewBox="0 0 608 630">${arch}<g class="orn">${orn}</g></svg>
-<img class="card" src="${'data:image/webp;base64,' + readFileSync(join(root, 'assets/board/card-front.webp')).toString('base64')}">
-<div class="text"><div class="k">Tradition → Circuit</div><h1>${esc(first)}<br>${esc(rest.join(' '))}</h1><p>${esc(edu.degree.replace('B.S. ', ''))} · ${esc(edu.institution)}</p></div>
+<div class="grid"></div>
+<img class="card" src="${'data:image/webp;base64,' + readFileSync(join(root, 'assets/board/card-hero.webp')).toString('base64')}">
+<div class="text"><div class="k">Portfolio</div><h1><span>${esc(first)}</span><span>${esc(rest.join(' '))}</span></h1><p>${esc(edu.degree.replace('B.S. ', ''))} · ${esc(edu.institution)}</p></div>
 </body></html>`;
 
 const dir = mkdtempSync(join(tmpdir(), 'social-'));

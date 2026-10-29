@@ -25,7 +25,7 @@ const curves = (list) => list.map((pts) => `<path d="${smoothPathFromPoints(pts)
 const curve = (pts) => smoothPathFromPoints(pts);
 const g = (cls, body) => `<g class="${cls}">\n${body}\n</g>`;
 
-// --- Jali arch variants (reference layouts for the no-JS hero and inspection) ---
+// --- Jali arch (the closing ornament above the contact section) ---
 function jaliSvg(frame, box, maxPairs) {
   const j = jaliGeometry(frame, box, { maxPairs });
   const body = [
@@ -36,9 +36,6 @@ function jaliSvg(frame, box, maxPairs) {
   ].join('\n');
   return svg(`0 0 ${frame.w} ${frame.h}`, body);
 }
-out('jali-arch-wide.svg', jaliSvg({ x: 0, y: 0, w: 1280, h: 600 }, { x: 250, y: 250, w: 780, h: 290 }, 3));
-out('jali-arch-tall.svg', jaliSvg({ x: 0, y: 0, w: 358, h: 470 }, { x: 30, y: 150, w: 298, h: 280 }, 1));
-out('jali-panel.svg', jaliSvg({ x: 0, y: 0, w: 640, h: 440 }, { x: 210, y: 196, w: 220, h: 200 }, 2));
 out('closing-jali.svg', jaliSvg({ x: 0, y: 0, w: 960, h: 240 }, { x: 340, y: 150, w: 280, h: 80 }, 4));
 
 // --- Board, face-on: the real card's copper as line art (from js/board-data.js) ---
@@ -132,7 +129,7 @@ for (const [name, d] of Object.entries(glyphs)) out(`glyphs/${name}.svg`, svg('0
 
 // --- Favicon: the DV monogram inside the antenna square ---
 writeFileSync(join(root, 'assets/favicon.svg'),
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#06121e"/><g fill="none" stroke="#c98a4b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h22v22H5z" opacity=".55"/><path d="M8 11h4l2 2v6l-2 2H8zM17 11l3 10 3-10"/></g></svg>\n`);
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0b0c0e"/><g fill="none" stroke="#c98a4b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h22v22H5z" opacity=".55"/><path d="M8 11h4l2 2v6l-2 2H8zM17 11l3 10 3-10"/></g></svg>\n`);
 
-console.log('art written:', Object.keys(glyphs).length, 'glyphs + 8 illustrations');
+console.log('art written:', Object.keys(glyphs).length, 'glyphs + 5 illustrations');
 void circlePoints;

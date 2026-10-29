@@ -1,6 +1,6 @@
 # Deveshwar Vankeswaram — portfolio ("Tradition → Circuit")
 
-A one-page portfolio where an original Indian jali lattice turns into the routed copper of an illustrated NFC business card as you scroll, then gives way to the résumé. The page is fully readable with JavaScript off, with reduced motion, and without a GPU; the animation and 3D are enhancements on top.
+A one-page portfolio where an original Indian jali lattice turns into the routed copper of my real NFC business card as you scroll. The card is a photoreal 3D model built from its own fabrication files. Then the page gives way to the résumé, with real screenshots of the projects and photos for the interests. The page is fully readable with JavaScript off, with reduced motion, and without a GPU; the animation and 3D are enhancements on top.
 
 ## How it works (the interview version)
 
@@ -20,7 +20,7 @@ data/*.json ──generate──▶ index.html (semantic, complete)
                 └─ scheduler.js (the only decorative requestAnimationFrame loop; Lenis runs inside it)
 ```
 
-`js/art.js` is the single source of geometry: the arch is built around the measured hero text, its five arch lines become the five antenna turns, the ogee lattice lines become bus traces and the frame becomes the board outline. `js/projection.js` is the shared camera, so the SVG traces and the 3D traces register exactly when the board is face-on.
+`js/art.js` is the single source of line-art geometry, and `js/board-data.js` holds the card's real geometry parsed from its Gerbers. The arch is built around the measured hero text. Its five arch lines become the card's five real antenna turns, the ogee lattice lines become its real traces, and the frame becomes the board edge. `js/projection.js` is the shared camera, so the SVG line art registers exactly on the photoreal 3D card at the moment they cross-fade.
 
 ## Run it
 
@@ -41,7 +41,16 @@ Rules the validator enforces: the major is "Computer Engineering"; a changed bul
 
 **Skills evidence:** add an edge to `skillRelations` as `{ skillId, entityId, evidenceRef }`, where `evidenceRef` points at a bullet (`projects.tidecast.b2`) or description (`leadership.goldman-steam.description`) that names the skill. The validator rejects edges whose evidence doesn't mention the skill.
 
-**Artwork:** `npm run art` regenerates the inspectable SVGs in `assets/svg/` from `js/art.js`; `node scripts/build-social.mjs` renders `assets/social-card.png` (with the preview server running).
+**Artwork and realism assets** (run with the preview server up where noted):
+
+| Script | Produces |
+|---|---|
+| `npm run art` | the inspectable line-art SVGs in `assets/svg/` from `js/art.js` |
+| `node scripts/build-board.mjs` | `js/board-data.js` (the card's real outline, five antenna turns, traces, pads, vias, parts) and the PBR texture maps in `assets/board/`, rendered from `hardware/gerbers/` with pcb-stackup |
+| `node scripts/render-stills.mjs` (server) | photoreal stills of the card (`assets/board/card-*.webp`) for the no-JS frames, the NFC fallback and the social card |
+| `node scripts/capture-projects.mjs` | fresh screenshots of the live TideCast and Vedam sites (`assets/projects/`) |
+| `node scripts/process-photos.mjs` | crops and encodes the credited Wikimedia Commons photos listed in `site-config.json → photos` |
+| `node scripts/build-social.mjs` | `assets/social-card.png` |
 
 ## Motion and modes
 
@@ -62,7 +71,7 @@ Rules the validator enforces: the major is "Computer Engineering"; a changed bul
 | `node scripts/serve.mjs 8090 --prod` then `node scripts/run-lighthouse.mjs` | `reports/lighthouse.md` — three cold runs per profile, median and range |
 | `node scripts/build-site.mjs` | `_site/` from an allowlist, scanned for excluded content |
 
-Measured on 29 Oct 2026 (Apple M1 Pro, Chrome 156): JS excluding Three 77 KB gz, Three subset 148 KB gz, initial transfer 130 KB; Lighthouse desktop 100/100/100/100 with LCP 0.44 s, mobile 99/100/100/100 with LCP 1.95 s, CLS 0 in both. Full results and everything still pending (real Safari/iOS/Android, screen readers, the timed recruiter test) are in `reports/verification.md`.
+Measured on 29 Oct 2026 after the realism pass (Apple M1 Pro, Chrome 156): JS excluding Three 80 KB gz, Three subset 144 KB gz, initial transfer 157 KB, card textures and photos load lazily; Lighthouse desktop 100/100/100/100 with LCP 0.44 s, mobile 97/100/100/100 with LCP 1.88 s, CLS 0 in both. Full results and everything still pending (real Safari/iOS/Android, screen readers, the timed recruiter test) are in `reports/verification.md`.
 
 Screenshots are reproducible with Playwright against the preview server; the helper scripts used during the build write to a scratch folder, and the preview images are kept in the owner's notes.
 

@@ -19,7 +19,7 @@
 | Content validation | `npm run validate` | pass (9 exclusion patterns incl. private list) |
 | Regeneration drift | `npm run check:drift` | pass |
 | Unit tests | `npm test` | **37 / 37 pass** |
-| Browser tests, Chrome | `npx playwright test --project=chrome` | **61 / 61 pass** (stable across three consecutive full runs) |
+| Browser tests, Chrome | `npx playwright test --project=chrome` | **61 / 61 pass** (stable across three consecutive full runs; re-run after the realism pass) |
 | Engine tests, WebKit | `npx playwright test --project=webkit` | **35 / 35 pass** (foundation, story, projects specs; Safari keyboard model uses Option+Tab) |
 | Combined run (Chrome + WebKit, 3 workers) | `npx playwright test` | 96 / 96 in the last two consecutive runs. One earlier combined run had a single intermittent failure that did not reproduce and was not captured; timing-sensitive checks under shared CPU/GPU load are the likely cause |
 | Engine tests, Firefox | `PW_FIREFOX=1 npx playwright test --project=firefox` | **pending** — Playwright's Firefox (Nightly) build exits with code 1 on macOS 27; Firefox is not installed on this Mac |
@@ -35,12 +35,14 @@
 
 | Profile | Perf | A11y | BP | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|
-| Desktop preset (1350×940, no CPU throttling) | 100 (100–100) | 100 | 100 | 100 | 0.44 s | 0 | 0 ms |
-| Mobile default (Moto G Power emulation, 4× CPU, slow 4G) | 99 (99–99) | 100 | 100 | 100 | 1.95 s | 0 | 0 ms |
+| Desktop preset (1350×940, no CPU throttling) | 100 (100–100) | 100 | 100 | 100 | 0.44 s | 0 | 13 ms |
+| Mobile default (Moto G Power emulation, 4× CPU, slow 4G) | 97 (97–97) | 100 | 100 | 100 | 1.88 s | 0 | 176 ms |
+
+Re-measured after the realism pass (photoreal card, project screenshots, photos). One earlier run of that pass reached only mobile 84 / LCP 4.4 s because an SVG image of the silkscreen became the LCP element; it now attaches only when the board appears, and below-the-fold images use `fetchpriority="low"`.
 
 Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. These are not field Core Web Vitals; no analytics are installed, so there is no field data.
 
-**Bytes** (`reports/budget.md`, gzip of what a real load requests): JS excluding Three 77.4 KB (budget 250 KB) · Three subset 147.6 KB (deferred; budget 250 KB) · all JS 225 KB · initial transfer 130.4 KB (budget 600 KB) · everything requested 348 KB.
+**Bytes** (`reports/budget.md`, gzip of what a real load requests): JS excluding Three 80.3 KB (budget 250 KB) · Three subset 144.0 KB (deferred; budget 250 KB) · all JS 224 KB · initial transfer 157 KB (budget 600 KB) · everything requested after visiting every section 1.19 MB (card textures, screenshots and photos, all lazy).
 
 **3D budget**: under 20k triangles and 50 draw calls (asserted in `story.spec.mjs`).
 

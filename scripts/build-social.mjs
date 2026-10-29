@@ -1,5 +1,5 @@
 // Maintenance: renders the 1200×630 Open Graph image from the site's own line
-// art (the illustrated board and a jali arch) with the name and major, using the
+// art (a jali arch) and a render of the real NFC card, with the name and major, using the
 // self-hosted fonts. The PNG is a derivative export, not a new illustration style.
 // Usage: node scripts/serve.mjs 8080 & node scripts/build-social.mjs
 import { chromium } from '@playwright/test';
@@ -29,7 +29,7 @@ svg { position: absolute; fill: none; stroke-linecap: round; stroke-linejoin: ro
 svg path, svg circle, svg rect { vector-effect: non-scaling-stroke; stroke-width: 1.6; }
 .arch { left: 0; top: 0; width: 608px; height: 630px; stroke: #c98a4b; }
 .arch .orn { stroke: #d9b36a; }
-.board { right: 40px; top: 150px; width: 560px; height: 320px; }
+.card { position: absolute; right: 10px; top: 120px; width: 620px; height: auto; filter: drop-shadow(0 24px 30px rgba(0,0,0,.55)); }
 .board .art-silk { stroke: rgba(243,234,220,.6); } .board .art-traces, .board .art-antenna, .board .art-copper-extra { stroke: #c98a4b; }
 .board .art-vias, .board .art-pads { stroke: #d9b36a; } .board .art-board, .board .art-chip { stroke: rgba(159,176,189,.6); }
 .board .art-board-edge { fill: #0b1a14; }
@@ -39,7 +39,7 @@ p { font: 500 23px/1.4 D, Arial, sans-serif; margin: 22px 0 0; color: #d8cfc1; }
 .k { font: 500 14px D, Arial, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: #c98a4b; margin: 0 0 16px; }
 </style></head><body>
 <svg class="arch" viewBox="0 0 608 630">${arch}<g class="orn">${orn}</g></svg>
-<svg class="board" viewBox="0 0 1120 640">${inner('assets/svg/traces.svg')}</svg>
+<img class="card" src="${'data:image/webp;base64,' + readFileSync(join(root, 'assets/board/card-front.webp')).toString('base64')}">
 <div class="text"><div class="k">Tradition → Circuit</div><h1>${esc(first)}<br>${esc(rest.join(' '))}</h1><p>${esc(edu.degree.replace('B.S. ', ''))} · ${esc(edu.institution)}</p></div>
 </body></html>`;
 

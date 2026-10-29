@@ -5,7 +5,7 @@
 
 import { addTask, removeTask, wake } from './scheduler.js';
 import { motionMode, onMotionChange, clamp } from './motion.js';
-import { globeGeometry, pathFromPoints, boardGeometry } from './art.js';
+import { boardGeometry } from './art.js';
 import { makeCamera, projectPoint, rotation, layerZ } from './projection.js';
 import { createSvgBoard, fieldRings } from './board-svg.js';
 import { onThemeChange } from './theme.js';
@@ -24,39 +24,21 @@ export async function initProjects({ cfg, tier, report }) {
   const cleanups = [];
   const reduced = () => motionMode().reduced;
 
-  // ---- TideCast: globe turns and steps light from local scroll progress ----
+  // ---- TideCast: the four knuckle-reference steps light from local progress ----
   const tide = document.querySelector('.world-tidecast');
   if (tide) {
     const panel = tide.closest('.project');
-    const svg = tide.querySelector('.globe-art');
-    const globeGroup = svg.querySelector('.art-globe');
-    const pingGroup = svg.querySelector('.art-ping');
     const steps = [...tide.querySelectorAll('.pipeline-step')];
-    globeGroup.replaceChildren();
-    const outline = svgEl('path', {}, globeGroup);
-    const grid = svgEl('path', {}, globeGroup);
-    const pings = [...pingGroup.querySelectorAll('circle')];
-    let lastLon = NaN;
-    const draw = (lon) => {
-      const g = globeGeometry(200, 200, 168, { lon0: lon, lat0: 24 });
-      outline.setAttribute('d', pathFromPoints(g.outline));
-      grid.setAttribute('d', g.lines.map((l) => pathFromPoints(l)).join(''));
-      const p = g.project(30.6, -96.3);
-      pingGroup.style.display = p.visible ? '' : 'none';
-      for (const c of pings) { c.setAttribute('cx', p.x.toFixed(1)); c.setAttribute('cy', p.y.toFixed(1)); }
-    };
     const update = () => {
       const r = panel.getBoundingClientRect();
       const vh = window.innerHeight;
       if (r.bottom < -50 || r.top > vh + 50) return false;
       const progress = clamp((vh * 0.85 - r.top) / (r.height + vh * 0.25));
       steps.forEach((s, i) => s.classList.toggle('is-active', progress >= (i + 1) / (steps.length + 1)));
-      const lon = reduced() ? -88 : -128 + progress * 64;
-      if (!(Math.abs(lon - lastLon) <= 0.1)) { lastLon = lon; draw(lon); }
       return false;
     };
     addTask('tidecast', update);
-    cleanups.push(() => { removeTask('tidecast'); steps.forEach((s) => s.classList.remove('is-active')); draw(-88); });
+    cleanups.push(() => { removeTask('tidecast'); steps.forEach((s) => s.classList.remove('is-active')); });
   }
 
   // ---- Vedam: stroke by stroke, then fill, once on first view ----

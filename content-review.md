@@ -16,6 +16,7 @@ Research validates technology behaviour, not personal achievements. No personal-
 | D5 | Public NFC hardware repository linked as "Hardware files" | `codeUrl` for the NFC card (owner's own public repo with Gerbers, BOM, v1.0 release) |
 | D6 | Résumé PDF will be supplied later | Download controls stay hidden; `assets.resumePdf.approved` is `false` |
 | D7 | Build all ten phases without stopping for review; publish later | All phases built and verified locally (`reports/verification.md`); nothing published |
+| D8 | "Make everything hyper-realistic" (29 Oct): keep the jali line-art story; the card becomes a photoreal model of the real board; add photos for projects and hobbies; objects and scenes only, no people | 3D card rendered from `hardware/gerbers/` (geometry + PBR maps); real screenshots of TideCast and Vedam in CSS device frames; five credited Wikimedia Commons photos. Supersedes the spec's "no photos/stock imagery" rule by owner decision |
 
 ## Claims
 
@@ -30,7 +31,7 @@ Research validates technology behaviour, not personal achievements. No personal-
 | TideCast role, date, bullets | projects | supplied | Model download sizes in the repository README were not executed or benchmarked |
 | TideCast live URL `…/backbone/` and code URL | projects | externally corroborated (29 Oct 2026) | Route `/` → `/backbone/` matches the deployed app; the free Render service may sleep, which is not a reason to remove it |
 | Vedam role, date, bullet, live URL | projects | supplied | wearvedam.com returned HTTP 200 during research |
-| NFC Business Card role, date, bullets | projects | supplied | Fabricated board proportions and the NT3H2111 (NTAG I²C plus) part number come from the owner's own repository; the site still labels the board an illustration |
+| NFC Business Card role, date, bullets | projects | supplied | The 3D card is generated from the owner's fabrication files (Gerbers + BOM: NT3H2111, KT-0805Y LED, 47 Ω, 220 nF, 25 × 48 mm antenna) and is described as such on the page |
 | NFC hardware repository link | projects | externally corroborated (29 Oct 2026) | D5 |
 | Six leadership/activity entries | leadership | supplied | "Selected Participant" wording preserved |
 | Skills, certifications, interests | skills, beyond | supplied | "training" preserved for Ironman; no completion implied |
@@ -43,3 +44,8 @@ Research validates technology behaviour, not personal achievements. No personal-
 
 - Résumé PDF (D6): must say Computer Engineering and omit phone, street address, high school and the excluded program, including in PDF metadata. Run `npm run validate` and the exclusion scan on it before setting `approved: true`.
 - Publication: canonical URL, `og:url` and JSON-LD `url` appear only after `meta.deployApproved` is set to `true`.
+
+## Realism pass (29 Oct 2026)
+
+- Project screenshots are captured by `scripts/capture-projects.mjs` from the live sites. They show the sites as they looked on capture day; re-run it after redesigns. The TideCast capture includes a public leaderboard entry shown on the live landing page.
+- The back-side bull-and-bear artwork comes from the owner's board files; its original source and licence were not supplied (owner-confirmation-needed before publishing).

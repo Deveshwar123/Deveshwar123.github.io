@@ -12,22 +12,22 @@ Lighthouse 13.5.0, Google Chrome 156.0.8078.73, headless, three cold runs per pr
 | SEO | 100 | 100 – 100 | meets target |
 | LCP | 0.44 s | 0.44 s – 0.44 s | meets target |
 | CLS | 0.000 | 0.000 – 0.000 | meets target |
-| TBT | 0 ms | 0 ms – 0 ms | meets target |
-| FCP | 0.36 s | 0.36 s – 0.37 s | meets target |
+| TBT | 13 ms | 13 ms – 13 ms | meets target |
+| FCP | 0.33 s | 0.33 s – 0.33 s | meets target |
 
-Audits below 0.9 in any run: valid-source-maps, unminified-javascript, unused-javascript, cache-insight, network-dependency-tree-insight, render-blocking-insight
+Audits below 0.9 in any run: valid-source-maps, unminified-javascript, unused-javascript, cache-insight, image-delivery-insight, network-dependency-tree-insight, render-blocking-insight
 
 ## Mobile (default: Moto G Power emulation, 4× CPU slowdown, simulated slow 4G)
 
 | Metric | Median | Range | Target |
 |---|---|---|---|
-| Performance | 99 | 99 – 99 | meets target |
+| Performance | 97 | 97 – 97 | meets target |
 | Accessibility | 100 | 100 – 100 | meets target |
 | Best Practices | 100 | 100 – 100 | meets target |
 | SEO | 100 | 100 – 100 | meets target |
-| LCP | 1.95 s | 1.95 s – 1.95 s | meets target |
+| LCP | 1.88 s | 1.88 s – 1.88 s | meets target |
 | CLS | 0.000 | 0.000 – 0.000 | meets target |
-| TBT | 0 ms | 0 ms – 0 ms | meets target |
-| FCP | 1.37 s | 1.37 s – 1.37 s | meets target |
+| TBT | 176 ms | 173 ms – 176 ms | meets target |
+| FCP | 1.22 s | 1.22 s – 1.22 s | meets target |
 
-Audits below 0.9 in any run: unminified-javascript, cache-insight, network-dependency-tree-insight, render-blocking-insight
+Audits below 0.9 in any run: max-potential-fid, valid-source-maps, unminified-javascript, unused-javascript, cache-insight, image-delivery-insight, network-dependency-tree-insight, render-blocking-insight

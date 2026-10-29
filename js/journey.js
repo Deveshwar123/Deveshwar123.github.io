@@ -64,7 +64,9 @@ export async function createStory({ cfg, tier, report }) {
   const face = {
     fill: el('path', { class: 'art-board-fill' }, gFace),
     // The card's real silkscreen (your name in calligraphy), as rendered from the Gerbers.
-    silk: el('image', { href: 'assets/board/top-silk-lo.webp', x: 0, y: 0, width: BOARD.W, height: BOARD.H, preserveAspectRatio: 'none' }, gFace),
+    // Its source is attached only once the board starts to appear, so it never
+    // competes with the page's first paint.
+    silk: el('image', { x: 0, y: 0, width: BOARD.W, height: BOARD.H, preserveAspectRatio: 'none' }, gFace),
     extra: el('path', { class: 'art-copper-extra' }, gFace),
     unpaired: el('path', { class: 'art-traces' }, gFace),
     vias: el('path', { class: 'art-vias' }, gFace),
@@ -219,6 +221,7 @@ export async function createStory({ cfg, tier, report }) {
       gFace.style.opacity = '1';
       face.fill.style.opacity = s.boardFill * 0.9;
       for (const k of ['silk', 'extra', 'unpaired', 'vias']) face[k].style.opacity = s.vias;
+      if (s.vias > 0 && !face.silk.hasAttribute('href')) face.silk.setAttribute('href', 'assets/board/top-silk-lo.webp');
     } else if (s.svgOpacity > 0) {
       svgBoard.setOpacity(s.svgOpacity);
       if (s.rot === 0 && s.explode === 0) svgBoard.renderFaceOn(face0);

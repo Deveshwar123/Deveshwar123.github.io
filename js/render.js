@@ -147,6 +147,7 @@ export function renderSnapshot(d) {
       <ul class="stats">
 ${d.resume.snapshot.map((s) => html`        <li class="stat"><span class="stat-value" data-value="${s.value}">${s.value}</span> <span class="stat-label">${s.label}</span></li>\n`)}      </ul>
       <article class="education" aria-labelledby="edu-${edu.id}">
+        ${d.config.photos.items.campus ? html`<div class="education-photo">${photo('campus', d.config.photos.items.campus, { sizes: '(min-width: 1360px) 1280px, 100vw', alt: 'The Academic Building at Texas A&M University', cls: 'education-img' })}</div>` : ''}
         <p class="kicker" aria-hidden="true">${S.education}</p>
         <h3 class="education-name" id="edu-${edu.id}">${edu.institution}</h3>
         <p class="meta"><span>${edu.location}</span> · ${time(edu.dateDisplay, edu.dateRange?.end)}</p>
@@ -188,13 +189,21 @@ function projectActions(p, L) {
   return actions.length ? html`<p class="project-actions">${actions}</p>` : '';
 }
 
+// Real screenshots of a live project in CSS-drawn laptop and phone frames.
+function devices(id) {
+  return html`<div class="devices" aria-hidden="true">
+              <div class="laptop"><div class="laptop-screen"><img src="assets/projects/${id}-desktop.webp" width="1280" height="800" alt="" loading="lazy" decoding="async" fetchpriority="low"></div><div class="laptop-base"></div></div>
+              <div class="phone"><div class="phone-screen"><img src="assets/projects/${id}-phone.webp" width="390" height="844" alt="" loading="lazy" decoding="async" fetchpriority="low"></div></div>
+            </div>`;
+}
+
 function projectWorld(p, d, art) {
   const W = d.config.illustrations.projects[p.id];
   const N = d.config.illustrations.projects['nfc-card'];
   if (p.id === 'tidecast') {
     return html`
           <figure class="project-world world-tidecast">
-            <div class="world-art" aria-hidden="true">${raw(art.globe)}</div>
+            <div class="world-art">${devices('tidecast')}</div>
             <div class="pipeline">
               <p class="pipeline-label">${W.modeLabel}</p>
               <ol class="pipeline-steps">
@@ -206,7 +215,7 @@ ${W.steps.map((s, i) => html`                <li class="pipeline-step" data-step
   if (p.id === 'vedam') {
     return html`
           <figure class="project-world world-vedam">
-            <div class="world-art vedam-art" aria-hidden="true">${raw(art.vedam)}</div>
+            <div class="world-art vedam-art">${devices('vedam')}</div>
             <figcaption class="world-caption">${W.description}</figcaption>
           </figure>`;
   }
@@ -323,13 +332,24 @@ ${d.resume.leadership.map((l) => html`        <li class="activity" id="activity-
     </section>`;
 }
 
+// Responsive photo markup for a credited image processed into assets/photos/.
+function photo(id, item, { sizes, alt = '', cls }) {
+  const [aw, ah] = item.aspect;
+  const [big, small] = aw > ah ? [1600, 800] : [720, 420];
+  return html`<img class="${cls}" src="assets/photos/${id}-${big}.webp" srcset="assets/photos/${id}-${small}.webp ${small}w, assets/photos/${id}-${big}.webp ${big}w" sizes="${sizes}" width="${big}" height="${Math.round((big * ah) / aw)}" alt="${alt}" loading="lazy" decoding="async" fetchpriority="low">`;
+}
+
 export function renderBeyond(d) {
   const S = d.config.labels.sections;
+  const P = d.config.photos.items;
   return html`
     <section class="section beyond" id="beyond" aria-labelledby="beyond-title">
       ${sectionHead('beyond', S.beyond)}
       <ul class="interests">
-${d.resume.interests.map((i) => html`        <li class="interest">${glyph(i.glyph, 'glyph interest-glyph')}<span class="interest-label">${i.label}</span></li>\n`)}      </ul>
+${d.resume.interests.map((i) => html`        <li class="interest">
+          ${P[i.id] ? html`<div class="interest-photo">${photo(i.id, P[i.id], { sizes: '(min-width: 860px) 300px, 46vw', cls: 'interest-img' })}</div>` : ''}
+          <span class="interest-text">${glyph(i.glyph, 'glyph interest-glyph')}<span class="interest-label">${i.label}</span></span>
+        </li>\n`)}      </ul>
     </section>`;
 }
 
@@ -378,6 +398,11 @@ export function renderFooter(d) {
         </fieldset>
       </div>
       <p class="footer-note">${F.note}</p>
+      <details class="photo-credits">
+        <summary>${F.credits}</summary>
+        <ul>
+${Object.values(d.config.photos.items).map((c) => html`          <li><a href="${safeUrl(c.source)}">${c.title}</a> by ${c.author}, <a href="${safeUrl(c.licenseUrl)}">${c.license}</a> (${F.creditsChanges})</li>\n`)}        </ul>
+      </details>
     </div>
   </footer>`;
 }

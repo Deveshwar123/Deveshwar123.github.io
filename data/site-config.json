@@ -6,7 +6,7 @@
     "deployUrl": "https://deveshwar123.github.io/",
     "deployApproved": false,
     "socialImage": "assets/social-card.png",
-    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, drawn over an illustrated circuit board in copper line art.",
+    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, beside a rendering of his NFC business card circuit board.",
     "themeColorDark": "#06121e",
     "themeColorLight": "#f6efe3"
   },
@@ -152,7 +152,9 @@
       "motion": "Motion",
       "motionSystem": "System",
       "motionReduced": "Reduced",
-      "note": "Line art and 3D are original illustrations. Content is generated from one résumé data file."
+      "note": "Line art and 3D are original illustrations. Content is generated from one résumé data file.",
+      "credits": "Photo credits",
+      "creditsChanges": "cropped and resized"
     }
   },
   "illustrations": {
@@ -187,7 +189,7 @@
     ],
     "projects": {
       "tidecast": {
-        "description": "Illustration: a wireframe globe with a schematic ping at College Station, and the knuckle-reference measuring mode drawn as four steps.",
+        "description": "Screenshots of the live site on a laptop and phone, and the knuckle-reference measuring mode drawn as four steps.",
         "modeLabel": "Knuckle-reference mode (illustrative)",
         "steps": [
           "Photo",
@@ -197,7 +199,7 @@
         ]
       },
       "vedam": {
-        "description": "Illustration: an original jali arch, drawn stroke by stroke and then filled."
+        "description": "Screenshots of the live site, wearvedam.com, on a laptop and phone."
       },
       "nfc-card": {
         "description": "My actual card, rendered in 3D from its fabrication files (Gerbers and BOM). Drag sideways or use the buttons to turn it over.",
@@ -349,5 +351,91 @@
     "heightMm": 50.8,
     "cornerMm": 3.2,
     "basis": "Proportions of the owner's fabricated card (3.5 × 2 in); everything else is illustrative."
+  },
+  "photos": {
+    "note": "Free-licensed photos of objects and places (no people), from Wikimedia Commons. Cropped and resized by scripts/process-photos.mjs; credited on the page.",
+    "items": {
+      "viola": {
+        "file": "File:A viola in its case.jpg",
+        "focus": [
+          0.5,
+          0.42
+        ],
+        "aspect": [
+          4,
+          5
+        ],
+        "author": "Zeta Puppis (Naos)",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source": "https://commons.wikimedia.org/wiki/File:A_viola_in_its_case.jpg",
+        "title": "A viola in its case"
+      },
+      "ironman": {
+        "file": "File:Transition zone at Ironman Coeur d'Alene 2011.jpg",
+        "focus": [
+          0.52,
+          0.5
+        ],
+        "aspect": [
+          4,
+          5
+        ],
+        "author": "Raniel Diaz",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "source": "https://commons.wikimedia.org/wiki/File:Transition_zone_at_Ironman_Coeur_d%27Alene_2011.jpg",
+        "title": "Transition zone at Ironman Coeur d'Alene 2011",
+        "zoom": 1.7
+      },
+      "chess": {
+        "file": "File:Chess pieces close up.jpg",
+        "focus": [
+          0.42,
+          0.55
+        ],
+        "aspect": [
+          4,
+          5
+        ],
+        "author": "Aaaatu",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source": "https://commons.wikimedia.org/wiki/File:Chess_pieces_close_up.jpg",
+        "title": "Chess pieces close up"
+      },
+      "cooking": {
+        "file": "File:Spice box with various blends.jpg",
+        "focus": [
+          0.5,
+          0.5
+        ],
+        "aspect": [
+          4,
+          5
+        ],
+        "author": "Waitinginstars",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source": "https://commons.wikimedia.org/wiki/File:Spice_box_with_various_blends.jpg",
+        "title": "Spice box with various blends"
+      },
+      "campus": {
+        "file": "File:Texas A&M University Academic Building.jpg",
+        "focus": [
+          0.45,
+          0.5
+        ],
+        "aspect": [
+          3,
+          1
+        ],
+        "author": "Donnie Ray Jones",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "source": "https://commons.wikimedia.org/wiki/File:Texas_A%26M_University_Academic_Building.jpg",
+        "title": "Texas A&M University Academic Building"
+      }
+    }
   }
 }

@@ -37,11 +37,9 @@ const art = {
   beatPanel: inlineSvg('assets/svg/jali-panel.svg', 'beat-art'),
   // Photoreal stills of the real card (scripts/render-stills.mjs); decorative, the
   // captions carry the meaning.
-  beatBoard: `<img class="beat-art beat-photo" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async">`,
-  beatLayers: `<img class="beat-art beat-photo" src="assets/board/card-exploded.webp" width="1600" height="1100" alt="" loading="lazy" decoding="async">`,
-  nfcStill: `<img class="nfc-static" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async">`,
-  globe: inlineSvg('assets/svg/tidecast-globe.svg', 'globe-art'),
-  vedam: inlineSvg('assets/svg/vedam-arch.svg', 'vedam-svg'),
+  beatBoard: `<img class="beat-art beat-photo" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
+  beatLayers: `<img class="beat-art beat-photo" src="assets/board/card-exploded.webp" width="1600" height="1100" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
+  nfcStill: `<img class="nfc-static" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   closing: inlineSvg('assets/svg/closing-jali.svg', 'closing-art'),
 };
 const symbols = [];

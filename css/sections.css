@@ -56,7 +56,7 @@
   color: var(--ink);
 }
 .stat-label { color: var(--muted); font-size: var(--text-small); }
-@media (max-width: 859px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 859px) { .stats { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); } }
 
 .education {
   display: grid;

@@ -41,7 +41,7 @@ function sectionHead(id, { kicker, title }, extraClass = '') {
   return html`
       <header class="section-head${extraClass}">
         <p class="kicker" aria-hidden="true">${kicker}</p>
-        <h2 class="section-title" id="${id}-title" tabindex="-1">${title}</h2>
+        <h2 class="section-title" id="${id}-title">${title}</h2>
       </header>`;
 }
 
@@ -89,7 +89,7 @@ export function renderHero(d, art) {
         ${raw(art.heroTall)}
         <div class="hero-crest-content" data-arch-box>
           <p class="kicker hero-kicker">${H.kicker}</p>
-          <h1 class="hero-name" id="hero-name" tabindex="-1"><span class="hero-name-line">${first}</span> <span class="hero-name-line">${rest.join(' ')}</span></h1>
+          <h1 class="hero-name" id="hero-name"><span class="hero-name-line">${first}</span> <span class="hero-name-line">${rest.join(' ')}</span></h1>
           <p class="hero-subtitle">${person.heroSubtitle}</p>
         </div>
       </div>
@@ -105,7 +105,7 @@ export function renderHero(d, art) {
 ${d.resume.projects.map((p) => html`            <li><a href="#project-${p.id}">${p.title}</a></li>\n`)}          </ul>
         </nav>
         <div class="hero-actions">
-          <a class="button button--primary" href="#projects" data-focus-target="projects-title">${H.seeWork}${glyph('arrow')}</a>
+          <a class="button button--primary" href="#projects">${H.seeWork}${glyph('arrow')}</a>
           ${resume.approved ? html`<a class="button" href="${resume.path}" type="application/pdf">${H.resume}</a>` : ''}
         </div>
       </div>
@@ -235,7 +235,7 @@ export function renderProjects(d, art) {
       ${sectionHead('projects', S.projects)}
 ${d.resume.projects.map((p) => html`      <article class="project project--${p.id}" id="project-${p.id}" aria-labelledby="project-${p.id}-title">
         <div class="project-text">
-          <h3 class="project-title" id="project-${p.id}-title" tabindex="-1">${p.title}</h3>
+          <h3 class="project-title" id="project-${p.id}-title">${p.title}</h3>
           <p class="meta"><span>${p.role}</span> · ${time(p.dateDisplay, rangeIso(p.dateRange))}</p>
           <ul class="bullets">
 ${p.bullets.map((b) => html`            <li>${b.text}</li>\n`)}          </ul>
@@ -342,7 +342,7 @@ export function renderContact(d, art) {
     <section class="section contact" id="contact" aria-labelledby="contact-title">
       <div class="contact-art" aria-hidden="true">${raw(art.closing)}</div>
       <p class="kicker" aria-hidden="true">${S.kicker}</p>
-      <h2 class="section-title contact-title" id="contact-title" tabindex="-1">${S.title}</h2>
+      <h2 class="section-title contact-title" id="contact-title">${S.title}</h2>
       <div class="contact-email">
         <p class="contact-label">${C.emailLabel}</p>
         <p class="email-address">${links.email}</p>

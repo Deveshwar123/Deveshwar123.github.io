@@ -38,6 +38,10 @@ h1, h2, h3 {
   text-wrap: balance;
 }
 p, ul, ol, dl, dd, figure { margin: 0; }
+/* Long single words (URLs, names) may break rather than force sideways scrolling
+   at 320px wide or with enlarged text. */
+h1, h2, h3, p, li, dd, dt, a, span { overflow-wrap: anywhere; }
+h1, h2, h3 { hyphens: manual; }
 ul, ol { padding: 0; list-style: none; }
 img, svg, canvas { display: block; max-width: 100%; }
 button, input { font: inherit; color: inherit; }

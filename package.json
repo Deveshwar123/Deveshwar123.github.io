@@ -9,7 +9,7 @@
     "check:drift": "node scripts/generate.mjs --check",
     "validate": "node scripts/validate-content.mjs",
     "vendor": "node scripts/build-vendor.mjs",
-    "serve": "python3 -m http.server 8080 --bind 127.0.0.1",
+    "serve": "node scripts/serve.mjs 8080",
     "test": "node --test \"tests/unit/*.test.mjs\"",
     "test:e2e": "playwright test",
     "test:all": "npm run validate && npm run check:drift && npm test && npm run test:e2e"

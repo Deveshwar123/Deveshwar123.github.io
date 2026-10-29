@@ -30,6 +30,7 @@
   <script type="importmap">{"imports":{"three":"./vendor/three/three-board.min.js","lenis":"./vendor/lenis/lenis.min.mjs","gsap":"./vendor/gsap/gsap.min.mjs"}}</script>
   <script type="module" src="js/main.js"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Deveshwar Vankeswaram","description":"Computer Engineering · Texas A\u0026M · Builds software, hardware \u0026 the things between.","email":"mailto:deveshwarvankeswaram@tamu.edu","affiliation":{"@type":"CollegeOrUniversity","name":"Texas A\u0026M University"},"sameAs":["https://linkedin.com/in/deveshwarv","https://github.com/Deveshwar123"]}</script>
+  <script type="application/json" id="site-config">{"theme":{"default":"system","storageKey":"dv-theme","motionStorageKey":"dv-motion"},"meta":{"themeColorDark":"#06121e","themeColorLight":"#f6efe3"},"labels":{"pauseMotion":"Pause motion","contact":{"emailLabel":"Email","emailAction":"Email me","copy":"Copy email","copied":"Email copied","copyFailed":"Copy unavailable; select the address","linkedin":"LinkedIn","github":"GitHub"},"skills":{"languages":"Languages","tools":"Tools","certifications":"Certifications","relationsTitle":"Where each skill shows up","relationsIntro":"Each link below points to a résumé line that names the skill. Skills without a documented project link are still listed.","noLink":"No documented project link for this skill","boardHint":"Select a skill or a role to trace its documented links.","clear":"Clear selection","filterLabel":"Show links for","filterAll":"All skills and roles"}},"illustrations":{"beats":[{"id":"story-intro","chapter":"Intro","title":"Tradition","caption":"A jali lattice, the carved stone screen of Indian architecture, drawn on an 8px grid.","p":0.07},{"id":"story-board","chapter":"Board","title":"Circuit","caption":"The same lines, rerouted as copper traces on an illustrated two-layer NFC business card.","p":0.3},{"id":"story-layers","chapter":"Layers","title":"Layers","caption":"Four construction layers, four kinds of work: Software, Hardware, Data \u0026 Finance and Leadership. An illustration, not a manufacturing-accurate model.","p":0.5}],"layerLabels":["Software","Hardware","Data \u0026 Finance","Leadership"],"projects":{"tidecast":{"description":"Illustration: a wireframe globe with a schematic ping at College Station, and the knuckle-reference measuring mode drawn as four steps.","modeLabel":"Knuckle-reference mode (illustrative)","steps":["Photo","Species ID","Length via knuckle scale","Weight \u0026 points"]},"vedam":{"description":"Illustration: an original jali arch, drawn stroke by stroke and then filled."},"nfc-card":{"description":"Illustration of the two-layer card, not a manufacturing-accurate model. Drag sideways or use the buttons to turn it.","hotspot":"Illustrative NFC field and energy harvesting.","fieldToggle":"Show NFC field","rotateLeft":"Rotate left","rotateRight":"Rotate right","reset":"Reset view","controlsLabel":"Card view controls"}}},"motion":{"durations":{"hover":180,"state":320,"reveal":560,"countUp":900,"intro":1800,"sceneNominal":900},"easings":{"ui":[0.2,0.7,0.2,1],"scene":[0.65,0,0.35,1]},"intro":{"strokeStagger":50,"maxSiblings":8,"headerAt":1200,"chaptersAt":1400,"hintAt":1800,"bloomScale":0.86,"bloomBlur":18,"bloomBrightness":2},"reveal":{"rise":24,"stagger":60,"timelineStagger":50,"threshold":0.15},"spring":{"mass":1,"stiffness":170,"damping":18},"magnet":{"radius":80,"strength":0.3,"maxShift":6},"ambient":{"breatheDeg":0.5,"breathePeriod":8000,"sweepPeriod":6000},"dashSpeed":240,"headerGlassAt":40},"journey":{"end":0.62,"desktopTrack":{"minPx":2400,"viewports":4},"mobileTrack":{"minPx":1400,"viewports":2.5},"compactBreakpoint":860,"ranges":{"unravel":[0,0.18],"ornamentFade":[0.12,0.18],"vias":[0.14,0.18],"crossfade":[0.18,0.22],"pose":[0.18,0.38],"explode":[0.38,0.58],"ledBell":[0.58,0.59,0.6,0.61],"handoff":[0.6,0.62]},"pose":{"yawDeg":35,"pitchDeg":15},"quality":{"fullDpr":2,"compactDpr":1.5}},"board":{"widthMm":88.9,"heightMm":50.8,"cornerMm":3.2,"basis":"Proportions of the owner's fabricated card (3.5 × 2 in); everything else is illustrative."}}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -259,7 +260,7 @@
 </svg>
         <div class="hero-crest-content" data-arch-box>
           <p class="kicker hero-kicker">Tradition → Circuit</p>
-          <h1 class="hero-name" id="hero-name" tabindex="-1"><span class="hero-name-line">Deveshwar</span> <span class="hero-name-line">Vankeswaram</span></h1>
+          <h1 class="hero-name" id="hero-name"><span class="hero-name-line">Deveshwar</span> <span class="hero-name-line">Vankeswaram</span></h1>
           <p class="hero-subtitle">Computer Engineering · Texas A&amp;M · Builds software, hardware &amp; the things between.</p>
         </div>
       </div>
@@ -278,7 +279,7 @@
           </ul>
         </nav>
         <div class="hero-actions">
-          <a class="button button--primary" href="#projects" data-focus-target="projects-title">See my work<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-arrow"></use></svg></a>
+          <a class="button button--primary" href="#projects">See my work<svg class="glyph" aria-hidden="true" focusable="false"><use href="#glyph-arrow"></use></svg></a>
           
         </div>
       </div>
@@ -452,7 +453,7 @@
       
       <header class="section-head">
         <p class="kicker" aria-hidden="true">01</p>
-        <h2 class="section-title" id="snapshot-title" tabindex="-1">Snapshot</h2>
+        <h2 class="section-title" id="snapshot-title">Snapshot</h2>
       </header>
       <ul class="stats">
         <li class="stat"><span class="stat-value" data-value="4.0">4.0</span> <span class="stat-label">GPA</span></li>
@@ -477,7 +478,7 @@
       
       <header class="section-head">
         <p class="kicker" aria-hidden="true">02</p>
-        <h2 class="section-title" id="experience-title" tabindex="-1">Experience</h2>
+        <h2 class="section-title" id="experience-title">Experience</h2>
       </header>
       <div class="timeline">
         <ol class="roles">
@@ -524,11 +525,11 @@
       
       <header class="section-head">
         <p class="kicker" aria-hidden="true">03</p>
-        <h2 class="section-title" id="projects-title" tabindex="-1">Projects</h2>
+        <h2 class="section-title" id="projects-title">Projects</h2>
       </header>
       <article class="project project--tidecast" id="project-tidecast" aria-labelledby="project-tidecast-title">
         <div class="project-text">
-          <h3 class="project-title" id="project-tidecast-title" tabindex="-1">TideCast</h3>
+          <h3 class="project-title" id="project-tidecast-title">TideCast</h3>
           <p class="meta"><span>Full Stack Developer</span> · <time datetime="2026-10">Oct 2026</time></p>
           <ul class="bullets">
             <li>Co-built a web app identifying a fish's species, length and weight from a single photo.</li>
@@ -588,7 +589,7 @@
       </article>
       <article class="project project--vedam" id="project-vedam" aria-labelledby="project-vedam-title">
         <div class="project-text">
-          <h3 class="project-title" id="project-vedam-title" tabindex="-1">Vedam</h3>
+          <h3 class="project-title" id="project-vedam-title">Vedam</h3>
           <p class="meta"><span>Full Stack Developer</span> · <span>Sep 2026 – Present</span></p>
           <ul class="bullets">
             <li>Launched a brand website in HTML and JavaScript on a custom domain.</li>
@@ -654,7 +655,7 @@
       </article>
       <article class="project project--nfc-card" id="project-nfc-card" aria-labelledby="project-nfc-card-title">
         <div class="project-text">
-          <h3 class="project-title" id="project-nfc-card-title" tabindex="-1">NFC Business Card</h3>
+          <h3 class="project-title" id="project-nfc-card-title">NFC Business Card</h3>
           <p class="meta"><span>PCB Hardware Designer</span> · <time datetime="2026-05">May 2026</time></p>
           <ul class="bullets">
             <li>Designed a 2-layer NFC business card PCB in EasyEDA Pro around an NXP NTAG I2C chip.</li>
@@ -690,7 +691,7 @@
       
       <header class="section-head">
         <p class="kicker" aria-hidden="true">04</p>
-        <h2 class="section-title" id="skills-title" tabindex="-1">Skills</h2>
+        <h2 class="section-title" id="skills-title">Skills</h2>
       </header>
       <p class="skills-intro">Each link below points to a résumé line that names the skill. Skills without a documented project link are still listed.</p>
       <div class="skills-body" data-skills-graph>
@@ -735,7 +736,7 @@
       
       <header class="section-head">
         <p class="kicker" aria-hidden="true">05</p>
-        <h2 class="section-title" id="leadership-title" tabindex="-1">Leadership &amp; Activities</h2>
+        <h2 class="section-title" id="leadership-title">Leadership &amp; Activities</h2>
       </header>
       <ul class="activities">
         <li class="activity" id="activity-rha">
@@ -793,7 +794,7 @@
       
       <header class="section-head">
         <p class="kicker" aria-hidden="true">06</p>
-        <h2 class="section-title" id="beyond-title" tabindex="-1">Beyond</h2>
+        <h2 class="section-title" id="beyond-title">Beyond</h2>
       </header>
       <ul class="interests">
         <li class="interest"><svg class="glyph interest-glyph" aria-hidden="true" focusable="false"><use href="#glyph-viola"></use></svg><span class="interest-label">Viola (6+ years)</span></li>
@@ -862,7 +863,7 @@
 </g>
 </svg></div>
       <p class="kicker" aria-hidden="true">07 · Contact</p>
-      <h2 class="section-title contact-title" id="contact-title" tabindex="-1">Let’s build something.</h2>
+      <h2 class="section-title contact-title" id="contact-title">Let’s build something.</h2>
       <div class="contact-email">
         <p class="contact-label">Email</p>
         <p class="email-address">deveshwarvankeswaram@tamu.edu</p>

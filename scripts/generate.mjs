@@ -78,6 +78,16 @@ const csp = [
   'upgrade-insecure-requests',
 ].join('; ');
 
+// The subset of site-config.json the enhancement scripts read (no fetch needed).
+const runtimeConfig = {
+  theme: config.theme,
+  meta: { themeColorDark: config.meta.themeColorDark, themeColorLight: config.meta.themeColorLight },
+  labels: { pauseMotion: config.labels.pauseMotion, contact: config.labels.contact, skills: config.labels.skills },
+  illustrations: config.illustrations,
+  motion: config.motion,
+  journey: config.journey,
+  board: config.board,
+};
 const M = config.meta;
 const absolute = (p) => (M.deployApproved ? new URL(p, M.deployUrl).href : p);
 const head = R.html`<!doctype html>
@@ -111,6 +121,7 @@ ${M.deployApproved ? R.html`  <link rel="canonical" href="${M.deployUrl}">\n  <m
   <script type="importmap">${R.raw(importMap)}</script>
   <script type="module" src="js/main.js"></script>
   <script type="application/ld+json">${R.raw(R.jsonForScript(R.personJsonLd(d)))}</script>
+  <script type="application/json" id="site-config">${R.raw(R.jsonForScript(runtimeConfig))}</script>
 </head>`;
 
 const body = R.html`

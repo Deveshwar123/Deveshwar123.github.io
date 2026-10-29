@@ -11,9 +11,9 @@
       "license": "MIT",
       "retrieved": "2026-10-29",
       "file": "vendor/three/three-board.min.js",
-      "sha256": "f9b7bf49f7cd204bb8a46898602e26ab64cbc8d35276fd50b70b930fdd5d92c3",
-      "bytes": 592506,
-      "gzipBytes": 151166
+      "sha256": "c76947e556f5579c2d4243ef9df5b199548cc92d45c5162aeff8af43f34544cd",
+      "bytes": 579005,
+      "gzipBytes": 147437
     },
     {
       "name": "lenis",

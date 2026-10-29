@@ -35,16 +35,17 @@ const art = {
   heroWide: inlineSvg('assets/svg/jali-arch-wide.svg', 'hero-art hero-art--wide', ' preserveAspectRatio="none"'),
   heroTall: inlineSvg('assets/svg/jali-arch-tall.svg', 'hero-art hero-art--tall', ' preserveAspectRatio="none"'),
   beatPanel: inlineSvg('assets/svg/jali-panel.svg', 'beat-art'),
-  beatBoard: `<svg class="art beat-art" viewBox="0 0 1120 640" aria-hidden="true" focusable="false"><use href="#art-traces"></use></svg>`,
-  beatLayers: inlineSvg('assets/svg/board-layers.svg', 'beat-art beat-art--layers'),
+  // Photoreal stills of the real card (scripts/render-stills.mjs); decorative, the
+  // captions carry the meaning.
+  beatBoard: `<img class="beat-art beat-photo" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async">`,
+  beatLayers: `<img class="beat-art beat-photo" src="assets/board/card-exploded.webp" width="1600" height="1100" alt="" loading="lazy" decoding="async">`,
+  nfcStill: `<img class="nfc-static" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async">`,
   globe: inlineSvg('assets/svg/tidecast-globe.svg', 'globe-art'),
   vedam: inlineSvg('assets/svg/vedam-arch.svg', 'vedam-svg'),
   closing: inlineSvg('assets/svg/closing-jali.svg', 'closing-art'),
 };
 const symbols = [];
 {
-  const t = parseSvg('assets/svg/traces.svg');
-  symbols.push(`<symbol id="art-traces" viewBox="${t.viewBox}">\n${t.inner}\n</symbol>`);
   for (const f of readdirSync(join(root, 'assets/svg/glyphs')).sort()) {
     const g = parseSvg(`assets/svg/glyphs/${f}`);
     symbols.push(`<symbol id="glyph-${f.replace('.svg', '')}" viewBox="${g.viewBox}">${g.inner}</symbol>`);

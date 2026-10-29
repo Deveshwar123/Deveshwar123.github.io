@@ -95,17 +95,21 @@ export function validatePair(pair, ts = [0, 0.1, 0.25, 0.5, 0.75, 0.9, 1]) {
 }
 
 // Build every pair for a jali composition and the board. Waves pair with bus
-// traces (reversed so each starts at its pad, near the wave's top); traces with
-// no partner are returned for a fade-in.
+// traces (reversed so each starts at its pad, near the wave's top). Traces with
+// no partner fade in; lattice lines with no partner fade out.
 export function buildMorph(jali, board, { arcPoints = 96, wavePoints = 64 } = {}) {
   const pairs = [makePair('frame', jali.frame, board.outline, arcPoints)];
   jali.arches.forEach((a, k) => pairs.push(makePair(`arch-${k}`, a, board.antenna[k], arcPoints)));
   const used = new Set();
+  const orphans = [];
   jali.waves.forEach((w, i) => {
     const want = w.side === 'left' ? 'l' : 'r';
-    const trace = board.busTraces.find((t, j) => !used.has(j) && t.id[0] === want && (used.add(j), true));
-    if (trace) pairs.push(makePair(`wave-${i}`, w.pts, trace.pts.slice().reverse(), wavePoints));
+    let j = board.busTraces.findIndex((t, k) => !used.has(k) && t.id[0] === want);
+    if (j < 0) j = board.busTraces.findIndex((_, k) => !used.has(k));
+    if (j < 0) { orphans.push(w.pts); return; } // more lattice lines than traces: these fade out
+    used.add(j);
+    pairs.push(makePair(`wave-${i}`, w.pts, board.busTraces[j].pts.slice().reverse(), wavePoints));
   });
   const unpaired = board.busTraces.filter((_, j) => !used.has(j)).map((t) => t.pts);
-  return { pairs, unpaired };
+  return { pairs, unpaired, orphans };
 }

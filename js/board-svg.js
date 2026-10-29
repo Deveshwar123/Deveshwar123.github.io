@@ -2,36 +2,37 @@
 // by the story on narrow screens and as the NFC panel's fallback when WebGL is
 // unavailable or busy. Same geometry and layer offsets as the WebGL board.
 
-import { boardGeometry, pathFromPoints, BOARD } from './art.js';
+import { boardGeometry, pathFromPoints } from './art.js';
 import { rotation, projectPoint, layerZ } from './projection.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
-const circle = ([x, y], r, n = 12) => Array.from({ length: n + 1 }, (_, i) => [x + r * Math.cos((i / n) * Math.PI * 2), y + r * Math.sin((i / n) * Math.PI * 2)]);
 let cache = null;
 
-// Lines for the four visual construction groups: silkscreen, top copper,
-// substrate edge, bottom copper.
+// Lines for the four visual construction groups of the real card: silkscreen
+// (outline + part outlines), top copper (antenna, traces, pads, vias),
+// substrate edge, bottom copper (the antenna bridge).
 export function boardLayerLines() {
   if (cache) return cache;
   const B = boardGeometry();
-  const tc = B.topCopper;
-  const chip = [[B.chip.x, B.chip.y], [B.chip.x + B.chip.w, B.chip.y], [B.chip.x + B.chip.w, B.chip.y + B.chip.h], [B.chip.x, B.chip.y + B.chip.h], [B.chip.x, B.chip.y]];
   cache = [
-    [B.outline, ...B.silkscreen],
-    [...B.antenna, ...B.busTraces.map((t) => t.pts), ...tc.feeds, ...tc.pinStubs, ...tc.ledTraces, chip, ...B.vias.map((v) => circle(v, 8))],
+    [B.outline, ...B.partOutlines],
+    [...B.antenna, ...B.busTraces.map((t) => t.pts), ...B.padPolys, ...B.viaRings],
     [B.outline],
-    [B.outline, ...B.bottomCopper, B.bridge],
+    [B.outline, ...B.bridge, ...B.viaRings],
   ];
   return cache;
 }
 
-// Rounded rings around the antenna coil on the board plane: the illustrative
-// field shown on the NFC panel. Bounded to three rings.
+// Rounded rings around the real antenna coil on the board plane: the
+// illustrative field shown on the NFC panel. Bounded to three rings.
 export function fieldRings() {
+  const B = boardGeometry();
+  const xs = B.antenna.flat().map((p) => p[0]), ys = B.antenna.flat().map((p) => p[1]);
+  const [x0c, x1c, y0c, y1c] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
   const rings = [];
-  for (const grow of [36, 84, 140]) {
-    const r = 40 + grow * 0.6;
-    const x0 = -grow, y0 = -grow, x1 = BOARD.W + grow, y1 = BOARD.H + grow;
+  for (const grow of [40, 90, 150]) {
+    const r = 30 + grow * 0.5;
+    const x0 = x0c - grow, y0 = y0c - grow, x1 = x1c + grow, y1 = y1c + grow;
     const pts = [];
     const corner = (cx, cy, a0) => { for (let i = 0; i <= 6; i++) { const a = a0 + (i / 6) * (Math.PI / 2); pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); } };
     corner(x1 - r, y1 - r, 0);

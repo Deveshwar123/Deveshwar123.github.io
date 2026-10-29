@@ -61,7 +61,7 @@
   --focus-inner: #e3a868;
   --focus-outer: #06121e;
   --shadow: 0 24px 60px rgb(0 0 0 / 0.35);
-  --led: #ff6a3d;
+  --led: #ffb63a; /* the card's LED is yellow (KT-0805Y) */
 
   /* Line art */
   --line-frame: rgb(159 176 189 / 0.45);
@@ -70,7 +70,7 @@
   --line-ornament: var(--gold);
   --line-silk: rgb(243 234 220 / 0.72);
   --line-board: rgb(159 176 189 / 0.6);
-  --board-fill: #0b1a14;
+  --board-fill: #0d0f0e; /* the real card's black solder mask */
 
   /* Type */
   --font-display: 'Newsreader', 'Newsreader Fallback', Georgia, serif;
@@ -132,12 +132,12 @@
     --focus-inner: #8f4d17;
     --focus-outer: #fffaf2;
     --shadow: 0 24px 60px rgb(62 11 23 / 0.14);
-    --led: #c42b0a;
+    --led: #d98a00;
     --line-frame: rgb(62 11 23 / 0.32);
     --line-wave: rgb(128 96 21 / 0.75);
     --line-silk: rgb(62 11 23 / 0.6);
     --line-board: rgb(62 11 23 / 0.45);
-    --board-fill: #e6dcc6;
+    --board-fill: #0d0f0e;
   }
 }
 :root[data-theme='light'] {
@@ -161,12 +161,12 @@
   --focus-inner: #8f4d17;
   --focus-outer: #fffaf2;
   --shadow: 0 24px 60px rgb(62 11 23 / 0.14);
-  --led: #c42b0a;
+  --led: #d98a00;
   --line-frame: rgb(62 11 23 / 0.32);
   --line-wave: rgb(128 96 21 / 0.75);
   --line-silk: rgb(62 11 23 / 0.6);
   --line-board: rgb(62 11 23 / 0.45);
-  --board-fill: #e6dcc6;
+  --board-fill: #0d0f0e;
 }
 
 @media (max-width: 599px) {

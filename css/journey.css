@@ -153,10 +153,15 @@ html[data-tier='full'] .beat-figure,
 html[data-tier='compact'] .beat-figure { display: block; height: 100%; }
 html[data-tier='full'] .beat-art,
 html[data-tier='compact'] .beat-art { display: none; }
+/* Captions are pinned in place and faded by the story state (one at a time). */
 html[data-tier='full'] .beat-caption,
 html[data-tier='compact'] .beat-caption {
-  position: sticky;
+  position: fixed;
+  z-index: 3;
   top: calc(var(--header-h) + 18vh);
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
   margin-left: max(var(--gutter), calc((100vw - var(--content-max)) / 2));
   width: min(380px, calc(100vw - 2 * var(--gutter)));
   padding: var(--s3);
@@ -168,11 +173,10 @@ html[data-tier='compact'] .beat-caption {
   pointer-events: auto;
 }
 html[data-tier='compact'] .beat-caption {
-  position: relative;
   top: auto;
-  margin-left: var(--gutter);
-  margin-right: var(--gutter);
-  width: auto;
+  bottom: calc(var(--s2) + env(safe-area-inset-bottom));
+  margin: 0 var(--gutter);
+  width: calc(100vw - 2 * var(--gutter));
   padding: var(--s2) var(--s3);
 }
 html[data-tier='compact'] .stage-label { font-size: 0.75rem; padding: 3px 8px; }

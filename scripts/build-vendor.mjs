@@ -12,14 +12,16 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const lock = JSON.parse(readFileSync(join(root, 'package-lock.json'), 'utf8'));
 const today = new Date().toISOString().slice(0, 10);
 
-// Only the Three.js classes the board, globe and NFC views use. Core and the
-// line addons come from the same pinned package, so their versions always match.
+// Only the Three.js classes the photoreal card uses. Core and the RoomEnvironment
+// addon come from the same pinned package, so their versions always match.
 const THREE_EXPORTS = [
   'WebGLRenderer', 'Scene', 'PerspectiveCamera', 'Group', 'Mesh', 'Object3D',
-  'MeshBasicMaterial', 'MeshLambertMaterial', 'AmbientLight', 'DirectionalLight',
-  'Shape', 'Path', 'ShapeGeometry', 'ExtrudeGeometry', 'BufferGeometry',
-  'Float32BufferAttribute', 'Color', 'Vector2', 'Vector3', 'MathUtils',
-  'CircleGeometry', 'PlaneGeometry', 'SRGBColorSpace', 'DoubleSide', 'FrontSide',
+  'MeshBasicMaterial', 'MeshStandardMaterial', 'MeshPhysicalMaterial',
+  'AmbientLight', 'DirectionalLight', 'PointLight', 'PMREMGenerator',
+  'Shape', 'ShapeGeometry', 'ExtrudeGeometry', 'BoxGeometry', 'PlaneGeometry',
+  'BufferGeometry', 'Float32BufferAttribute', 'Color', 'Vector2', 'Vector3', 'MathUtils',
+  'TextureLoader', 'CanvasTexture', 'SRGBColorSpace', 'NoColorSpace', 'ACESFilmicToneMapping',
+  'DoubleSide', 'FrontSide', 'BackSide',
 ];
 
 const targets = [
@@ -28,9 +30,7 @@ const targets = [
     out: 'vendor/three/three-board.min.js',
     contents:
       `export { ${THREE_EXPORTS.join(', ')} } from 'three';\n` +
-      `export { LineSegments2 } from 'three/addons/lines/LineSegments2.js';\n` +
-      `export { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';\n` +
-      `export { LineMaterial } from 'three/addons/lines/LineMaterial.js';\n`,
+      `export { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';\n`,
     license: 'node_modules/three/LICENSE',
     licenseName: 'MIT',
     homepage: 'https://github.com/mrdoob/three.js',

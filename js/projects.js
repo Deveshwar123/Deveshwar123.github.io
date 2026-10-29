@@ -118,13 +118,19 @@ async function initNfc(fig, { cfg, tier, report, reduced }) {
   staticSvg.style.display = 'none';
   view.classList.add('is-live');
 
+  // The 3D view (and its textures) is created the first time the panel comes
+  // near the viewport, at the resolution that suits the screen.
   let gl = null;
-  if (tier === 'full') {
-    try {
-      const mod = await import('./board.js');
-      gl = await mod.createNfcGlView({ container: view, onRelease: () => { dirty = true; wake(); } });
-    } catch (err) { report('NFC 3D view', err); gl = null; }
-  }
+  let glPending = null;
+  const wantsGl = tier === 'full' || tier === 'compact';
+  const ensureGl = () => {
+    if (gl || glPending || !wantsGl) return glPending;
+    glPending = import('./board.js')
+      .then((mod) => mod.createNfcGlView({ container: view, quality: tier === 'full' ? 'hi' : 'lo', onRelease: () => { dirty = true; wake(); }, onUpdate: () => { dirty = true; wake(); } }))
+      .then((v) => { gl = v; if (visible) { measure(); gl.activate(size.w, size.h, ppu()); } dirty = true; wake(); })
+      .catch((err) => { report('NFC 3D view', err); });
+    return glPending;
+  };
 
   let size = { w: 1, h: 1 };
   const measure = () => {
@@ -134,12 +140,12 @@ async function initNfc(fig, { cfg, tier, report, reduced }) {
     gl?.resize(size.w, size.h, ppu());
     dirty = true;
   };
-  const ppu = () => (size.w * 0.62) / B.outline.reduce((m, [x]) => Math.max(m, x), 0);
+  const ppu = () => (size.w * 0.56) / B.outline.reduce((m, [x]) => Math.max(m, x), 0);
 
   let visible = false;
   const io = new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;
-    if (visible) { measure(); if (gl && !gl.active) gl.activate(size.w, size.h, ppu()); }
+    if (visible) { measure(); ensureGl(); if (gl && !gl.active) gl.activate(size.w, size.h, ppu()); }
     else gl?.deactivate();
     dirty = true;
     wake();

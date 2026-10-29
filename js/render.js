@@ -213,7 +213,7 @@ ${W.steps.map((s, i) => html`                <li class="pipeline-step" data-step
   return html`
           <figure class="project-world world-nfc">
             <div class="world-art nfc-view" data-nfc-view>
-              <svg class="nfc-static art" viewBox="0 0 1120 640" aria-hidden="true" focusable="false"><use href="#art-traces"></use></svg>
+              ${raw(art.nfcStill)}
             </div>
             <div class="nfc-controls" role="group" aria-label="${N.controlsLabel}" hidden>
               <button type="button" class="icon-button" data-nfc="left">${glyph('rotate-left')}<span>${N.rotateLeft}</span></button>

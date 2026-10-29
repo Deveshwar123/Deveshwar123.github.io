@@ -137,11 +137,15 @@ test.describe('reduced motion', () => {
 
 test.describe('compact tier', () => {
   test.use({ viewport: { width: 390, height: 844 } });
-  test('narrow screens use the SVG story with no WebGL canvas', async ({ page }) => {
+  test('narrow screens get the shorter story with the lighter card textures', async ({ page }) => {
+    const requested = [];
+    page.on('request', (r) => { if (r.url().includes('/assets/board/')) requested.push(r.url().split('/').pop()); });
     await page.goto('/');
     await page.waitForFunction(() => document.documentElement.getAttribute('data-tier'));
     expect(await page.locator('html').getAttribute('data-tier')).toBe('compact');
-    await expect(page.locator('.stage-canvas')).toHaveCount(0);
+    await expect(page.locator('canvas')).toHaveCount(1); // the one shared renderer
+    await page.waitForTimeout(1500);
+    expect(requested.some((f) => f.includes('-hi.webp') && !f.includes('height'))).toBe(false);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 });

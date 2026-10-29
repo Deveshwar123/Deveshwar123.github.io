@@ -39,7 +39,7 @@ export function evaluateStory(p, vc) {
   const hand = easeScene(u(R.handoff[0], R.handoff[1], P));
   const toRad = Math.PI / 180;
   const yaw = (rot * vc.yawDeg - ex * 8) * toRad;
-  const pitch = -(rot * vc.pitchDeg + ex * 22) * toRad;
+  const pitch = -(rot * vc.pitchDeg + ex * 30) * toRad;
   const ppu = vc.framing.ppu;
   const pose = {
     yaw,
@@ -64,5 +64,7 @@ export function evaluateStory(p, vc) {
     led: bell(R.ledBell[0], R.ledBell[1], R.ledBell[2], R.ledBell[3], P),
     stageOpacity: 1 - 0.82 * hand,
     stageScale: 1 - 0.08 * hand,
+    // One caption at a time, each fading in and out inside its own window.
+    captions: (vc.captionWindows || []).map(([a, b]) => bell(a - 0.02, a, b, b + 0.02, P)),
   };
 }

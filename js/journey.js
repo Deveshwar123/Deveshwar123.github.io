@@ -37,6 +37,7 @@ export async function createStory({ cfg, tier, report }) {
   const crest = hero.querySelector('.hero-crest');
   const archBox = hero.querySelector('[data-arch-box]');
   const beats = [...journey.querySelectorAll('.beat')];
+  const captionEls = beats.map((b) => b.querySelector('.beat-caption'));
   const beatCfg = cfg.illustrations.beats;
   const board = boardGeometry();
   const cleanups = [];
@@ -57,10 +58,13 @@ export async function createStory({ cfg, tier, report }) {
   const gMorph = el('g', { class: 'art stage-morph' }, svg);
   const gOrn = el('g', { class: 'art art-ornament' }, svg);
   const ornPath = el('path', {}, gOrn);
+  const gOrphans = el('g', { class: 'art art-waves' }, svg);
+  const orphanPath = el('path', {}, gOrphans);
   const gFace = el('g', { class: 'art stage-face' }, svg);
   const face = {
     fill: el('path', { class: 'art-board-fill' }, gFace),
-    silk: el('path', { class: 'art-silk' }, gFace),
+    // The card's real silkscreen (your name in calligraphy), as rendered from the Gerbers.
+    silk: el('image', { href: 'assets/board/top-silk-lo.webp', x: 0, y: 0, width: BOARD.W, height: BOARD.H, preserveAspectRatio: 'none' }, gFace),
     extra: el('path', { class: 'art-copper-extra' }, gFace),
     unpaired: el('path', { class: 'art-traces' }, gFace),
     vias: el('path', { class: 'art-vias' }, gFace),
@@ -81,11 +85,9 @@ export async function createStory({ cfg, tier, report }) {
   stage.appendChild(labelBox);
 
   // Static board strings (board units) for the face-on transform.
-  const tc = board.topCopper;
   face.fill.setAttribute('d', pathFromPoints(board.outline) + 'Z');
-  face.silk.setAttribute('d', multiPath(board.silkscreen));
-  face.extra.setAttribute('d', multiPath([...tc.feeds, ...tc.pinStubs, ...tc.ledPads, ...tc.ledTraces, ...board.pads.map(([x, y]) => [[x - 12, y - 10], [x + 12, y - 10], [x + 12, y + 10], [x - 12, y + 10], [x - 12, y - 10]])]));
-  face.vias.setAttribute('d', board.vias.map(([x, y]) => `M${x + 8} ${y}A8 8 0 1 1 ${x - 8} ${y}A8 8 0 1 1 ${x + 8} ${y}`).join(''));
+  face.extra.setAttribute('d', multiPath(board.padPolys));
+  face.vias.setAttribute('d', multiPath(board.viaRings));
   // ---- Lenis smooth scrolling (one scheduler owns its frames) ----
   let lenis = null;
   try {
@@ -101,16 +103,23 @@ export async function createStory({ cfg, tier, report }) {
 
   // ---- WebGL board (full tier) ----
   let gl = null;
-  if (tier === 'full') {
+  // The photoreal card renders on every story tier; narrow screens get the lighter
+  // texture set and a lower pixel-ratio cap. Without WebGL2 the line art stays.
+  if (tier === 'full' || tier === 'compact') {
     try {
       const mod = await import('./board.js');
-      gl = await mod.createBoardView({ stage, onLost: () => { gl = null; if (vc) vc.webgl = false; dirty = true; wake(); } });
+      gl = await mod.createBoardView({
+        stage,
+        quality: tier === 'full' ? 'hi' : 'lo',
+        onUpdate: () => { dirty = true; wake(); },
+        onLost: () => { gl = null; if (vc) vc.webgl = false; dirty = true; wake(); },
+      });
     } catch (err) {
       report('3D board', err);
       gl = null;
     }
   }
-  const effectiveTier = tier === 'full' && !gl ? 'compact-wide' : tier;
+  const effectiveTier = tier;
 
   // ---- Measurement ----
   let vc = null;
@@ -143,18 +152,13 @@ export async function createStory({ cfg, tier, report }) {
       b.style.setProperty('--beat-y', `${y - journeyTop}px`);
       // Each caption leaves before the next arrives, so only one is ever pinned.
       b.style.setProperty('--beat-h', `${Math.max(vh * 0.6, next - y - vh * 0.62)}px`);
-      const capP = i === 0 ? J.ranges.ornamentFade[0] - 0.02 : bc.p;
-      const capOffset = Math.max(0, scrollYFor(capP, geo) - y);
-      // Wide screens pin captions beside the board; narrow screens let them scroll
-      // through below it, entering from the bottom at their beat.
-      b.querySelector('.beat-caption').style.marginTop = tier === 'full' ? (capOffset ? `${capOffset}px` : '') : `${capOffset + vh * 0.62}px`;
     });
 
     const framing = boardFraming(vw, vh, tier === 'full' ? 'full' : 'compact');
     vc = {
       vw, vh, travel: geo.travel, end: geo.end, ranges: J.ranges,
       yawDeg: J.pose.yawDeg, pitchDeg: J.pose.pitchDeg,
-      framing, webgl: !!gl, explodeDistance: tier === 'full' ? 92 : 64,
+      framing, webgl: !!gl, explodeDistance: tier === 'full' ? 150 : 110, captionWindows: J.captionWindows,
     };
 
     // Jali geometry around the measured crest text (document coordinates).
@@ -172,6 +176,7 @@ export async function createStory({ cfg, tier, report }) {
       return { path, fromD: pathFromPoints(pair.fromPts), toD: pathFromPoints(pair.toPts) };
     });
     ornPath.setAttribute('d', multiPath(jali.ornament));
+    orphanPath.setAttribute('d', multiPath(morph.orphans));
     face.unpaired.setAttribute('d', multiPath(morph.unpaired));
     svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
     gl?.resize(vw, vh, framing.ppu);
@@ -194,6 +199,7 @@ export async function createStory({ cfg, tier, report }) {
     const morphing = s.phase === 'morph';
     gMorph.style.display = morphing ? '' : 'none';
     gOrn.style.display = s.ornament > 0 ? '' : 'none';
+    gOrphans.style.display = morphing ? '' : 'none';
     gFace.style.display = morphing ? '' : 'none';
     svgBoard.setVisible(!morphing && s.svgOpacity > 0);
     if (morphing) {
@@ -206,6 +212,9 @@ export async function createStory({ cfg, tier, report }) {
       }
       setTransform(gOrn, [1, 0, 0, 1, 0, -s.lift]);
       gOrn.style.opacity = s.ornament;
+      // Lattice lines with no real trace to become fade as the others route.
+      setTransform(gOrphans, [1, 0, 0, 1, 0, -s.lift]);
+      gOrphans.style.opacity = Math.max(0, 1 - s.morphT * 1.6);
       setTransform(gFace, face0);
       gFace.style.opacity = '1';
       face.fill.style.opacity = s.boardFill * 0.9;
@@ -249,7 +258,8 @@ export async function createStory({ cfg, tier, report }) {
         let prevY = -Infinity;
         anchors.forEach(([ax, ay], i) => {
           const w = labels[i].offsetWidth || 120;
-          const lx = Math.min(vc.vw - w - 24, maxX + 36);
+          // Stay clear of the chapter dots column on the right edge.
+          const lx = Math.min(vc.vw - w - 76, maxX + 36);
           const ly = Math.max(ay - 14, prevY + 36);
           prevY = ly;
           labels[i].style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
@@ -285,6 +295,11 @@ export async function createStory({ cfg, tier, report }) {
     dirty = false;
     state = evaluateStory(p, vc);
     stage.dataset.p = p.toFixed(4);
+    captionEls.forEach((c, i) => {
+      const o = state.captions[i] ?? 0;
+      c.style.opacity = o.toFixed(3);
+      c.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+    });
     // Optional ambient motion only once the story has handed off (CSS-driven,
     // paused by Pause motion; the story's own channels stay frozen).
     stage.classList.toggle('is-ambient', p >= J.end - 1e-6 && !motionMode().paused);
@@ -358,7 +373,7 @@ export async function createStory({ cfg, tier, report }) {
   if (root.classList.contains('intro-pending') && window.scrollY < 4 && !location.hash && !motionMode().reduced) {
     try {
       const mod = await import('./intro.js');
-      intro = mod.runIntro({ cfg, paths: originals.map((o) => o.path), ornament: gOrn, name: document.getElementById('hero-name'), report });
+      intro = mod.runIntro({ cfg, paths: [...originals.map((o) => o.path), orphanPath], ornament: gOrn, name: document.getElementById('hero-name'), report });
     } catch (err) {
       report('intro', err);
     }
@@ -369,7 +384,7 @@ export async function createStory({ cfg, tier, report }) {
   }
 
   return {
-    tier: effectiveTier === 'compact-wide' ? 'compact' : tier,
+    tier: effectiveTier,
     remeasure,
     get state() { return state; },
     get geometry() { return { ...geo }; },
@@ -386,7 +401,8 @@ export async function createStory({ cfg, tier, report }) {
       delete stage.dataset.p;
       stage.classList.remove('is-parked');
       journey.style.removeProperty('--journey-h');
-      beats.forEach((b) => { b.style.removeProperty('--beat-y'); b.style.removeProperty('--beat-h'); b.querySelector('.beat-caption').style.marginTop = ''; });
+      beats.forEach((b) => { b.style.removeProperty('--beat-y'); b.style.removeProperty('--beat-h'); });
+      captionEls.forEach((c) => { c.style.opacity = ''; c.style.visibility = ''; });
       root.removeAttribute('data-tier');
     },
   };

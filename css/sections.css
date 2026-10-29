@@ -386,7 +386,7 @@ html.has-reveals [data-reveal] .reveal-unit {
 
 /* ---------- Mini-world enhancements ---------- */
 .nfc-view { position: relative; user-select: none; -webkit-user-select: none; }
-.nfc-view .stage-canvas { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; }
+.nfc-view .stage-canvas { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; filter: drop-shadow(0 22px 28px rgb(0 0 0 / 0.45)); }
 .nfc-live { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .nfc-view.is-live { cursor: grab; }
 .nfc-view.is-live.is-dragging { cursor: grabbing; }

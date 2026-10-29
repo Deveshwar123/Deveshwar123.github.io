@@ -1,0 +1,44 @@
+<!doctype html>
+<!-- Development page used by scripts/render-stills.mjs to render photoreal stills
+     of the card with the same model the site uses. Not deployed. -->
+<html><head><meta charset="utf-8"><base href="../">
+<script type="importmap">{"imports":{"three":"./vendor/three/three-board.min.js"}}</script>
+</head><body style="margin:0;background:transparent">
+<script type="module">
+import * as THREE from 'three';
+import { createBoardObject } from './js/board.js';
+import { makeCamera, FOV_DEG } from './js/projection.js';
+
+const canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setClearColor(0x000000, 0);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+let loaded = 0;
+const ready = new Promise((resolve) => {
+  window.__board = createBoardObject(THREE, renderer, { quality: 'hi', onUpdate: () => { if (++loaded >= 6) resolve(); } });
+});
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(FOV_DEG, 1, 1, 10000);
+
+window.renderStill = async ({ w, h, ppu, yaw, pitch, tx = 0, ty = 0, explode = 0, led = 0, env = 0.45 }) => {
+  await ready;
+  const board = window.__board;
+  if (!board.root.parent) { scene.add(board.root); scene.environment = board.environment(); }
+  scene.environmentIntensity = env;
+  renderer.setPixelRatio(1);
+  renderer.setSize(w, h, false);
+  const cam = makeCamera(w, h, ppu);
+  camera.aspect = w / h; camera.near = cam.D / 20; camera.far = cam.D * 4;
+  camera.position.set(0, 0, cam.D); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
+  board.root.rotation.set((pitch * Math.PI) / 180, (yaw * Math.PI) / 180, 0, 'XYZ');
+  board.root.position.set(tx, ty, 0);
+  board.setExplode(explode);
+  board.setLed(led);
+  renderer.render(scene, camera);
+  return canvas.toDataURL('image/webp', 0.88);
+};
+window.stillsReady = true;
+</script></body></html>

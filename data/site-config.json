@@ -168,14 +168,14 @@
         "id": "story-board",
         "chapter": "Board",
         "title": "Circuit",
-        "caption": "The same lines, rerouted as copper traces on an illustrated two-layer NFC business card.",
+        "caption": "The same lines become the real copper of my NFC business card: its five-turn antenna and routed traces, taken from the board's own Gerber files.",
         "p": 0.27
       },
       {
         "id": "story-layers",
         "chapter": "Layers",
         "title": "Layers",
-        "caption": "Four construction layers, four kinds of work: Software, Hardware, Data & Finance and Leadership. An illustration, not a manufacturing-accurate model.",
+        "caption": "Pulled apart to show how it's built: silkscreen, copper and solder mask, the FR-4 core, and the back. Four layers, four kinds of work: Software, Hardware, Data & Finance and Leadership.",
         "p": 0.5
       }
     ],
@@ -200,7 +200,7 @@
         "description": "Illustration: an original jali arch, drawn stroke by stroke and then filled."
       },
       "nfc-card": {
-        "description": "Illustration of the two-layer card, not a manufacturing-accurate model. Drag sideways or use the buttons to turn it.",
+        "description": "My actual card, rendered in 3D from its fabrication files (Gerbers and BOM). Drag sideways or use the buttons to turn it over.",
         "hotspot": "Illustrative NFC field and energy harvesting.",
         "fieldToggle": "Show NFC field",
         "rotateLeft": "Rotate left",
@@ -328,7 +328,21 @@
     "quality": {
       "fullDpr": 2,
       "compactDpr": 1.5
-    }
+    },
+    "captionWindows": [
+      [
+        0.1,
+        0.2
+      ],
+      [
+        0.235,
+        0.39
+      ],
+      [
+        0.42,
+        0.585
+      ]
+    ]
   },
   "board": {
     "widthMm": 88.9,

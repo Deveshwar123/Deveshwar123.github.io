@@ -9,7 +9,8 @@ export const FOV_DEG = 30;
 // Board-local z of the four visual construction groups (silkscreen, top copper,
 // substrate, bottom copper) for an explode distance in board units. These are
 // visual groups of a two-copper-layer board, not four electrical layers.
-const LAYER_Z = [12, 11, 0, -11];
+// The slab is the card's real 1.6 mm (≈ 20 board units) thick.
+const LAYER_Z = [10.35, 10.2, 0, -10.2];
 const LAYER_SPREAD = [2.4, 1.2, 0, -1.2];
 export const layerZ = (i, explode) => LAYER_Z[i] + LAYER_SPREAD[i] * explode;
 

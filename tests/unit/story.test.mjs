@@ -14,7 +14,7 @@ const P = [0, 0.09, 0.18, 0.22, 0.28, 0.38, 0.48, 0.58, 0.59, 0.6, 0.61, 0.62];
 
 function viewport(vw, vh, tier) {
   const geo = trackGeometry({ vw, vh, startY: 0, tier, journeyCfg: J });
-  return { geo, vc: { vw, vh, travel: geo.travel, end: geo.end, ranges: J.ranges, yawDeg: J.pose.yawDeg, pitchDeg: J.pose.pitchDeg, framing: boardFraming(vw, vh, tier), webgl: tier === 'full', explodeDistance: 92 } };
+  return { geo, vc: { vw, vh, travel: geo.travel, end: geo.end, ranges: J.ranges, yawDeg: J.pose.yawDeg, pitchDeg: J.pose.pitchDeg, framing: boardFraming(vw, vh, tier), webgl: tier === 'full', explodeDistance: 150 } };
 }
 const flat = (s) => [s.morphT, s.lift, s.ornament, s.vias, s.boardFill, s.svgOpacity, s.glOpacity, s.rot, s.pose.yaw, s.pose.pitch, s.pose.tx, s.pose.ty, s.explode, s.labels, s.led, s.stageOpacity, s.stageScale];
 const close = (a, b, eps = 1e-6) => a.every((x, i) => Math.abs(x - b[i]) <= eps);
@@ -62,7 +62,7 @@ for (const [vw, vh, tier] of [[1440, 900, 'full'], [390, 844, 'compact'], [1024,
     assert.equal(s0.lift, 0);
     assert.equal(evaluateStory(0.38, vc).rot, 1);
     assert.equal(evaluateStory(0.38, vc).explode, 0);
-    assert.equal(evaluateStory(0.58, vc).explode, 92);
+    assert.equal(evaluateStory(0.58, vc).explode, 150);
     assert.equal(s62.stageOpacity, 1 - 0.82);
     assert.equal(s62.led, 0);
     assert.deepEqual(flat(evaluateStory(0.7, vc)), flat(s62), 'story holds after handoff');
@@ -110,7 +110,7 @@ test('trace corners survive resampling', () => {
   for (const v of pts) assert.ok(out.some((q) => q[0] === v[0] && q[1] === v[1]), `lost corner ${v}`);
 });
 
-test('board traces route on 45°/90° bends without crossings', () => {
+test('the real board traces route on 45°/90° bends without crossings', () => {
   const B = boardGeometry();
   const segs = [];
   for (const t of B.busTraces) for (let i = 1; i < t.pts.length; i++) {
@@ -130,8 +130,13 @@ test('board traces route on 45°/90° bends without crossings', () => {
     if (segs[i][2] === segs[j][2]) continue;
     assert.ok(!cross(segs[i][0], segs[i][1], segs[j][0], segs[j][1]), `${segs[i][2]} crosses ${segs[j][2]}`);
   }
+  // The real five-turn coil: consecutive turns share an endpoint (one continuous spiral).
   assert.equal(B.antenna.length, 5);
-  for (let k = 0; k + 1 < B.antenna.length; k++) assert.deepEqual(B.antenna[k].at(-1), B.antenna[k + 1][0], 'spiral is continuous');
+  const same = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]) < 1e-6;
+  for (let k = 0; k + 1 < B.antenna.length; k++) {
+    const a = B.antenna[k], b = B.antenna[k + 1];
+    assert.ok(same(a.at(-1), b[0]) || same(a[0], b.at(-1)), `turns ${k} and ${k + 1} are not joined`);
+  }
 });
 
 test('face-on projection matches the SVG board transform (registration)', () => {

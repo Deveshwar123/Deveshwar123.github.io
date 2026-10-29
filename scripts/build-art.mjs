@@ -41,24 +41,21 @@ out('jali-arch-tall.svg', jaliSvg({ x: 0, y: 0, w: 358, h: 470 }, { x: 30, y: 15
 out('jali-panel.svg', jaliSvg({ x: 0, y: 0, w: 640, h: 440 }, { x: 210, y: 196, w: 220, h: 200 }, 2));
 out('closing-jali.svg', jaliSvg({ x: 0, y: 0, w: 960, h: 240 }, { x: 340, y: 150, w: 280, h: 80 }, 4));
 
-// --- Board, face-on (top copper, outline, components) ---
+// --- Board, face-on: the real card's copper as line art (from js/board-data.js) ---
 const B = boardGeometry();
 function boardFaceBody() {
-  const tc = B.topCopper;
   return [
     g('art-board', `<path class="art-board-edge" d="${pathFromPoints(B.outline)}"/>`),
-    g('art-silk', paths(B.silkscreen)),
+    g('art-silk', paths(B.partOutlines)),
     g('art-antenna', B.antenna.map((t, k) => `<path data-pair="arch-${k}" d="${pathFromPoints(t)}"/>`).join('\n')),
     g('art-traces', B.busTraces.map((t, i) => `<path data-pair="wave-${i}" d="${pathFromPoints(t.pts)}"/>`).join('\n')),
-    g('art-copper-extra', paths([...tc.feeds, ...tc.pinStubs, ...tc.ledPads, ...tc.ledTraces])),
-    g('art-chip', `<path d="${pathFromPoints([[B.chip.x, B.chip.y], [B.chip.x + B.chip.w, B.chip.y], [B.chip.x + B.chip.w, B.chip.y + B.chip.h], [B.chip.x, B.chip.y + B.chip.h]], true)}"/>`),
-    g('art-vias', B.vias.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="8"/>`).join('\n')),
-    g('art-pads', B.pads.map(([x, y]) => `<rect x="${x - 12}" y="${y - 10}" width="24" height="20" rx="3"/>`).join('\n')),
+    g('art-pads', paths(B.padPolys)),
+    g('art-vias', paths(B.viaRings)),
   ].join('\n');
 }
 out('traces.svg', svg(`0 0 ${BOARD.W} ${BOARD.H}`, boardFaceBody()));
 
-// --- Board, exploded (static third frame for reduced motion and no-JS) ---
+// --- Board, exploded line art (inspectable reference for the four groups) ---
 function explodedSvg() {
   const vw = 1200, vh = 820;
   const cam = makeCamera(vw, vh, 0.72);
@@ -66,10 +63,10 @@ function explodedSvg() {
   const R = rotation(pose.yaw, pose.pitch);
   const d = 110;
   const layers = [
-    { cls: 'art-silk', z: 3 * d, lines: [B.outline, ...B.silkscreen] },
-    { cls: 'art-traces', z: d, lines: [B.outline, ...B.antenna, ...B.busTraces.map((t) => t.pts), ...B.topCopper.feeds, ...B.topCopper.ledTraces] },
+    { cls: 'art-silk', z: 3 * d, lines: [B.outline, ...B.partOutlines] },
+    { cls: 'art-traces', z: d, lines: [B.outline, ...B.antenna, ...B.busTraces.map((t) => t.pts), ...B.padPolys] },
     { cls: 'art-board', z: 0, lines: [B.outline] },
-    { cls: 'art-copper-bottom', z: -d, lines: [B.outline, ...B.bottomCopper, B.bridge] },
+    { cls: 'art-copper-bottom', z: -d, lines: [B.outline, ...B.bridge, ...B.viaRings] },
   ];
   const body = layers.map((L) => g(L.cls, L.lines.map((pts) => `<path d="${pathFromPoints(projectPolyline(pts, L.z, pose, cam, R))}"/>`).join('\n'))).join('\n');
   return svg(`0 0 ${vw} ${vh}`, body);

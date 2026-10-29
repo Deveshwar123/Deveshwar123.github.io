@@ -117,3 +117,19 @@ test('TideCast steps follow the panel scroll position, forwards and back', async
   expect(late).toBeGreaterThan(early);
   expect(await page.locator('.pipeline-step.is-active').count()).toBe(early);
 });
+
+test.describe('renderer creation', () => {
+  test.use({ reducedMotion: 'reduce' }); // nothing claims the renderer on load
+  test('callers that arrive together share one renderer and one canvas', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForTimeout(800);
+    const r = await page.evaluate(async () => {
+      const m = await import('/js/renderer.js');
+      const all = await Promise.all([m.getRenderer(), m.getRenderer(), m.getRenderer()]);
+      return { same: all.every((x) => x === all[0]), contexts: window.__calls.contexts };
+    });
+    test.skip(r.contexts === 0, 'WebGL2 unavailable in this run');
+    expect(r.same).toBe(true);
+    expect(r.contexts).toBe(1);
+  });
+});

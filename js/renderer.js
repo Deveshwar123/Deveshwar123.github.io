@@ -4,12 +4,21 @@
 // attempted a bounded number of times and never reloads the page.
 
 let instance = null;
+let pending = null;
 let owner = null;
 let restores = 0;
 const MAX_RESTORES = 2;
 
-export async function getRenderer() {
-  if (instance) return instance.lost ? null : instance;
+// Callers that arrive while the first renderer is still being created (the story
+// and the NFC panel can both start on one load) share that creation, so there is
+// never a second canvas or context.
+export function getRenderer() {
+  if (instance) return Promise.resolve(instance.lost ? null : instance);
+  pending ??= create().finally(() => { pending = null; });
+  return pending;
+}
+
+async function create() {
   const THREE = await import('three');
   const canvas = document.createElement('canvas');
   canvas.className = 'stage-canvas';

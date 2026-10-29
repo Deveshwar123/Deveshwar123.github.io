@@ -49,9 +49,13 @@ test('blocked storage does not break theme or motion controls', async ({ page })
   expect(errors).toEqual([]);
 });
 
-test('skip link is first and moves focus into main', async ({ page }) => {
+// Safari keeps links out of the Tab order unless the user opts in; its keyboard
+// users press Option+Tab, which is what WebKit gets here.
+const tabKey = (browserName) => (browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
+
+test('skip link is first and moves focus into main', async ({ page, browserName }) => {
   await page.goto('/');
-  await page.keyboard.press('Tab');
+  await page.keyboard.press(tabKey(browserName));
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.keyboard.press('Enter');
   const focused = await page.evaluate(() => document.activeElement.closest('main') !== null || document.activeElement.id === 'main');
@@ -66,12 +70,12 @@ test('See my work goes straight to projects and focuses its heading', async ({ p
   await expect(page.locator('#projects-title')).toBeInViewport();
 });
 
-test('keyboard reaches every action and focus is never hidden by the header', async ({ page }) => {
+test('keyboard reaches every action and focus is never hidden by the header', async ({ page, browserName }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   const seen = new Set();
   for (let i = 0; i < 120; i++) {
-    await page.keyboard.press('Tab');
+    await page.keyboard.press(tabKey(browserName));
     const info = await page.evaluate(async () => {
       // Let any focus-driven smooth scroll settle before measuring.
       await new Promise((resolve) => {

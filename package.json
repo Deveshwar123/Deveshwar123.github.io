@@ -2,7 +2,7 @@
   "name": "deveshwar-portfolio",
   "private": true,
   "version": "1.0.0",
-  "description": "Tradition → Circuit: a static portfolio generated from data/resume.json.",
+  "description": "Tradition \u2192 Circuit: a static portfolio generated from data/resume.json.",
   "type": "module",
   "scripts": {
     "generate": "node scripts/generate.mjs",
@@ -12,7 +12,9 @@
     "serve": "node scripts/serve.mjs 8080",
     "test": "node --test \"tests/unit/*.test.mjs\"",
     "test:e2e": "playwright test",
-    "test:all": "npm run validate && npm run check:drift && npm test && npm run test:e2e"
+    "test:all": "npm run validate && npm run check:drift && npm test && npm run test:e2e",
+    "art": "node scripts/build-art.mjs",
+    "build": "node scripts/build-site.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

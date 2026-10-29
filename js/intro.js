@@ -30,11 +30,12 @@ export function runIntro({ cfg, paths, ornament, name }) {
   }
   ornament.style.opacity = '0';
 
-  // Decorative bloom: a copy of the name that converges onto the real one.
+  // Decorative bloom: a text-free glow layer behind the real name. Being
+  // non-text it can never become the Largest Contentful Paint, so the heading
+  // itself (visible from the first frame) stays the LCP element.
   const bloom = document.createElement('span');
   bloom.className = 'name-bloom';
   bloom.setAttribute('aria-hidden', 'true');
-  bloom.textContent = name.textContent;
   name.appendChild(bloom);
 
   const stagger = M.strokeStagger / 1000;

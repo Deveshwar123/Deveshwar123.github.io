@@ -5,7 +5,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BOARD, boardGeometry, jaliGeometry, pathFromPoints, globeGeometry, circlePoints, rosette } from '../js/art.js';
+import { BOARD, boardGeometry, jaliGeometry, pathFromPoints, smoothPathFromPoints, globeGeometry, circlePoints, rosette } from '../js/art.js';
 import { makeCamera, projectPolyline, rotation } from '../js/projection.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,6 +20,9 @@ const out = (rel, svg) => {
 const svg = (viewBox, body) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" fill="none" stroke="#c98a4b" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">\n${body}\n</svg>\n`;
 const paths = (list, attrs = '') => list.map((pts) => `<path${attrs} d="${pathFromPoints(pts)}"/>`).join('\n');
+// Curved artwork (lattice, arches, ornament, globe) is written as smooth Béziers.
+const curves = (list) => list.map((pts) => `<path d="${smoothPathFromPoints(pts)}"/>`).join('\n');
+const curve = (pts) => smoothPathFromPoints(pts);
 const g = (cls, body) => `<g class="${cls}">\n${body}\n</g>`;
 
 // --- Jali arch variants (reference layouts for the no-JS hero and inspection) ---
@@ -27,9 +30,9 @@ function jaliSvg(frame, box, maxPairs) {
   const j = jaliGeometry(frame, box, { maxPairs });
   const body = [
     g('art-frame', `<path d="${pathFromPoints(j.frame)}"/>`),
-    g('art-arches', j.arches.map((a, k) => `<path data-pair="arch-${k}" d="${pathFromPoints(a)}"/>`).join('\n')),
-    g('art-waves', j.waves.map((w, i) => `<path data-pair="wave-${i}" d="${pathFromPoints(w.pts)}"/>`).join('\n')),
-    g('art-ornament', paths(j.ornament)),
+    g('art-arches', j.arches.map((a, k) => `<path data-pair="arch-${k}" d="${curve(a)}"/>`).join('\n')),
+    g('art-waves', j.waves.map((w, i) => `<path data-pair="wave-${i}" d="${curve(w.pts)}"/>`).join('\n')),
+    g('art-ornament', curves(j.ornament)),
   ].join('\n');
   return svg(`0 0 ${frame.w} ${frame.h}`, body);
 }
@@ -78,7 +81,7 @@ out('board-layers.svg', explodedSvg());
   const globe = globeGeometry(200, 200, 168, { lon0: -88, lat0: 24 });
   const cs = globe.project(30.6, -96.3);
   const body = [
-    g('art-globe', [`<path d="${pathFromPoints(globe.outline)}"/>`, paths(globe.lines)].join('\n')),
+    g('art-globe', [`<path d="${curve(globe.outline)}"/>`, curves(globe.lines)].join('\n')),
     g('art-ping', [
       `<circle cx="${cs.x.toFixed(2)}" cy="${cs.y.toFixed(2)}" r="4"/>`,
       `<circle class="art-ping-ring" cx="${cs.x.toFixed(2)}" cy="${cs.y.toFixed(2)}" r="12"/>`,
@@ -95,10 +98,10 @@ out('board-layers.svg', explodedSvg());
   const body = [
     g('art-vedam-fill', `<path class="art-fill" d="${pathFromPoints(inner)}Z"/>`),
     g('art-frame', `<path d="${pathFromPoints(j.frame)}"/>`),
-    g('art-arches', paths(j.arches)),
-    g('art-waves', paths(j.waves.map((w) => w.pts))),
-    g('art-ornament', paths(j.ornament)),
-    g('art-vedam-rosette', paths(rosette(200, 300, 38))),
+    g('art-arches', curves(j.arches)),
+    g('art-waves', curves(j.waves.map((w) => w.pts))),
+    g('art-ornament', curves(j.ornament)),
+    g('art-vedam-rosette', curves(rosette(200, 300, 38))),
   ].join('\n');
   out('vedam-arch.svg', svg('0 0 400 400', body));
 }

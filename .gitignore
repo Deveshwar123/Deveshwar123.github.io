@@ -5,3 +5,6 @@ reports/lighthouse/*.json
 test-results/
 playwright-report/
 .DS_Store
+_site/
+scripts/.dbg-tmp.mjs
+scripts/.story-shots.mjs

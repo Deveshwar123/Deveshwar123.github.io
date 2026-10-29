@@ -15,6 +15,7 @@ Research validates technology behaviour, not personal achievements. No personal-
 | D4 | NFC card drawn "to whatever looks good" | Board uses the fabricated card's real 3.5 × 2 in proportions (88.9 × 50.8 mm) instead of the spec's 85.6 × 54; still labelled an illustration |
 | D5 | Public NFC hardware repository linked as "Hardware files" | `codeUrl` for the NFC card (owner's own public repo with Gerbers, BOM, v1.0 release) |
 | D6 | Résumé PDF will be supplied later | Download controls stay hidden; `assets.resumePdf.approved` is `false` |
+| D7 | Build all ten phases without stopping for review; publish later | All phases built and verified locally (`reports/verification.md`); nothing published |
 
 ## Claims
 
@@ -36,7 +37,7 @@ Research validates technology behaviour, not personal achievements. No personal-
 | Skill → role/project links | skills | supplied | Each edge cites a résumé line that names the skill (validator-enforced); Git/GitHub, Three.js, Bloomberg and CAD stay unlinked |
 | Snapshot: 4.0 GPA · 3 shipped projects · 120+ tutoring hours · 20 yrs backtested | snapshot | supplied | D3 |
 | Résumé PDF | header, hero, contact | unavailable | D6; reserved path `assets/Deveshwar_Vankeswaram_Resume.pdf` |
-| Social preview image | metadata | supplied derivative | Rendered from the site's own line art (scripts/build-social.mjs) |
+| Social preview image | metadata | supplied derivative | `assets/social-card.png`, rendered from the site's own line art by `scripts/build-social.mjs`; shows only the name, "Computer Engineering · Texas A&M University" and "Tradition → Circuit" (reviewed 29 Oct 2026) |
 
 ## Open
 

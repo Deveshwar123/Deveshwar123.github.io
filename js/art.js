@@ -18,6 +18,45 @@ export function pathFromPoints(pts, closed = false) {
   return closed ? d + 'Z' : d;
 }
 
+// Smooth path for static artwork. The line is split at corners (turns sharper
+// than 25°: cusps, the pointed apex, rosette points) and each run between
+// corners is thinned to points about `step` apart and drawn as Catmull-Rom
+// curves (cubic Béziers). Same shape, a fraction of the bytes; the live morph
+// keeps its dense polylines.
+export function smoothPathFromPoints(pts, step = 22) {
+  if (pts.length < 3) return pathFromPoints(pts);
+  step = Math.min(step, polylineLength(pts) / 10);
+  const runs = [];
+  let run = [pts[0]];
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [ax, ay] = pts[i - 1], [bx, by] = pts[i], [cx, cy] = pts[i + 1];
+    const a1 = Math.atan2(by - ay, bx - ax), a2 = Math.atan2(cy - by, cx - bx);
+    let turn = Math.abs(a2 - a1);
+    if (turn > Math.PI) turn = 2 * Math.PI - turn;
+    run.push(pts[i]);
+    if (turn > (25 * Math.PI) / 180) { runs.push(run); run = [pts[i]]; }
+  }
+  run.push(pts[pts.length - 1]);
+  runs.push(run);
+  let d = 'M' + round(pts[0][0]) + ' ' + round(pts[0][1]);
+  for (const r of runs) {
+    const thin = [r[0]];
+    for (let i = 1; i < r.length - 1; i++) {
+      const [x, y] = thin[thin.length - 1];
+      if (Math.hypot(r[i][0] - x, r[i][1] - y) >= step) thin.push(r[i]);
+    }
+    thin.push(r[r.length - 1]);
+    if (thin.length === 2) { d += 'L' + round(thin[1][0]) + ' ' + round(thin[1][1]); continue; }
+    for (let i = 0; i < thin.length - 1; i++) {
+      const p0 = thin[i - 1] || thin[i], p1 = thin[i], p2 = thin[i + 1], p3 = thin[i + 2] || p2;
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += 'C' + [c1[0], c1[1], c2[0], c2[1], p2[0], p2[1]].map(round).join(' ');
+    }
+  }
+  return d;
+}
+
 export function circlePoints(cx, cy, r, n = 24, start = 0) {
   const pts = [];
   for (let i = 0; i <= n; i++) {

@@ -199,6 +199,7 @@ html.no-js .site-header, .site-header.is-scrolled {
   cursor: pointer;
 }
 .pause-toggle:hover, .menu-toggle:hover { border-color: var(--border-strong); color: var(--ink); }
+.menu-toggle { display: none; }
 .pause-toggle[aria-pressed='true'] { border-color: var(--copper); color: var(--copper-strong); }
 
 @media (max-width: 599px) {
@@ -206,9 +207,10 @@ html.no-js .site-header, .site-header.is-scrolled {
   .header-inner { gap: var(--s1); }
   .primary-links a { padding: 0 8px; }
   .pause-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  /* With JavaScript the links collapse behind the Menu button. */
-  html.js .primary-nav.is-collapsible .menu-toggle { display: inline-flex; }
-  html.js .primary-nav.is-collapsible .primary-links {
+  /* With JavaScript the links collapse behind the Menu button. The class is set
+     before first paint (no layout shift) and removed again if scripts never run. */
+  html.nav-collapsible .menu-toggle { display: inline-flex; }
+  html.nav-collapsible .primary-links {
     position: absolute;
     top: var(--header-h);
     right: var(--gutter);
@@ -220,7 +222,7 @@ html.no-js .site-header, .site-header.is-scrolled {
     border-radius: var(--radius-md);
     box-shadow: var(--shadow);
   }
-  html.js .primary-nav.is-collapsible:not(.is-open) .primary-links { display: none; }
+  html.nav-collapsible .primary-nav:not(.is-open) .primary-links { display: none; }
 }
 @media (max-width: 380px) {
   .primary-links a { padding: 0 6px; font-size: 0.875rem; }
@@ -370,3 +372,7 @@ section[id], article[id], li[id] { scroll-margin-top: calc(var(--header-h) + var
 .cursor-ring.is-hidden { opacity: 0; }
 @media (forced-colors: active) { .cursor-ring { display: none; } }
 .magnet-art { display: inline-flex; align-items: center; gap: inherit; pointer-events: none; }
+
+/* Reserve the Pause control's space from first paint when scripts are on, so
+   enabling it moves nothing; it stays invisible (and unfocusable) until then. */
+html.js .pause-toggle[hidden] { display: inline-flex !important; visibility: hidden; }

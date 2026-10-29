@@ -6,11 +6,18 @@ export default defineConfig({
   fullyParallel: true,
   workers: 3, // the GPU and CPU are shared; more workers make timing-based checks flaky
   reporter: [['list']],
-  use: { baseURL: 'http://127.0.0.1:8080', channel: 'chrome', colorScheme: 'dark' },
+  use: { baseURL: 'http://127.0.0.1:8080', colorScheme: 'dark' },
   webServer: {
     command: 'node scripts/serve.mjs 8080',
     url: 'http://127.0.0.1:8080/index.html',
     reuseExistingServer: true,
   },
-  projects: [{ name: 'chrome', use: { channel: 'chrome' } }],
+  projects: [
+    { name: 'chrome', use: { channel: 'chrome' } },
+    // Engine smoke tests (Playwright's WebKit and Firefox builds). These are not
+    // Safari or a shipped Firefox; real-browser results are in reports/verification.md.
+    { name: 'webkit', use: { browserName: 'webkit' }, testMatch: /(foundation|story|projects)\.spec\.mjs/ },
+    // Opt-in (PW_FIREFOX=1): Playwright's Firefox build does not launch on macOS 27 here.
+    ...(process.env.PW_FIREFOX ? [{ name: 'firefox', use: { browserName: 'firefox' }, testMatch: /(foundation|story|projects)\.spec\.mjs/ }] : []),
+  ],
 });

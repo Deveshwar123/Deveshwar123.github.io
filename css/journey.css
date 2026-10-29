@@ -238,14 +238,16 @@ html[data-tier='compact'] .hero { z-index: 2; }
 html.intro-pending .hero-art { animation: art-fallback 0.4s 3s both; }
 @keyframes art-fallback { from { opacity: 0; } to { opacity: 1; } }
 
-.hero-name { position: relative; }
+.hero-name { position: relative; isolation: isolate; }
 .name-bloom {
   position: absolute;
-  inset: 0;
-  color: var(--gold);
+  inset: -12% -6%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 55%, transparent), color-mix(in srgb, var(--copper) 18%, transparent) 60%, transparent);
+  opacity: 0;
   pointer-events: none;
   will-change: transform, filter, opacity;
-  user-select: none;
 }
 
 .site-header::after {

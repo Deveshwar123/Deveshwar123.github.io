@@ -51,13 +51,25 @@ export function chooseTier() {
 
 const fontsSettled = Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 1500))]);
 
+// Optional modules start loading only after the first contentful paint, so the
+// readable page always wins the network and main thread.
+const firstPaint = new Promise((resolve) => {
+  if (performance.getEntriesByType('paint').some((e) => e.name === 'first-contentful-paint')) { resolve(); return; }
+  try {
+    new PerformanceObserver((list, obs) => {
+      if (list.getEntries().some((e) => e.name === 'first-contentful-paint')) { obs.disconnect(); resolve(); }
+    }).observe({ type: 'paint', buffered: true });
+  } catch { resolve(); }
+  setTimeout(resolve, 1200);
+}).then(() => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0))));
+
 let story = null;
 async function startStory() {
   const tier = chooseTier();
   if (story) { attempt('journey teardown', () => story.destroy()); story = null; }
   root.removeAttribute('data-tier');
   if (tier === 'static') { root.classList.remove('intro-pending'); refreshNav(); return; }
-  await fontsSettled;
+  await Promise.all([fontsSettled, firstPaint]);
   const mod = await attemptAsync('journey module', () => import('./journey.js'));
   if (!mod) { root.classList.remove('intro-pending'); return; }
   story = await attemptAsync('journey', () => mod.createStory({ cfg, tier, report }));

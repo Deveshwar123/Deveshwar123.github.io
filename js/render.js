@@ -55,7 +55,7 @@ export function renderHeader(d) {
     <div class="header-inner">
       <a class="home-link" href="#top">${glyph('monogram', 'monogram')}<span class="home-name">${L.homeLink}</span></a>
       <nav class="primary-nav" aria-label="${L.primaryNav}">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-links" hidden>${L.menu}</button>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-links">${L.menu}</button>
         <ul class="primary-links" id="primary-links">
 ${L.nav.map((n) => html`          <li><a href="${n.href}">${n.label}</a></li>\n`)}        </ul>
       </nav>

@@ -56,7 +56,7 @@ const THEME_KEY = config.theme.storageKey;
 const MOTION_KEY = config.theme.motionStorageKey;
 // Runs before first paint: applies the saved theme/motion choice and tolerates
 // blocked storage. Its hash is allowed by the Content Security Policy below.
-const themeInit = `(function(){var d=document.documentElement,t='system',m='system';d.classList.remove('no-js');d.classList.add('js');try{t=localStorage.getItem('${THEME_KEY}')||t;m=localStorage.getItem('${MOTION_KEY}')||m}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t);if(m==='reduced')d.setAttribute('data-motion','reduced');else if(!location.hash&&window.matchMedia&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-pending')})();`;
+const themeInit = `(function(){var d=document.documentElement,t='system',m='system';d.classList.remove('no-js');d.classList.add('js','nav-collapsible');setTimeout(function(){if(!d.classList.contains('is-enhanced'))d.classList.remove('nav-collapsible')},4000);try{t=localStorage.getItem('${THEME_KEY}')||t;m=localStorage.getItem('${MOTION_KEY}')||m}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t);if(m==='reduced')d.setAttribute('data-motion','reduced');else if(!location.hash&&window.matchMedia&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-pending')})();`;
 const importMap = JSON.stringify({
   imports: {
     three: './vendor/three/three-board.min.js',
@@ -75,8 +75,9 @@ const csp = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'none'",
-  'upgrade-insecure-requests',
 ].join('; ');
+// No upgrade-insecure-requests: every URL is relative (HTTPS on Pages already),
+// and WebKit applies it to http://127.0.0.1 previews, breaking local Safari tests.
 
 // The subset of site-config.json the enhancement scripts read (no fetch needed).
 const runtimeConfig = {
@@ -114,6 +115,7 @@ ${M.deployApproved ? R.html`  <link rel="canonical" href="${M.deployUrl}">\n  <m
   <meta name="twitter:card" content="summary_large_image">
   <script>${R.raw(themeInit)}</script>
   <link rel="preload" href="assets/fonts/newsreader-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/dm-sans-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/journey.css">

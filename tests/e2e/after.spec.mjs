@@ -35,8 +35,7 @@ test('the timeline trace follows scroll both ways and never hides revealed text'
   const offsetUp = await page.locator('.timeline-trace path:not(.trace-base)').evaluate((p) => parseFloat(p.style.strokeDashoffset));
   expect(offsetUp).toBeGreaterThan(offsetDown);
   // Text revealed on the way down stays visible after the trace retracts.
-  const opacity = await page.locator('#role-radicubs .bullets li').first().evaluate((li) => getComputedStyle(li).opacity);
-  expect(+opacity).toBe(1);
+  await expect.poll(() => page.locator('#role-radicubs .bullets li').first().evaluate((li) => +getComputedStyle(li).opacity)).toBe(1);
 });
 
 test('jumping to a section reveals it and everything above it', async ({ page }) => {

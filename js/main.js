@@ -95,6 +95,9 @@ async function boot() {
   await startProjects();
   const skills = await attemptAsync('skills module', () => import('./skills-board.js'));
   if (skills) attempt('skills', () => skills.initSkills(cfg));
+  // Final, optional polish: a failure here never affects navigation or content.
+  const cursor = await attemptAsync('cursor module', () => import('./cursor.js'));
+  if (cursor) attempt('cursor', () => cursor.initCursor(cfg));
 }
 boot();
 

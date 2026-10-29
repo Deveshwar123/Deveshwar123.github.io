@@ -285,6 +285,9 @@ export async function createStory({ cfg, tier, report }) {
     dirty = false;
     state = evaluateStory(p, vc);
     stage.dataset.p = p.toFixed(4);
+    // Optional ambient motion only once the story has handed off (CSS-driven,
+    // paused by Pause motion; the story's own channels stay frozen).
+    stage.classList.toggle('is-ambient', p >= J.end - 1e-6 && !motionMode().paused);
     stage.style.opacity = state.stageOpacity;
     stage.style.transform = state.stageScale === 1 ? '' : `scale(${state.stageScale.toFixed(4)})`;
     renderSvg(state);
@@ -337,6 +340,7 @@ export async function createStory({ cfg, tier, report }) {
   // Pause motion stops Lenis' inertia from being the only thing moving; nothing in
   // the story itself is autonomous, so there is nothing else to pause here.
   cleanups.push(onMotionChange(() => { dirty = true; wake(); }));
+  cleanups.push(() => stage.classList.remove('is-ambient'));
 
   // ---- Intro (first view only, skipped when arriving mid-page or by hash) ----
   // The data-tier attribute (which hides the static hero art) is set by main.js

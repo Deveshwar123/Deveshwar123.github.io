@@ -354,3 +354,19 @@ section[id], article[id], li[id] { scroll-margin-top: calc(var(--header-h) + var
   .segment input:checked + span { border-width: 3px; }
   :focus-visible { outline: 3px solid Highlight; }
 }
+
+/* ---------- Optional pointer polish (fine pointers only, added by cursor.js) ---------- */
+.cursor-ring {
+  position: fixed;
+  left: -8px; top: -8px;
+  z-index: 90;
+  width: 16px; height: 16px;
+  border: 1.25px solid color-mix(in srgb, var(--copper) 80%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: width var(--dur-hover) var(--ease-ui), height var(--dur-hover) var(--ease-ui), left var(--dur-hover) var(--ease-ui), top var(--dur-hover) var(--ease-ui), border-radius var(--dur-hover) var(--ease-ui), opacity var(--dur-hover) linear;
+}
+.cursor-ring.is-crosshair { width: 22px; height: 22px; left: -11px; top: -11px; border-radius: 2px; border-style: dashed; }
+.cursor-ring.is-hidden { opacity: 0; }
+@media (forced-colors: active) { .cursor-ring { display: none; } }
+.magnet-art { display: inline-flex; align-items: center; gap: inherit; pointer-events: none; }

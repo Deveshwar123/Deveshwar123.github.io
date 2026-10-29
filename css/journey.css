@@ -278,3 +278,26 @@ html.intro-running:not(.intro-chapters) .chapters::before { transform: scaleY(0)
 html[data-tier] .scroll-hint { opacity: 0.8; transition: opacity var(--dur-reveal) var(--ease-ui); }
 html.intro-running:not(.intro-hint) .scroll-hint { opacity: 0; }
 @media (max-height: 640px) { .scroll-hint { display: none; } }
+
+/* ---------- Ambient board after the handoff (optional) ----------
+   ±0.5° breathing over 8s and a restrained copper sweep every 6s on the dimmed
+   backdrop. Stopped by Pause motion and reduced motion; never part of the
+   deterministic story. */
+.stage.is-ambient .stage-svg,
+.stage.is-ambient .stage-canvas { animation: board-breathe 8s ease-in-out infinite; transform-origin: 58% 52%; }
+.stage.is-ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--copper) 9%, transparent) 50%, transparent 60%);
+  background-size: 300% 100%;
+  animation: copper-sweep 6s var(--ease-scene) infinite;
+  pointer-events: none;
+}
+@keyframes board-breathe { 0%, 100% { transform: rotate(-0.5deg); } 50% { transform: rotate(0.5deg); } }
+@keyframes copper-sweep { 0% { background-position: 100% 0; } 70%, 100% { background-position: 0 0; } }
+html[data-motion-paused] .stage.is-ambient .stage-svg,
+html[data-motion-paused] .stage.is-ambient .stage-canvas,
+html[data-motion-paused] .stage.is-ambient::after { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .stage.is-ambient .stage-svg, .stage.is-ambient .stage-canvas, .stage.is-ambient::after { animation: none; } }

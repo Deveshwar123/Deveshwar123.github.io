@@ -6,7 +6,7 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ## PF-3 — Opening a story beat by link could land up to 230 px past it · CLOSED 2026-10-29
 
-**Fixed in** `COMMIT`.
+**Fixed in** `c202266`.
 
 **Opened.** 2026-10-29, while checking the published site. Severity: low (deep links into the story only; the in-page chapter links were fine). Opening `https://deveshwar123.github.io/#story-whole` on a phone sometimes landed at the end of the story, with no caption showing.
 

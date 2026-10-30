@@ -22,6 +22,16 @@ test.describe('without JavaScript', () => {
   });
 });
 
+test('every résumé link serves the PDF', async ({ page, request }) => {
+  await page.goto('/');
+  const hrefs = await page.locator('a[type="application/pdf"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  expect(hrefs).toEqual(Array(3).fill(resume.assets.resumePdf.path));
+  const res = await request.get(`/${hrefs[0]}`);
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('application/pdf');
+  expect((await res.body()).subarray(0, 5).toString()).toBe('%PDF-');
+});
+
 test('theme follows the OS until chosen, persists, and returns to System', async ({ page }) => {
   await page.goto('/');
   expect(await bg(page)).toBe('rgb(11, 12, 14)');

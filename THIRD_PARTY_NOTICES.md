@@ -1,6 +1,6 @@
 # Third-party notices
 
-The line-art board, the closing ornament, glyphs and the social image are original artwork generated from `js/art.js` and `scripts/build-social.mjs`. The 3D card is rendered from the owner's own NFC card fabrication files (`hardware/gerbers/`, EasyEDA Pro export). Its back-side bull-and-bear engraving and card suits are the owner's silkscreen design; their original source was not supplied, so confirm you hold the rights to that artwork before publishing. Screenshots of TideCast and wearvedam.com are of the owner's own live projects. No code or assets were copied from those sites.
+The line-art board, the closing ornament, glyphs and the social image are original artwork generated from `js/art.js` and `scripts/build-social.mjs`. The 3D card is rendered from the owner's own NFC card fabrication files (`hardware/gerbers/`, EasyEDA Pro export). Its back-side bull-and-bear engraving and card suits are the owner's silkscreen design, which the owner confirmed they hold the rights to publish (29 Oct 2026). Screenshots of TideCast and wearvedam.com are of the owner's own live projects. No code or assets were copied from those sites.
 
 ## Hero panels
 

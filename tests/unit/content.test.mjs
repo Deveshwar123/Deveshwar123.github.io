@@ -160,8 +160,13 @@ test('missing destinations render no buttons; supplied ones do', () => {
   assert.doesNotMatch(article('vedam'), /Source code/);
   assert.match(article('nfc-card'), /href="https:\/\/github\.com\/Deveshwar123\/nfc-pcb-business-card"/);
   assert.doesNotMatch(article('nfc-card'), /Live site/);
-  assert.equal(resume.assets.resumePdf.approved, false);
-  assert.doesNotMatch(html, /Deveshwar_Vankeswaram_Resume\.pdf/, 'no résumé link until an approved PDF exists');
+  const pdf = resume.assets.resumePdf;
+  const links = html.match(/href="assets\/Deveshwar_Vankeswaram_Resume\.pdf" type="application\/pdf"/g) || [];
+  if (!pdf.approved) return assert.equal(links.length, 0, 'no résumé link until an approved PDF exists');
+  assert.equal(links.length, 3, 'header, hero and contact link the résumé');
+  const bytes = readFileSync(join(root, pdf.path));
+  assert.equal(bytes.subarray(0, 5).toString(), '%PDF-');
+  assert.ok(bytes.length < 300 * 1024, 'the résumé stays small');
 });
 
 test('no excluded content in the page, data or metadata', () => {

@@ -205,7 +205,7 @@
     { "id": "backtest", "value": "20", "label": "yrs backtested", "basis": "experience.quant-research.b2" }
   ],
   "assets": {
-    "resumePdf": { "path": "assets/Deveshwar_Vankeswaram_Resume.pdf", "approved": false }
+    "resumePdf": { "path": "assets/Deveshwar_Vankeswaram_Resume.pdf", "approved": true }
   },
   "skillRelations": [
     { "skillId": "python", "entityId": "radicubs", "evidenceRef": "experience.radicubs.b1", "sourceType": "supplied" },

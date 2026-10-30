@@ -71,7 +71,7 @@ Rules the validator enforces: the major is "Computer Engineering"; a changed bul
 | Command | What it covers |
 |---|---|
 | `npm test` | 55 unit tests: every supplied string round-trips record → data → page, counts, exclusions, JSON-LD; story determinism in any order, boundary continuity, the hero pose landing on the measured card, one caption at a time, the LED pulse, 45°/90° routing without crossings, Euler order, easing and spring maths; the code excerpt survives highlighting verbatim, EMA/RSI against hand-computed values, the price snapshot's integrity and that the finance claim is the résumé's own; every "More on GitHub" sentence cites its README, excerpts match the pinned README line for line, links are my own https repos; field tags come from the hero's disciplines and follow their headings, role chips cite their own bullets, the closing ornament is the real card's copper |
-| `npm run test:e2e` | 67 Playwright checks in Chrome (no-JS content, themes, keyboard and focus, reflow, the hero and the story, chapters and history, context loss, budgets, reveals, project panels and the single shared WebGL renderer, the More on GitHub cards, skills board, polish, axe scans, CSP, subdirectory hosting) plus 37 on Playwright's WebKit engine; `PW_FIREFOX=1` adds Firefox where it launches |
+| `npm run test:e2e` | 68 Playwright checks in Chrome (no-JS content, themes, keyboard and focus, reflow, the hero and the story, chapters and history, context loss, budgets, reveals, project panels and the single shared WebGL renderer, the More on GitHub cards, skills board, polish, axe scans, CSP, subdirectory hosting) plus 37 on Playwright's WebKit engine; `PW_FIREFOX=1` adds Firefox where it launches |
 | `node scripts/check-contrast.mjs` | `reports/contrast.md` — every token pair in both themes |
 | `node scripts/measure-budget.mjs` | `reports/budget.md` — gzip bytes of what a real load requests |
 | `node scripts/serve.mjs 8090 --prod` then `node scripts/run-lighthouse.mjs` | `reports/lighthouse.md` — three cold runs per profile, median and range |
@@ -85,17 +85,18 @@ Screenshots are reproducible with Playwright against the preview server; the hel
 
 Pinned exactly in `package.json` and vendored as tree-shaken bundles by `npm run vendor` (`scripts/build-vendor.mjs`), with upstream integrity and SHA-256 recorded in `vendor/manifest.json`. Fonts are self-hosted, subset with `scripts/subset-fonts.py`. Licences: `THIRD_PARTY_NOTICES.md`.
 
-## Missing assets
+## Résumé PDF
 
-- **Résumé PDF** — reserved at `assets/Deveshwar_Vankeswaram_Resume.pdf`. No download control appears until the owner supplies an approved PDF and `assets.resumePdf.approved` is set to `true`. Before approving, check the PDF says Computer Engineering and contains no phone number, street address, high school or the excluded program (including in its metadata).
+`assets/Deveshwar_Vankeswaram_Resume.pdf` is a web copy of my résumé, linked from the header, the hero and Contact while `assets.resumePdf.approved` is `true`. To replace it, check the new PDF says Computer Engineering and contains no phone number, street address, high school or the excluded program, including in its metadata. The build's exclusion scan reads text files only, so extract the PDF's text and scan that too.
 
-## Publishing (GitHub Pages) — not done; requires the owner's go-ahead
+## Publishing (GitHub Pages)
 
-The intended home is the user site `https://deveshwar123.github.io` (repository `Deveshwar123.github.io`, which did not exist on 29 Oct 2026; GitHub allows one user site per account).
+The site lives at `https://deveshwar123.github.io`, published from the repository `Deveshwar123.github.io` (first published 29 Oct 2026). `meta.deployApproved` is `true`, so the page carries its canonical URL, `og:url` and an absolute social image URL.
 
-1. Set `meta.deployApproved` to `true` in `data/site-config.json` and run `npm run generate` (adds the canonical URL, `og:url` and an absolute social image URL).
-2. Run the full local checks, including the private exclusion scan: `npm run test:all && node scripts/build-site.mjs`.
-3. Create the repository, push, and in **Settings → Pages** choose **GitHub Actions** as the source.
-4. Run the `site` workflow manually with **deploy: true**. Only the allowlisted `_site/` is published; tests, QA lists, data and reports are never served.
+To publish a change:
+
+1. Run the full local checks, including the private exclusion scan: `npm run test:all && node scripts/build-site.mjs`.
+2. Commit and push. The `site` workflow checks every push.
+3. Run the `site` workflow manually with **deploy: true** (Actions → site → Run workflow, or `gh workflow run site.yml -f deploy=true`). Only the allowlisted `_site/` is published; tests, QA lists, data and reports are never served.
 
 **Security headers:** the Content Security Policy ships as a `<meta>` tag (`default-src 'self'`, hashed inline scripts, no inline styles, `object-src 'none'`, `base-uri 'self'`, `form-action 'none'`). GitHub Pages cannot set response headers, so `frame-ancestors`, HSTS and other header-only policies are not deployed there; use a host with header control if those matter.

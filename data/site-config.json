@@ -4,9 +4,9 @@
     "title": "Deveshwar Vankeswaram — Computer Engineering, Texas A&M",
     "description": "Deveshwar Vankeswaram is a Computer Engineering student at Texas A&M University who builds software, hardware and the things between. Projects: TideCast, Vedam and an NFC business card PCB.",
     "deployUrl": "https://deveshwar123.github.io/",
-    "deployApproved": false,
+    "deployApproved": true,
     "socialImage": "assets/social-card.png",
-    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, beside a 3D rendering of his NFC business card.",
+    "socialImageAlt": "Deveshwar Vankeswaram, Computer Engineering, Texas A&M, beside a 3D rendering of the NFC business card PCB.",
     "themeColorDark": "#0b0c0e",
     "themeColorLight": "#f4f3f0"
   },

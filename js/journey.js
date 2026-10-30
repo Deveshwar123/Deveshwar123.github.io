@@ -56,10 +56,10 @@ export async function createStory({ cfg, tier, report }) {
   const glow = el('circle', { class: 'led-glow', r: '0', fill: 'url(#led-glow-grad)' }, svg);
   const labelBox = document.createElement('div');
   labelBox.className = 'stage-labels';
-  const labels = cfg.illustrations.layerLabels.map((text) => {
+  const labels = cfg.illustrations.layers.map(({ skill }) => {
     const s = document.createElement('span');
     s.className = 'stage-label';
-    s.textContent = text;
+    s.textContent = skill;
     labelBox.appendChild(s);
     return s;
   });
@@ -119,6 +119,7 @@ export async function createStory({ cfg, tier, report }) {
   // ---- Measurement ----
   let geo = null;
   let lastW = 0, lastH = 0;
+  let headerH = 0;
   let stableVh = window.innerHeight;
 
   function measure() {
@@ -128,6 +129,7 @@ export async function createStory({ cfg, tier, report }) {
     // new height when the width changes or the jump is large (rotation, split view).
     if (vw !== lastW || Math.abs(ih - stableVh) > 140) stableVh = ih;
     lastW = vw; lastH = stableVh;
+    headerH = document.getElementById('site-header')?.offsetHeight ?? 0;
     const vh = stableVh;
     const y0 = window.scrollY;
     const startY = hero.getBoundingClientRect().top + y0;
@@ -212,17 +214,32 @@ export async function createStory({ cfg, tier, report }) {
         // back edge at a different x, so leaders never cross.
         const anchors = [0, 1, 2, 3].map((i) => projectPoint(BOARD.W * (0.13 + 0.25 * i), 0, layerZ(i, s.explode), s.pose, cam, R, [0, 0, 0]));
         const top = Math.min(...anchors.map((a) => a[1]));
-        let prevRight = -Infinity;
-        anchors.forEach(([ax, ay], i) => {
-          const w = labels[i].offsetWidth || 90;
-          const lx = Math.min(vc.vw - w - 8, Math.max(8, ax - w / 2));
-          const row = lx < prevRight + 6 ? 1 : 0;
-          const ly = top - 44 - row * 34;
-          if (!row) prevRight = lx + w;
+        // One row when every label fits over its own layer; otherwise alternate
+        // rows, and a label that still touches its row neighbour moves right.
+        const place = (rows) => {
+          const rowRight = Array(rows).fill(-Infinity);
+          let shifted = false;
+          const placed = anchors.map(([ax, ay], i) => {
+            const w = labels[i].offsetWidth || 90;
+            const row = i % rows;
+            const want = Math.min(vc.vw - w - 8, Math.max(8, ax - w / 2));
+            const lx = Math.min(vc.vw - w - 8, Math.max(want, rowRight[row] + 6));
+            if (lx !== want) shifted = true;
+            rowRight[row] = lx + w;
+            return { ax, ay, lx, ly: top - 44 - row * 34 };
+          });
+          return { placed, shifted };
+        };
+        let { placed, shifted } = place(1);
+        if (shifted) placed = place(2).placed;
+        // On short screens the rows would slide under the header; the caption
+        // already pairs each layer with its skill, so the labels step aside.
+        const fits = Math.min(...placed.map((q) => q.ly)) >= headerH + 4;
+        placed.forEach(({ ax, ay, lx, ly }, i) => {
           labels[i].style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
-          labels[i].style.opacity = s.labels;
+          labels[i].style.opacity = fits ? s.labels : 0;
           leaders[i].setAttribute('d', `M${ax.toFixed(1)} ${ay.toFixed(1)}L${ax.toFixed(1)} ${(ly + 30).toFixed(1)}`);
-          leaders[i].style.opacity = s.labels;
+          leaders[i].style.opacity = fits ? s.labels : 0;
         });
       } else {
         const anchors = [0, 1, 2, 3].map((i) => projectPoint(BOARD.W - 24, BOARD.H * 0.5, layerZ(i, s.explode), s.pose, cam, R, [0, 0, 0]).slice(0, 2));

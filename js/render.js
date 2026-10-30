@@ -122,7 +122,7 @@ ${d.resume.projects.map((p) => html`            <li><a href="#project-${p.id}">$
 export function renderJourney(d, art) {
   const J = d.config.labels.journey;
   const beats = d.config.illustrations.beats;
-  const figures = [art.beatBoard, art.beatBack, art.beatLayers];
+  const figures = { 'story-board': art.beatBoard, 'story-back': art.beatBack, 'story-layers': art.beatLayers, 'story-whole': art.beatWhole };
   return html`
     <section class="journey" id="journey" aria-labelledby="journey-title">
       <header class="journey-head">
@@ -132,12 +132,12 @@ export function renderJourney(d, art) {
       <ol class="beats">
 ${beats.map((b, i) => html`        <li class="beat beat--${i + 1}" id="${b.id}" data-p="${b.p}">
           <figure class="beat-figure">
-            ${raw(figures[i])}
+            ${raw(figures[b.id])}
             <figcaption class="beat-caption">
               <p class="kicker" aria-hidden="true">${b.chapter}</p>
               <h3 class="beat-title">${b.title}</h3>
               <p>${b.caption}</p>
-              ${i === beats.length - 1 ? html`<ul class="layer-list">${d.config.illustrations.layerLabels.map((l) => html`<li>${l}</li>`)}</ul>` : ''}
+              ${b.id === 'story-layers' ? html`<ul class="layer-list">${d.config.illustrations.layers.map((l) => html`<li><span class="layer-name">${l.layer}</span> <strong class="layer-skill">${l.skill}</strong> <span class="layer-text">${l.text}</span></li>`)}</ul>` : ''}
             </figcaption>
           </figure>
         </li>\n`)}      </ol>

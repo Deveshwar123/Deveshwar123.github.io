@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { validateResume, validateConfig, DISCIPLINES, resolveEvidence } from '../../scripts/validate-content.mjs';
 import { REAL_BOARD } from '../../js/board-data.js';
+import { escapeHtml } from '../../js/render.js';
 
 const read = (rel) => readFileSync(new URL(`../../${rel}`, import.meta.url), 'utf8');
 const resume = JSON.parse(read('data/resume.json'));
@@ -67,4 +68,25 @@ test('the TideCast screenshot hides the leaderboard name, now and on recapture',
   assert.match(capture, /teaser-sub/);
   assert.match(capture, /blur\(5px\)/);
   assert.match(capture, /await s\.redact\?\.\(page\)/);
+});
+
+test('each of the card\'s four layers is one skill, backed by résumé lines, in story order', () => {
+  const layers = config.illustrations.layers;
+  assert.deepEqual(layers.map((l) => l.layer), ['Silkscreen', 'Copper', 'FR-4 core', 'Back'], 'top to bottom, as projection.js stacks them');
+  for (const l of layers) for (const ref of l.evidence) assert.ok(resolveEvidence(resume, ref), `${l.layer}: ${ref}`);
+  const list = html.slice(html.indexOf('<ul class="layer-list">'), html.indexOf('</ul>', html.indexOf('<ul class="layer-list">')));
+  for (const l of layers) assert.ok(list.includes(`<strong class="layer-skill">${escapeHtml(l.skill)}</strong>`) && list.includes(escapeHtml(l.text)), l.layer);
+  const c1 = clone(config); c1.illustrations.layers[3].evidence = ['experience.quant-research.b9'];
+  assert.ok(validateConfig(c1, resume).some((e) => /does not resolve/.test(e)));
+  const c2 = clone(config); c2.illustrations.layers.pop();
+  assert.ok(validateConfig(c2, resume).some((e) => /four layers/.test(e)));
+});
+
+test('the story ends whole: the layers rejoin and the last beat shows the lit card', () => {
+  const beats = config.illustrations.beats;
+  assert.deepEqual(beats.map((b) => b.id), ['story-board', 'story-back', 'story-layers', 'story-whole']);
+  assert.equal(beats.length, config.journey.captionWindows.length);
+  const whole = html.slice(html.indexOf('id="story-whole"'), html.indexOf('</li>', html.indexOf('id="story-whole"')));
+  assert.match(whole, /src="assets\/board\/card-lit\.webp"/);
+  assert.doesNotMatch(html, /yrs backtested/, 'the snapshot no longer counts backtest years');
 });

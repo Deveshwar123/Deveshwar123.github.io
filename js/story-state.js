@@ -4,7 +4,8 @@
 //
 // Beats: the card waits beside the hero text, glides to face-on at the centre,
 // flips to show the back, flips back while tilting into the hero pose, splits
-// into its layers, pulses its LED, then settles into the background.
+// into its layers (one skill each), comes back together and lights its LED,
+// then settles into the background.
 
 import { clamp, u, bell, easeScene } from './motion.js';
 import { BOARD } from './art.js';
@@ -51,7 +52,8 @@ export function evaluateStory(p, vc) {
   const flip = easeScene(u(R.flip[0], R.flip[1], P));
   const unflip = easeScene(u(R.unflip[0], R.unflip[1], P));
   const rot = easeScene(u(R.pose[0], R.pose[1], P));
-  const ex = easeScene(u(R.explode[0], R.explode[1], P));
+  const join = easeScene(u(R.join[0], R.join[1], P));
+  const ex = easeScene(u(R.explode[0], R.explode[1], P)) * (1 - join);
   const hand = easeScene(u(R.handoff[0], R.handoff[1], P));
   const ppu = vc.framing.ppu;
   const H = heroPose(vc);
@@ -79,7 +81,7 @@ export function evaluateStory(p, vc) {
     glOpacity: vc.webgl ? 1 : 0,
     pose,
     explode: ex * vc.explodeDistance,
-    labels: u(R.explode[0] + 0.03, R.explode[0] + 0.08, P) * (1 - u(R.ledBell[0], R.handoff[0], P)),
+    labels: u(R.explode[0] + 0.03, R.explode[1], P) * (1 - u(R.join[0], R.join[1], P)),
     led: bell(R.ledBell[0], R.ledBell[1], R.ledBell[2], R.ledBell[3], P),
     stageOpacity: 1 - 0.82 * hand,
     stageScale: 1 - 0.08 * hand,

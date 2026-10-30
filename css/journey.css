@@ -332,13 +332,12 @@ html[data-card='live'] .hero-card { opacity: 0; }
 .beat-caption { max-width: 46ch; }
 .beat-title { font-size: clamp(1.75rem, 3vw, 2.5rem); margin: var(--s1) 0 var(--s2); }
 .beat-caption p:not(.kicker) { color: var(--ink-soft); }
-.layer-list { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); }
-.layer-list li {
-  padding: 4px 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-small);
-}
+/* One layer, one skill: the layer's name, the skill, then the proof. */
+.layer-list { display: grid; gap: var(--s2); margin-top: var(--s3); }
+.layer-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding-left: var(--s2); border-left: 2px solid var(--copper); }
+.layer-name { font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.layer-skill { font-weight: 500; color: var(--ink); }
+.layer-text { flex-basis: 100%; font-size: var(--text-small); color: var(--ink-soft); }
 @media (max-width: 859px) {
   .beat-figure { grid-template-columns: 1fr; gap: var(--s3); }
 }
@@ -398,6 +397,15 @@ html[data-tier='compact'] .beat-caption {
   padding: var(--s2) var(--s3);
 }
 html[data-tier='compact'] .stage-label { font-size: 0.75rem; padding: 3px 8px; }
+/* Pinned captions stay short: the layer list tightens on wide screens, and on
+   narrow ones shows each layer and its skill only (the proofs are in the
+   reduced-motion and no-JS versions). */
+html[data-tier='full'] .layer-list { gap: 10px; margin-top: var(--s2); }
+html[data-tier='full'] .layer-text { font-size: 0.8125rem; }
+html[data-tier='compact'] .layer-list { grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 10px; }
+html[data-tier='compact'] .layer-list li { flex-direction: column; gap: 0; padding-left: 10px; }
+html[data-tier='compact'] .layer-skill { font-size: var(--text-small); }
+html[data-tier='compact'] .layer-text { display: none; }
 html[data-tier='compact'] .beat-title { font-size: 1.5rem; margin: 4px 0 6px; }
 html[data-tier='compact'] .beat-caption p:not(.kicker) { font-size: var(--text-small); }
 

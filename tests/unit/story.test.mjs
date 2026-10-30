@@ -89,8 +89,15 @@ for (const [vw, vh, tier] of [[1440, 900, 'full'], [390, 844, 'compact'], [1024,
     // Flipped to the back between the flip and unflip ranges, face-on again after.
     assert.ok(Math.abs(evaluateStory(0.32, vc).pose.yaw - Math.PI) < 1e-12);
     assert.ok(Math.abs(evaluateStory(0.4, vc).pose.yaw - J.pose.yawDeg * RAD) < 1e-12);
-    assert.equal(evaluateStory(0.4, vc).explode, 0);
-    assert.equal(evaluateStory(0.58, vc).explode, 150);
+    // The layers split apart, hold while each is named, then come back together.
+    const R = J.ranges;
+    assert.equal(evaluateStory(R.explode[0], vc).explode, 0);
+    assert.equal(evaluateStory(R.explode[1], vc).explode, 150);
+    assert.equal(evaluateStory(R.join[0], vc).explode, 150);
+    assert.equal(evaluateStory(R.join[1], vc).explode, 0);
+    assert.equal(s62.explode, 0, 'the card ends whole');
+    for (let p = R.explode[1]; p <= R.join[0]; p += 0.0025) assert.equal(evaluateStory(p, vc).labels, 1, `every layer is named at p=${p.toFixed(4)}`);
+    assert.equal(evaluateStory(R.join[1], vc).labels, 0, 'no layer names once the card is whole');
     assert.equal(s62.stageOpacity, 1 - 0.82);
     assert.equal(s62.led, 0);
     assert.deepEqual(flat(evaluateStory(0.7, vc)), flat(s62), 'story holds after handoff');
@@ -120,13 +127,18 @@ test('without WebGL the hero keeps its still and the line-art card fades in as i
 test('the narrative LED is a single progress-defined pulse that reverses', () => {
   const { vc } = viewport(1440, 900, 'full');
   const ps = [];
-  for (let p = 0.575; p <= 0.615; p += 0.0025) ps.push(+p.toFixed(4));
+  const [l0, l1, l2, l3] = J.ranges.ledBell;
+  for (let p = l0 - 0.01; p <= l3 + 0.01; p += 0.0025) ps.push(+p.toFixed(4));
   const led = ps.map((p) => evaluateStory(p, vc).led);
   const peak = Math.max(...led);
   assert.equal(peak, 1);
-  assert.equal(evaluateStory(0.595, vc).led, 1);
-  assert.equal(evaluateStory(0.575, vc).led, 0);
-  assert.equal(evaluateStory(0.615, vc).led, 0);
+  assert.equal(evaluateStory((l1 + l2) / 2, vc).led, 1);
+  assert.equal(evaluateStory(l0 - 0.005, vc).led, 0);
+  assert.equal(evaluateStory(l3 + 0.005, vc).led, 0);
+  // It lights once the layers are back together and stays lit for the last caption.
+  assert.ok(l0 >= J.ranges.join[1] - 0.005);
+  const [w0, w1] = J.captionWindows[3];
+  for (let p = w0; p <= w1; p += 0.0025) assert.equal(evaluateStory(p, vc).led, 1, `LED at p=${p.toFixed(4)}`);
   let rises = 0;
   for (let i = 1; i < led.length; i++) if (led[i] > led[i - 1] && (i < 2 || led[i - 1] <= led[i - 2])) rises++;
   assert.equal(rises, 1, 'one pulse');

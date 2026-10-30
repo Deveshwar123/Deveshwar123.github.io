@@ -46,6 +46,7 @@ const art = {
   beatBoard: `<img class="beat-art beat-photo" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   beatBack: `<img class="beat-art beat-photo" src="assets/board/card-back.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   beatLayers: `<img class="beat-art beat-photo" src="assets/board/card-exploded.webp" width="1600" height="1100" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
+  beatWhole: `<img class="beat-art beat-photo" src="assets/board/card-lit.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   nfcStill: `<img class="nfc-static" src="assets/board/card-front.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async" fetchpriority="low">`,
   // The card's real copper, face-on, above the contact section; its LED lights once drawn.
   closing: inlineSvg('assets/svg/closing-card.svg', 'closing-art'),

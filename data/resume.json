@@ -201,8 +201,7 @@
   "snapshot": [
     { "id": "gpa", "value": "4.0", "label": "GPA", "basis": "education.tamu.gpa" },
     { "id": "shipped", "value": "3", "label": "shipped projects", "basis": "TideCast, Vedam and the NFC Business Card (owner confirmed 2026-10-29)" },
-    { "id": "tutoring", "value": "120+", "label": "tutoring hours", "basis": "leadership.engin.description" },
-    { "id": "backtest", "value": "20", "label": "yrs backtested", "basis": "experience.quant-research.b2" }
+    { "id": "tutoring", "value": "120+", "label": "tutoring hours", "basis": "leadership.engin.description" }
   ],
   "assets": {
     "resumePdf": { "path": "assets/Deveshwar_Vankeswaram_Resume.pdf", "approved": true }

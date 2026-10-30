@@ -1,5 +1,8 @@
 // Phases 3–5 gates: finite intro, reversible story, chapters/history, fallbacks.
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+const beats = JSON.parse(readFileSync(new URL('../../data/site-config.json', import.meta.url))).illustrations.beats;
 
 const stageP = (page) => page.locator('#stage').getAttribute('data-p').then(Number);
 async function settle(page) {
@@ -77,7 +80,7 @@ test.describe('desktop full tier', () => {
     await page.locator('.chapter-link[href="#story-layers"]').click();
     await expect(page).toHaveURL(/#story-layers$/);
     await settle(page);
-    expect(await stageP(page)).toBeCloseTo(0.5, 2);
+    expect(await stageP(page)).toBeCloseTo(beats.find((b) => b.id === 'story-layers').p, 2);
     await expect(page.locator('.chapter-link[href="#story-layers"]')).toHaveAttribute('aria-current', 'location');
     await page.locator('.chapter-link[href="#projects"]').click();
     await expect(page).toHaveURL(/#projects$/);
@@ -127,11 +130,11 @@ test.describe('desktop full tier', () => {
 
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
-  test('the journey is three static frames in normal flow, no stage, no intro', async ({ page }) => {
+  test('the journey is one static frame per beat in normal flow, no stage, no intro', async ({ page }) => {
     await page.goto('/');
     await page.waitForTimeout(800);
     expect(await page.locator('html').getAttribute('data-tier')).toBeNull();
-    await expect(page.locator('.beat-art')).toHaveCount(3);
+    await expect(page.locator('.beat-art')).toHaveCount(beats.length);
     for (const art of await page.locator('.beat-art').all()) await expect(art).toBeVisible();
     await expect(page.locator('#stage')).toBeHidden();
     await expect(page.locator('.hero-card')).toBeVisible();

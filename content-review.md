@@ -21,6 +21,8 @@ Research validates technology behaviour, not personal achievements. No personal-
 | D10 | "For my Projects you can add whatever else is in my github" (29 Oct) | "More on GitHub": Strategy Terminal, Resume Tailor, Insider Tracker, Swim Lessons (public repos only, each restating its README) |
 | D11 | Bull-and-bear artwork: "licencing allows it" (29 Oct) | The owner confirmed the rights to the back-side engraving; it ships on the 3D card |
 | D12 | "publish" (29 Oct) | `meta.deployApproved` is `true`; published to https://deveshwar123.github.io/ from the `Deveshwar123.github.io` repository |
+| D13 | "remove 20 yrs backtested" (29 Oct) | The snapshot shows three stats: 4.0 GPA, 3 shipped projects, 120+ tutoring hours. The backtest stays in the Quantitative Finance Research bullet and the hero chart |
+| D14 | "Use the phases of the PCB card to explain me: each layer is a different skill I have, and as a whole I'm really good" (29 Oct) | The story's Layers beat names one skill per layer (silkscreen: software & design, copper: hardware, FR-4 core: leadership, back: finance), then the layers rejoin and the LED lights under "The whole card". Each layer's line cites résumé evidence (validator-enforced) |
 
 ## Claims
 
@@ -40,7 +42,8 @@ Research validates technology behaviour, not personal achievements. No personal-
 | Six leadership/activity entries | leadership | supplied | "Selected Participant" wording preserved |
 | Skills, certifications, interests | skills, beyond | supplied | "training" preserved for Ironman; no completion implied |
 | Skill → role/project links | skills | supplied | Each edge cites a résumé line that names the skill (validator-enforced); Git/GitHub, Three.js, Bloomberg and CAD stay unlinked |
-| Snapshot: 4.0 GPA · 3 shipped projects · 120+ tutoring hours · 20 yrs backtested | snapshot | supplied | D3 |
+| Snapshot: 4.0 GPA · 3 shipped projects · 120+ tutoring hours | snapshot | supplied | D3, D13 |
+| Card layers as skills: software & design (TideCast, Vedam, VantaShala's UI), hardware (this board, its antenna and LED), leadership (RHA's executive board), finance (TradingView indicator); "The whole card" caption | story | supplied derivative | D14; each line cites the résumé bullets or description that support it (`illustrations.layers[].evidence`); the caption's NFC behaviour restates the NFC card's bullets |
 | Résumé PDF | header, hero, contact | supplied | D6; `assets/Deveshwar_Vankeswaram_Resume.pdf`. Checked 29 Oct 2026: says Computer Engineering; no phone number, street address, high school or excluded program in its text or metadata (text extracted and run through the private exclusion list) |
 | Social preview image | metadata | supplied derivative | `assets/social-card.png`, built by `scripts/build-social.mjs` from a photoreal render of the real NFC card; shows only "Portfolio", the name and "Computer Engineering · Texas A&M University" (re-checked 29 Oct 2026 after the hero redesign) |
 | More on GitHub: Strategy Terminal, Resume Tailor, Insider Tracker, Swim Lessons (summaries, points, stack chips, pictures) | projects | externally corroborated (29 Oct 2026) | Each sentence restates the owner's own public README at a pinned commit and cites verbatim phrases (test-enforced against `tests/fixtures/github/`); chips are named in the README or GitHub's language stats ("TypeScript" for Insider Tracker comes from the language stats). Pictures are the repos' own screenshots or verbatim README lines. Resume Tailor's `docs/sample-resume.png` (a fictional "Acme Corp" résumé) is deliberately not used. Not counted in "3 shipped projects" (D3) |

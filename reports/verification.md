@@ -18,16 +18,17 @@
 |---|---|---|
 | Content validation | `npm run validate` | pass (9 exclusion patterns incl. private list) |
 | Regeneration drift | `npm run check:drift` | pass |
-| Unit tests | `npm test` | **55 / 55 pass** (29 Oct, after the More on GitHub block and the section refinements) |
-| Browser tests, Chrome | `npx playwright test --project=chrome` | **67 / 67 pass** |
-| Engine tests, WebKit | `npx playwright test --project=webkit` | **37 / 37 pass** in three consecutive full runs (foundation, story, projects specs; Safari keyboard model uses Option+Tab) |
-| Combined run (Chrome + WebKit, 3 workers) | `npx playwright test` | 103 / 104 in each of the last two runs (Chrome 67 / 67 both times; the one failure was a different WebKit test each time). Under this combined load, single WebKit tests fail intermittently: one was a real bug (PF-1 in `BUGS.md`, two WebGL renderers on a cold start at `#project-nfc-card`, fixed and covered by a new test). Three others failed once each and did not reproduce: "See my work goes straight to projects" (8 / 8 on rerun), "theme follows the OS…" (1 of 12, then 24 / 24), and "keyboard reaches every action…" (8 / 8; the page has 62 tab stops, so 120 presses always reach the end). Checks made: the footer radios do not move after a reload, nothing blocks pointer events during the intro, and the theme controls stay hidden until their script has run. One combined run also stalled three Chrome release checks for ~7.5 min each; they pass 8 / 8 in 15.6 s alone and in the next full run |
+| Unit tests | `npm test` | **57 / 57 pass** (29 Oct, after the résumé PDF, the header fix and the layers story) |
+| Browser tests, Chrome | `npx playwright test --project=chrome` | **81 / 81 pass** |
+| Engine tests, WebKit | `npx playwright test --project=webkit` | **51 / 51 pass** (foundation, story, projects specs; Safari keyboard model uses Option+Tab). Before the header checks were added: 37 / 37 in three consecutive full runs |
+| Combined run (Chrome + WebKit, 3 workers) | `npx playwright test` | **132 / 132** in the final run before republishing (29 Oct). Earlier: 103 / 104 in each of two runs (Chrome 67 / 67 both times; the one failure was a different WebKit test each time). Under this combined load, single WebKit tests fail intermittently: one was a real bug (PF-1 in `BUGS.md`, two WebGL renderers on a cold start at `#project-nfc-card`, fixed and covered by a new test). Three others failed once each and did not reproduce: "See my work goes straight to projects" (8 / 8 on rerun), "theme follows the OS…" (1 of 12, then 24 / 24), and "keyboard reaches every action…" (8 / 8; the page has 62 tab stops, so 120 presses always reach the end). Checks made: the footer radios do not move after a reload, nothing blocks pointer events during the intro, and the theme controls stay hidden until their script has run. One combined run also stalled three Chrome release checks for ~7.5 min each; they pass 8 / 8 in 15.6 s alone and in the next full run |
 | Engine tests, Firefox | `PW_FIREFOX=1 npx playwright test --project=firefox` | **pending** — Playwright's Firefox (Nightly) build exits with code 1 on macOS 27; Firefox is not installed on this Mac |
 | Accessibility (axe, WCAG 2.0/2.1/2.2 A+AA rules) | in `tests/e2e/release.spec.mjs` | 0 violations: dark + light × desktop + mobile, reduced-motion page, and with the skills board pinned + NFC field shown |
 | Contrast | `node scripts/check-contrast.mjs` | all required pairs pass in both themes (`reports/contrast.md`) |
 | CSP | `release.spec.mjs` | 0 violations in Chrome while scrolling every section, pinning a skill and switching theme. WebKit reports one `style-src-attr` violation whose source is `web-inspector://bootstrap.js` (Playwright's inspector shim), not the site |
 | Subdirectory hosting | `release.spec.mjs` (served at `/portfolio/`) | pass, no 4xx or failed requests |
-| Deploy artifact | `node scripts/build-site.mjs` | 102 allowlisted files, no excluded content, no tests/QA/data/reports |
+| Deploy artifact | `node scripts/build-site.mjs` | 103 allowlisted files (now with the résumé PDF), no excluded content, no tests/QA/data/reports. The PDF's text was extracted and scanned separately (the build scans text files only) |
+| Live site | https://deveshwar123.github.io/ (GitHub Pages) | 200 for the page, résumé PDF (`application/pdf`), CSS, JS and images. Chrome and WebKit at desktop and phone sizes: no console errors, no failed requests, no CSP violations in Chrome (WebKit's one report is Playwright's inspector shim, as above); the 3D card starts 3.5 s after load (3.2 s locally) |
 
 ## Performance (lab)
 
@@ -37,6 +38,8 @@
 |---|---|---|---|---|---|---|---|
 | Desktop preset (1350×940, no CPU throttling) | 100 (100–100) | 100 | 100 | 100 | 0.44 s | 0 | 0 ms |
 | Mobile default (Moto G Power emulation, 4× CPU, slow 4G) | 99 (99–99) | 100 | 100 | 100 | 1.95 s | 0 | 0 ms |
+
+**Live site** (same script with `URL=https://deveshwar123.github.io/`, 29 Oct 2026, three runs each, on the first published build; `reports/lighthouse-live.md`): desktop 100 / 100 / 100 / 100, LCP 0.33 s, CLS 0, TBT 0 ms; mobile 97 (97–100) / 100 / 100 / 100, LCP 1.95 s, CLS 0, TBT 4 ms.
 
 Re-measured on 29 Oct 2026 after the hero redesign, the More on GitHub block and the section refinements (earlier: after the realism pass, mobile 97). One earlier run of that pass reached only mobile 84 / LCP 4.4 s because an SVG image of the silkscreen became the LCP element; it now attaches only when the board appears, and below-the-fold images use `fetchpriority="low"`.
 
@@ -62,7 +65,8 @@ Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. The
 | Unit tests | Cusp normals computed from already-moved points looped the cusped arch | Normals come from the unmodified curve |
 | e2e | Synthetic/fast pointers could throw in `setPointerCapture` | Capture is attempted and safely skipped |
 | e2e (WebKit, combined load) | PF-1: the story and the NFC panel could each create a WebGL renderer on a cold start at `#project-nfc-card`, leaving a stale canvas | `getRenderer()` shares its in-flight creation; regression test added (`BUGS.md`) |
-| Content review | The TideCast screenshot showed a leaderboard user's name | Name blurred in the image and by `capture-projects.mjs` on recapture |
+| Content review | The TideCast screenshot showed a leaderboard user's name | Name blurred in the image and by `capture-projects.mjs` on recapture; before publishing, older commits were rewritten to carry only the blurred image |
+| Live-site check | PF-2: header labels broke mid-word between 600 and 860 px ("Wo / rk") | Labels never wrap; Pause is icon-only below 960 px; the links collapse behind Menu below 768 px; no-JS links wrap as whole words. 13 new checks (`BUGS.md`) |
 
 ## Phase gates
 
@@ -77,7 +81,7 @@ Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. The
 | 7 Project mini-worlds | pass — no geolocation/camera/model/API calls, one renderer, keyboard and touch alternatives, pan-y scrolling, pointercancel, clean re-init |
 | 8 Skills evidence graph | pass — every edge cites evidence, precedence and Escape, contrast kept, 1:1 viewBox for 240 px/s, list ≡ board |
 | 9 Restrained polish | pass — native cursor kept, effects off for touch/keyboard/reduced motion, hit targets fixed, loops settle, Pause halts ambient motion |
-| 10 Release verification | **partially complete** — automated and lab checks above pass; the manual items below are pending; publication not authorised yet |
+| 10 Release verification | automated, lab and live checks above pass; **published 29 Oct 2026** at https://deveshwar123.github.io/ (owner approved); the manual items below are still pending |
 
 ## Manual checks
 
@@ -91,9 +95,9 @@ Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. The
 | VoiceOver + Safari (headings, role/date reading, project actions, skills selection, copy feedback) | **pending** — needs a person at the keyboard; the DOM structure is covered by axe and the heading/landmark tests |
 | Forced colours | emulated in Chrome: text, controls, focus and current chapter use system colours; decorative art stays visible. Real Windows High Contrast **pending** |
 | 400% zoom | covered by the 320 px + 200% text tests; real browser zoom at 400% **pending** |
-| Timed recruiter task (someone unfamiliar finds name, major, school, GPA, projects, one action, contact, résumé within ~10 s) | **pending** — needs a person. At 1440×900 the name, major, university, GPA, three project links and "See my work" are all in the first viewport (asserted); the résumé is absent until supplied |
+| Timed recruiter task (someone unfamiliar finds name, major, school, GPA, projects, one action, contact, résumé within ~10 s) | **pending** — needs a person. At 1440×900 the name, major, university, GPA, three project links and "See my work" are all in the first viewport (asserted), and the résumé link is in the header and the hero |
 
-## Outstanding owner decisions
+## Outstanding owner items
 
-- Supply the approved résumé PDF (see README → Missing assets).
-- Authorise publication (README → Publishing); until then `meta.deployApproved` stays `false` and nothing claims a deployed URL.
+- Real-device checks (iPhone Safari, an Android phone) and a VoiceOver pass.
+- Re-run the timed recruiter task with someone unfamiliar with the site.

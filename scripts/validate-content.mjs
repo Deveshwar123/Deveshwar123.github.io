@@ -165,7 +165,7 @@ export function validateResume(r) {
   return errors;
 }
 
-export function validateConfig(c) {
+export function validateConfig(c, resume) {
   const errors = [];
   const err = (m) => errors.push(m);
   if (c.schemaVersion !== 1) err('site-config schemaVersion must be 1');
@@ -178,6 +178,16 @@ export function validateConfig(c) {
     if (!Array.isArray(v) || v.some((x, i) => typeof x !== 'number' || x < 0 || x > c.journey.end || (i && x < v[i - 1]))) err(`journey.ranges.${k} must be ascending numbers within 0–end`);
   }
   for (const b of c.illustrations?.beats ?? []) if (!(b.p >= 0 && b.p <= c.journey.end)) err(`beat ${b.id} p out of range`);
+  if ((c.illustrations?.beats ?? []).length !== (c.journey?.captionWindows ?? []).length) err('each story beat needs exactly one caption window');
+  if (!(r.join?.[0] >= r.explode?.[1])) err('journey.ranges.join must start after the layers are apart');
+  // The four layers of the card, one skill each: every claim cites a résumé line.
+  const layers = c.illustrations?.layers ?? [];
+  if (layers.length !== 4) err('illustrations.layers must name the card\'s four layers');
+  for (const l of layers) {
+    for (const k of ['layer', 'skill', 'text']) if (typeof l[k] !== 'string' || !l[k].trim()) err(`illustrations.layers: ${k} is required`);
+    if (!Array.isArray(l.evidence) || !l.evidence.length) err(`layer ${l.layer} cites no evidence`);
+    if (resume) for (const ref of l.evidence ?? []) if (!resolveEvidence(resume, ref)) err(`layer ${l.layer}: evidence ${ref} does not resolve`);
+  }
   for (const [id, list] of Object.entries(c.fields?.items ?? {})) {
     if (!Array.isArray(list) || !list.length || list.some((x) => !DISCIPLINES.includes(x))) err(`fields.items.${id} must come from ${DISCIPLINES.join(', ')}`);
   }
@@ -241,7 +251,7 @@ export function loadData() {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const { resume, config, github } = loadData();
-  const errors = [...validateResume(resume), ...validateConfig(config), ...validateGithub(github)];
+  const errors = [...validateResume(resume), ...validateConfig(config, resume), ...validateGithub(github)];
   const n = loadExclusions().length;
   if (errors.length) {
     console.error(`✗ ${errors.length} content problem(s):\n  - ` + errors.join('\n  - '));

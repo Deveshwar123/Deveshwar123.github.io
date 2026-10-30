@@ -21,8 +21,9 @@ Research validates technology behaviour, not personal achievements. No personal-
 | D10 | "For my Projects you can add whatever else is in my github" (29 Oct) | "More on GitHub": Strategy Terminal, Resume Tailor, Insider Tracker, Swim Lessons (public repos only, each restating its README) |
 | D11 | Bull-and-bear artwork: "licencing allows it" (29 Oct) | The owner confirmed the rights to the back-side engraving; it ships on the 3D card |
 | D12 | "publish" (29 Oct) | `meta.deployApproved` is `true`; published to https://deveshwar123.github.io/ from the `Deveshwar123.github.io` repository |
-| D13 | "remove 20 yrs backtested" (29 Oct) | The snapshot shows three stats: 4.0 GPA, 3 shipped projects, 120+ tutoring hours. The backtest stays in the Quantitative Finance Research bullet and the hero chart |
+| D13 | "remove 20 yrs backtested" (29 Oct) | The snapshot shows three stats: 4.0 GPA, 3 shipped projects, 120+ tutoring hours. The backtest stays in the Quantitative Finance Research bullet |
 | D14 | "Use the phases of the PCB card to explain me: each layer is a different skill I have, and as a whole I'm really good" (29 Oct) | The story's Layers beat names one skill per layer (silkscreen: software & design, copper: hardware, FR-4 core: leadership, back: finance), then the layers rejoin and the LED lights under "The whole card". Each layer's line cites résumé evidence (validator-enforced) |
+| D15 | Hero chart's "20-year backtest" line: "drop it" (29 Oct) | The MCHP chart shows prices, EMAs and RSI only; `heroPanels.chart.note` is removed (the panel renders a summary line only if one is configured, and it must be the résumé's own numbers) |
 
 ## Claims
 

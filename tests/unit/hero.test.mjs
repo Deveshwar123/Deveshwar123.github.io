@@ -45,8 +45,13 @@ test('the chart is drawn from the committed price snapshot, finished sessions on
   assert.ok(html.includes(panel), 'index.html carries the generated chart panel');
   assert.ok(panel.includes(market.bars.at(-1)[4].toFixed(2)), 'last close shown');
   assert.match(panel, /Yahoo Finance/);
-  // The finance claim is the résumé's own result, not a made-up curve.
-  const resume = JSON.parse(read('data/resume.json'));
-  const bullet = resume.experience.find((e) => e.id === 'quant-research').bullets.find((b) => b.id === 'b2').text;
-  for (const n of cfg.heroPanels.chart.note.match(/\d+%/g)) assert.ok(bullet.includes(n), `${n} is in the résumé bullet`);
+  // The owner dropped the backtest line (29 Oct): the chart shows prices only. Any
+  // claim brought back must be the résumé's own result, not a made-up curve.
+  assert.doesNotMatch(panel, /backtest|20-year|panel-stat/);
+  const note = cfg.heroPanels.chart.note;
+  if (note) {
+    const resume = JSON.parse(read('data/resume.json'));
+    const bullet = resume.experience.find((e) => e.id === 'quant-research').bullets.find((b) => b.id === 'b2').text;
+    for (const n of note.match(/\d+%/g)) assert.ok(bullet.includes(n), `${n} is in the résumé bullet`);
+  }
 });

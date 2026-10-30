@@ -130,7 +130,7 @@ export function chartPanel(chart, market) {
 
   return `<div class="hero-panel hero-panel--chart">
           <div class="panel-bar"><span class="panel-title">${esc(market.symbol)} <span class="panel-dim">· ${esc(market.exchange)} · 1D</span></span><span class="panel-quote">${last[4].toFixed(2)} <span class="${change >= 0 ? 'is-up' : 'is-down'}">${change >= 0 ? '+' : '−'}${Math.abs(change).toFixed(2)}%</span></span><span class="panel-tag">${esc(chart.discipline)}</span></div>
-          <p class="panel-stat">${statLine(chart.note)}</p>
+          ${chart.note ? `<p class="panel-stat">${statLine(chart.note)}</p>` : ''}
           <svg class="panel-chart" viewBox="0 0 ${W} 250" focusable="false">
             <g class="chart-frame">${grid}${rsiFrame}${months}</g>
             <g class="chart-candles"><path class="chart-wick is-up" d="${upWick}"/><path class="chart-wick is-down" d="${dnWick}"/><path class="chart-body is-up" d="${upBody}"/><path class="chart-body is-down" d="${dnBody}"/></g>

@@ -6,7 +6,7 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ## PF-5 — The hero name lost its "m" on screens 1730 px and wider · CLOSED 2026-10-29
 
-**Fixed in** `COMMIT`.
+**Fixed in** `52d8282`.
 
 **Opened.** 2026-10-29, reported by the owner: "the m is pushed to the next line" on the home page. Severity: high (the first thing anyone sees, on a common laptop: a 16-inch MacBook Pro is 1728 px wide by default, right at the edge).
 

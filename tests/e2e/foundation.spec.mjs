@@ -159,6 +159,23 @@ test.describe('header without JavaScript', () => {
   }
 });
 
+// PF-5: from 1730 px up, the name grew past its column and "Vankeswaram" lost its "m".
+test('the hero name keeps each word whole at every width from 320 to 2560 px', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready);
+  const broken = [];
+  for (let width = 320; width <= 2560; width += 40) {
+    await page.setViewportSize({ width, height: 900 });
+    const lines = await page.locator('.hero-name-line').evaluateAll((els) => els.map((el) => {
+      const r = document.createRange();
+      r.selectNodeContents(el);
+      return new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size;
+    }));
+    if (lines.some((n) => n > 1)) broken.push(width);
+  }
+  expect(broken).toEqual([]);
+});
+
 for (const width of [320, 390, 768, 859, 860, 1024, 1440]) {
   test(`no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });

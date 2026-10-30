@@ -103,7 +103,8 @@
   --text-kicker: 0.75rem;
   --leading: 1.6;
   --measure: 66ch;
-  --name-size: clamp(46px, 6.1vw, 108px);
+  /* Capped so "Vankeswaram" (≈5.63 em wide) fits the 592 px copy column (PF-5). */
+  --name-size: clamp(46px, 6.1vw, 100px);
 
   /* Space: an 8px grid with fluid section rhythm */
   --s1: 8px;

@@ -4,6 +4,27 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ---
 
+## PF-5 — The hero name lost its "m" on screens 1730 px and wider · CLOSED 2026-10-29
+
+**Fixed in** `COMMIT`.
+
+**Opened.** 2026-10-29, reported by the owner: "the m is pushed to the next line" on the home page. Severity: high (the first thing anyone sees, on a common laptop: a 16-inch MacBook Pro is 1728 px wide by default, right at the edge).
+
+**Repro.** Open the page at any width of 1730 px or more and look at the second line of the name: "Vankeswara / m". A scan of 320–1920 px in 10 px steps broke at every width from 1730 up.
+
+**Root cause.** `--name-size` was `clamp(46px, 6.1vw, 108px)`. "Vankeswaram" is about 5.63 em wide (with the heading's −0.035 em tracking), so at 105 px and up it needs more than the copy column's 592 px. The global `overflow-wrap: anywhere` then split the word instead of overflowing.
+
+**Fix.** The cap is now 100 px (563 px for the word), so it fits the column at every width.
+
+**Verification.**
+
+| Check | Before | After |
+|---|---|---|
+| New `the hero name keeps each word whole at every width from 320 to 2560 px` (40 px steps) | fails at 23 widths, 1760 px and up | passes in Chrome and WebKit |
+| Screenshot at 1728 × 1117 | "Vankeswara / m" | "Vankeswaram" on one line |
+
+---
+
 ## PF-4 — Deep links into the story still overshoot on some cold loads · OPEN 2026-10-29
 
 **Opened.** 2026-10-29, re-measuring PF-3 on the live site after its fix. Severity: low (deep links into the story only; in-page chapter links land correctly).

@@ -6,7 +6,7 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ## PF-2 — Header labels broke mid-word between 600 and 860 px · CLOSED 2026-10-29
 
-**Fixed in** `COMMIT`.
+**Fixed in** `60417e3`.
 
 **Opened.** 2026-10-29, while checking the live site after publication. Severity: medium (first thing a tablet visitor sees). At 768 px the header read "Wo / rk", "Project / s", "Résumé / ↓", "Pause / motion".
 

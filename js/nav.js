@@ -96,7 +96,7 @@ function initMenu() {
   menu = { nav, button };
   // Collapsing is CSS (html.nav-collapsible, set before first paint); here we only
   // close the menu when the viewport grows past the breakpoint.
-  const mq = matchMedia('(max-width: 599px)');
+  const mq = matchMedia('(max-width: 767px)'); // keep in step with css/base.css
   const setMode = () => { if (!mq.matches) closeMenu(); };
   button.addEventListener('click', () => {
     const open = !nav.classList.contains('is-open');

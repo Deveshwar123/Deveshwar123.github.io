@@ -182,6 +182,10 @@ html.no-js .site-header, .site-header.is-scrolled {
 .primary-links a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
 .header-tools { display: flex; align-items: center; gap: var(--s1); }
 .header-resume { font-size: var(--text-small); }
+/* Header labels are short and must never break inside a word (the global
+   overflow-wrap: anywhere is for long text). Narrower screens drop the Pause
+   label, then collapse the links behind Menu, before anything can wrap. */
+.home-name, .primary-links a, .header-resume, .pause-label { white-space: nowrap; }
 
 .pause-toggle, .menu-toggle {
   display: inline-flex;
@@ -202,11 +206,15 @@ html.no-js .site-header, .site-header.is-scrolled {
 .menu-toggle { display: none; }
 .pause-toggle[aria-pressed='true'] { border-color: var(--copper); color: var(--copper-strong); }
 
+@media (max-width: 959px) {
+  .pause-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
 @media (max-width: 599px) {
   .home-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .header-inner { gap: var(--s1); }
+}
+@media (max-width: 767px) {
   .primary-links a { padding: 0 8px; }
-  .pause-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   /* With JavaScript the links collapse behind the Menu button. The class is set
      before first paint (no layout shift) and removed again if scripts never run. */
   html.nav-collapsible .menu-toggle { display: inline-flex; }
@@ -223,6 +231,9 @@ html.no-js .site-header, .site-header.is-scrolled {
     box-shadow: var(--shadow);
   }
   html.nav-collapsible .primary-nav:not(.is-open) .primary-links { display: none; }
+  /* Without JavaScript the links stay out: whole words wrap onto a second row. */
+  html:not(.nav-collapsible) .primary-links { flex-wrap: wrap; justify-content: flex-end; gap: 0; }
+  html:not(.nav-collapsible) .primary-links a { min-height: 30px; padding: 0 6px; }
 }
 @media (max-width: 380px) {
   .primary-links a { padding: 0 6px; font-size: 0.875rem; }

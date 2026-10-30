@@ -133,6 +133,32 @@ test('small screens: menu button discloses the links', async ({ page }) => {
   await expect(button).toHaveAttribute('aria-expanded', 'false');
 });
 
+// PF-2: between 600 and 860 px the header used to break its labels mid-word ("Wo/rk").
+const headerLabels = (page) => page.evaluate(() => {
+  const lines = (el) => { const r = document.createRange(); r.selectNodeContents(el); return new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size; };
+  const shown = [...document.querySelectorAll('.home-name, .primary-links a, .header-resume, .pause-label')].filter((e) => e.getClientRects().length && e.getBoundingClientRect().width > 1);
+  const header = document.querySelector('.header-inner').getBoundingClientRect();
+  return { broken: shown.filter((e) => lines(e) > 1).map((e) => e.textContent.trim()), outside: shown.filter((e) => { const b = e.getBoundingClientRect(); return b.left < header.left - 1 || b.right > header.right + 1; }).map((e) => e.textContent.trim()) };
+});
+for (const width of [320, 390, 600, 680, 768, 820, 860, 960, 1100, 1440]) {
+  test(`header labels stay whole and inside the header at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    expect(await headerLabels(page)).toEqual({ broken: [], outside: [] });
+  });
+}
+test.describe('header without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  for (const width of [320, 600, 768]) {
+    test(`labels stay whole at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto('/');
+      expect(await headerLabels(page)).toEqual({ broken: [], outside: [] });
+      expect(await noHorizontalScroll(page)).toBe(true);
+    });
+  }
+});
+
 for (const width of [320, 390, 768, 859, 860, 1024, 1440]) {
   test(`no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });

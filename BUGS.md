@@ -4,6 +4,28 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ---
 
+## PF-2 — Header labels broke mid-word between 600 and 860 px · CLOSED 2026-10-29
+
+**Fixed in** `COMMIT`.
+
+**Opened.** 2026-10-29, while checking the live site after publication. Severity: medium (first thing a tablet visitor sees). At 768 px the header read "Wo / rk", "Project / s", "Résumé / ↓", "Pause / motion".
+
+**Repro.** Open the page at any width from 600 to 859 px (with JavaScript) or below 768 px (without). Count the text lines in each header label: all of them wrap.
+
+**Root cause.** `css/base.css` sets `overflow-wrap: anywhere` on every `a` and `span`, so a header label's minimum width is one letter. The header row (name, four links, tools) needs about 770 px but stayed a single flex row down to 600 px, where the links collapse behind Menu, so flex shrinking split the labels mid-word. Present since phase 2 for 600–819 px; the new header Résumé link widened it to 600–859 px.
+
+**Fix.** Header labels are `white-space: nowrap`. Below 960 px the Pause button shows only its icon, below 768 px the links collapse behind Menu (CSS and `js/nav.js` moved together from 599 px), and without JavaScript the links wrap as whole words onto a second row.
+
+**Verification.**
+
+| Check | Before | After |
+|---|---|---|
+| New `header labels stay whole and inside the header` at 320–1440 px (10 widths) | fails at 600, 680, 768, 820, 860 | passes at all 10 |
+| New `header without JavaScript › labels stay whole` at 320, 600, 768 px | fails at 320 and 600 | passes, no horizontal scroll |
+| Existing menu, overflow and keyboard checks | pass | pass |
+
+---
+
 ## PF-1 — Two WebGL canvases when the story and the NFC panel start together · CLOSED 2026-10-29
 
 **Fixed in** `d83db03`.

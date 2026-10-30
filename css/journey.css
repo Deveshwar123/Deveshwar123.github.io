@@ -345,6 +345,10 @@ html[data-card='live'] .hero-card { opacity: 0; }
 
 /* ---------- Journey: story tiers ---------- */
 
+/* The story keeps the visitor's place itself (resize re-anchors to the same
+   progress), so the browser's scroll anchoring would correct twice (PF-3). */
+html[data-tier='full'],
+html[data-tier='compact'] { overflow-anchor: none; }
 html[data-tier='full'] .journey,
 html[data-tier='compact'] .journey {
   height: var(--journey-h, 300vh);

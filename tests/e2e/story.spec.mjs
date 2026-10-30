@@ -88,6 +88,15 @@ test.describe('desktop full tier', () => {
     await expect(page).toHaveURL(/#story-layers$/);
   });
 
+  test('arriving on a story beat by hash stays on it (no second scroll correction)', async ({ page }) => {
+    await page.goto('/#story-whole');
+    await page.waitForTimeout(2500);
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflowAnchor)).toBe('none');
+    const off = await page.locator('#story-whole').evaluate((el) => Math.abs(el.getBoundingClientRect().top));
+    expect(off).toBeLessThan(40);
+    await expect(page.locator('#story-whole .beat-caption')).toBeVisible();
+  });
+
   test('arriving with a hash lands on that content after layout settles', async ({ page }) => {
     await page.goto('/#experience');
     await expect.poll(() => page.locator('#experience').evaluate((el) => el.getBoundingClientRect().top), { timeout: 10000 }).toBeGreaterThan(40);

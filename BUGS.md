@@ -4,6 +4,28 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ---
 
+## PF-3 — Opening a story beat by link could land up to 230 px past it · CLOSED 2026-10-29
+
+**Fixed in** `COMMIT`.
+
+**Opened.** 2026-10-29, while checking the published site. Severity: low (deep links into the story only; the in-page chapter links were fine). Opening `https://deveshwar123.github.io/#story-whole` on a phone sometimes landed at the end of the story, with no caption showing.
+
+**Repro.** Load `/#story-whole` at 390 × 844 in fresh browser contexts against the live site. Measure `scrollY` minus the beat's top after 2.5 s: 170, 20, 58, 231, 13 and 7 px over six loads.
+
+**Root cause.** Two systems corrected the same late layout change. Lenis made a single, correct jump to the beat (traced: one `scrollTo`, to the right y). When layout then shifted, the story kept the visitor's place itself (it re-anchors to the same progress), and the browser's CSS scroll anchoring adjusted `scrollY` again. How far depended on network timing, so the overshoot varied.
+
+**Fix.** `overflow-anchor: none` on the page while the scroll story runs (`html[data-tier]`, full and compact). The reduced-motion and no-JS page keeps the browser's anchoring.
+
+**Verification.**
+
+| Check | Before | After |
+|---|---|---|
+| Six cold live loads of `/#story-whole` at 390 × 844 | overshoot 7–231 px | 13–20 px with anchoring off |
+| New `arriving on a story beat by hash stays on it` (Chrome + WebKit) | fails | passes |
+| `story.spec.mjs` | — | 26 / 26 |
+
+---
+
 ## PF-2 — Header labels broke mid-word between 600 and 860 px · CLOSED 2026-10-29
 
 **Fixed in** `60417e3`.

@@ -66,7 +66,7 @@ Targets (≥95 in all four, LCP < 2.0 s, CLS 0) are met in this lab profile. The
 | e2e | Synthetic/fast pointers could throw in `setPointerCapture` | Capture is attempted and safely skipped |
 | e2e (WebKit, combined load) | PF-1: the story and the NFC panel could each create a WebGL renderer on a cold start at `#project-nfc-card`, leaving a stale canvas | `getRenderer()` shares its in-flight creation; regression test added (`BUGS.md`) |
 | Content review | The TideCast screenshot showed a leaderboard user's name | Name blurred in the image and by `capture-projects.mjs` on recapture; before publishing, older commits were rewritten to carry only the blurred image |
-| Live-site check | PF-3: opening a story beat by link (`/#story-whole`) landed 7–231 px past it on phones | Scroll anchoring is off while the story runs; the story keeps the visitor's place itself (`BUGS.md`) |
+| Live-site check | PF-3: opening a story beat by link (`/#story-whole`) landed 7–231 px past it on phones | Scroll anchoring is off while the story runs; the story keeps the visitor's place itself. Live: 13–29 px in 6 of 8 cold loads; two still overshoot (96, 139 px), open as PF-4 (`BUGS.md`) |
 | Live-site check | PF-2: header labels broke mid-word between 600 and 860 px ("Wo / rk") | Labels never wrap; Pause is icon-only below 960 px; the links collapse behind Menu below 768 px; no-JS links wrap as whole words. 13 new checks (`BUGS.md`) |
 
 ## Phase gates

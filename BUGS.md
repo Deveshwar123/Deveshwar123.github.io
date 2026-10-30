@@ -4,6 +4,16 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 ---
 
+## PF-4 — Deep links into the story still overshoot on some cold loads · OPEN 2026-10-29
+
+**Opened.** 2026-10-29, re-measuring PF-3 on the live site after its fix. Severity: low (deep links into the story only; in-page chapter links land correctly).
+
+**Repro.** Eight fresh loads of `https://deveshwar123.github.io/#story-whole` at 390 × 844 (headless Chrome 156), measured 2.5 s after load: 29, 29, 139, 20, 13, 20, 96 and 13 px past the beat. The beat's caption showed in 7 of 8. Locally the overshoot stays under 40 px (covered by the PF-3 test).
+
+**Known so far.** Scroll anchoring is off (PF-3), and Lenis makes one correct jump. The remaining drift happens later and depends on network timing. Next suspects: a resize-triggered re-measure (the scrollbar appearing) re-anchoring to progress computed before the jump, and Lenis carrying momentum from the browser's own early hash scroll.
+
+---
+
 ## PF-3 — Opening a story beat by link could land up to 230 px past it · CLOSED 2026-10-29
 
 **Fixed in** `c202266`.
@@ -20,7 +30,7 @@ Tickets opened and closed against the portfolio (`~/Desktop/Projects/portfolio`)
 
 | Check | Before | After |
 |---|---|---|
-| Six cold live loads of `/#story-whole` at 390 × 844 | overshoot 7–231 px | 13–20 px with anchoring off |
+| Cold live loads of `/#story-whole` at 390 × 844 | overshoot 7–231 px (6 loads) | 13–29 px in 6 of 8 loads after deploying; 96 and 139 px in the other two (PF-4) |
 | New `arriving on a story beat by hash stays on it` (Chrome + WebKit) | fails | passes |
 | `story.spec.mjs` | — | 26 / 26 |
 

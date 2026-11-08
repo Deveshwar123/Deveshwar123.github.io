@@ -47,7 +47,7 @@ const visibleText = norm(
 
 function displayStrings(r) {
   const s = [r.person.name, r.links.email, r.links.linkedin.display, r.links.github.display];
-  for (const e of r.education) s.push(e.institution, e.location, e.degree, e.minor, e.dateDisplay, `GPA ${e.gpa}`, ...e.honors);
+  for (const e of r.education) s.push(e.institution, e.location, e.degree, e.minor, ...(e.graduateProgram ? [e.graduateProgram] : []), e.dateDisplay, `GPA ${e.gpa}`, ...e.honors);
   for (const e of r.experience) s.push(e.organization, e.role, e.location, e.dateDisplay, ...e.bullets.map((b) => b.text));
   for (const p of r.projects) s.push(p.title, p.role, p.dateDisplay, ...p.bullets.map((b) => b.text));
   for (const l of r.leadership) s.push(l.organization, l.role, l.dateDisplay, ...(l.description ? [l.description] : []));
@@ -81,13 +81,13 @@ test('role, project and activity header lines reconstruct exactly', () => {
   }
   const edu = fixtureLines[fixtureLines.indexOf('Education') + 1];
   const e = resume.education[0];
-  assert.equal(edu, `${e.institution}, ${e.location}. ${e.degree}, ${e.minor}. ${e.dateDisplay}. GPA ${e.gpa} · ${e.honors.join(' · ')}`);
+  assert.equal(edu, `${e.institution}, ${e.location}. ${e.degree}, ${e.minor}.${e.graduateProgram ? ` ${e.graduateProgram}.` : ''} ${e.dateDisplay}. GPA ${e.gpa} · ${e.honors.join(' · ')}`);
 });
 
 test('every supplied bullet is present in the data', () => {
   const dataBullets = [...resume.experience, ...resume.projects].flatMap((e) => e.bullets.map((b) => b.sourceText ?? b.text));
   const supplied = [...bulletsOf('Experience'), ...bulletsOf('Projects')].filter((l) => /\.$/.test(l) && !/Live:|Code:/.test(l));
-  assert.equal(supplied.length, 15);
+  assert.equal(supplied.length, 17);
   for (const b of supplied) assert.ok(dataBullets.includes(b), `missing bullet: ${b}`);
 });
 
@@ -100,15 +100,15 @@ test('skills, certifications and interests match the supplied lists in order', (
   assert.deepEqual(resume.interests.map((s) => s.label), list('Interests: ', /, (?![^(]*\))/));
 });
 
-test('counts: 3 roles, 3 projects, 6 activities, 15 skills, 3 certifications, 4 interests', () => {
+test('counts: 3 roles, 4 projects, 6 activities, 18 skills, 3 certifications, 4 interests', () => {
   assert.equal(resume.experience.length, 3);
-  assert.equal(resume.projects.length, 3);
+  assert.equal(resume.projects.length, 4);
   assert.equal(resume.leadership.length, 6);
-  assert.equal(resume.skills.languages.length + resume.skills.tools.length, 15);
+  assert.equal(resume.skills.languages.length + resume.skills.tools.length, 18);
   assert.equal(resume.certifications.length, 3);
   assert.equal(resume.interests.length, 4);
   assert.equal((html.match(/class="role" id="role-/g) || []).length, 3);
-  assert.equal((html.match(/<article class="project /g) || []).length, 3);
+  assert.equal((html.match(/<article class="project /g) || []).length, 4);
   assert.equal((html.match(/class="activity" id=/g) || []).length, 6);
 });
 
@@ -154,6 +154,9 @@ test('ids are unique and every in-page link has a target', () => {
 
 test('missing destinations render no buttons; supplied ones do', () => {
   const article = (id) => html.slice(html.indexOf(`id="project-${id}"`), html.indexOf('</article>', html.indexOf(`id="project-${id}"`)));
+  assert.match(article('agrilife'), /href="https:\/\/deveshwar123\.github\.io\/AgriLife-Project\/"/);
+  assert.match(article('agrilife'), /href="https:\/\/github\.com\/Deveshwar123\/AgriLife-Project"/);
+  assert.match(article('agrilife'), /class="project-award"/);
   assert.match(article('tidecast'), /href="https:\/\/tidecast-kdl9\.onrender\.com\/backbone\/"/);
   assert.match(article('tidecast'), /href="https:\/\/github\.com\/Deveshwar123\/HowdyHackathon"/);
   assert.match(article('vedam'), /href="https:\/\/wearvedam\.com"/);

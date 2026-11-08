@@ -22,7 +22,7 @@ test('no location, camera, model or third-party requests anywhere on the page', 
   const foreign = [];
   page.on('request', (r) => { if (!r.url().startsWith('http://127.0.0.1:8080/') && !r.url().startsWith('data:')) foreign.push(r.url()); });
   await page.goto('/');
-  for (const id of ['tidecast', 'vedam', 'nfc-card']) {
+  for (const id of ['agrilife', 'tidecast', 'vedam', 'nfc-card']) {
     await page.evaluate((id) => document.getElementById('project-' + id).scrollIntoView(), id);
     await page.waitForTimeout(700);
   }

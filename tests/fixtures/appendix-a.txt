@@ -2,7 +2,7 @@ Name: Deveshwar Vankeswaram
 Links: deveshwarvankeswaram@tamu.edu · linkedin.com/in/deveshwarv · github.com/Deveshwar123
 Education
 Texas A&M University, College Station, TX. B.S. Computer Engineering, Minor in Computer Science.
-Expected May 2030. GPA 4.0/4.0 · Business of Technology Certificate · University Honors Program
+M.S. Finance (4+1 Program). Expected May 2030. GPA 4.0/4.0 · Business of Technology Certificate · University Honors Program
 Experience
 • VantaShala.com, Software Engineer Intern, Remote, Oct 2025 – Oct 2026
 • Automated QA across core user flows with Playwright test suites for an AI-powered chef platform.
@@ -17,6 +17,10 @@ Experience
 Awards.
 • Raised and allocated team funds through grant writing and budget planning.
 Projects
+• AgriLife Research-to-Field, Winner, Google x Aggies in Tech Hackathon, Nov 2026. Live:
+https://deveshwar123.github.io/AgriLife-Project/ · Code: github.com/Deveshwar123/AgriLife-Project
+• Built a bilingual (EN/ES) web app turning Texas A&M AgriLife research into practical farm guidance.
+• Built in React/TypeScript with a Gemini research chatbot and 5-day county forecasts via Open-Meteo.
 • TideCast, Full Stack Developer, Oct 2026. Live: https://tidecast-kdl9.onrender.com/backbone/ · Code:
 github.com/Deveshwar123/HowdyHackathon
 • Co-built a web app identifying a fish's species, length and weight from a single photo.
@@ -39,8 +43,8 @@ Raspberry Pi and AI.
 • ENGin: Volunteer English Tutor, Jun 2023 – Aug 2026. 120+ hours of 1:1 lessons for Ukrainian
 students.
 Skills
-• Languages: Python, Java, JavaScript, HTML/CSS, Pine Script
-• Tools: Playwright, Git/GitHub, EasyEDA (PCB design), ONNX, WebGPU, Three.js, SQLite, Raspberry
+• Languages: Python, Java, JavaScript, TypeScript, HTML/CSS, Pine Script
+• Tools: Playwright, Git/GitHub, React, Gemini API, EasyEDA (PCB design), ONNX, WebGPU, Three.js, SQLite, Raspberry
 Pi, Bloomberg, CAD
 • Certifications: Lifeguard; Lifeguard Training Specialist (LTS); American Red Cross WSI
 • Interests: Viola (6+ years), Ironman training (2.4-mi swim, 112-mi bike, 26.2-mi run), chess, cooking

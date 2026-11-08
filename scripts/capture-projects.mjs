@@ -2,7 +2,7 @@
 // (desktop 1440×900 and phone 390×844), saved as WebP in assets/projects/.
 // Names of other people shown on a live page (TideCast's top-catch teaser) are
 // blurred in the page before capture.
-// Usage: node scripts/capture-projects.mjs
+// Usage: node scripts/capture-projects.mjs [id ...]   (no ids = every site)
 import { chromium } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -29,14 +29,26 @@ const sites = [
       sub.prepend(name);
     });
   } },
+  { id: 'agrilife', url: 'https://deveshwar123.github.io/AgriLife-Project/', async ready(page) {
+    // First visit opens the "My Farm" picker; save its defaults to reach the feed.
+    const save = page.getByRole('button', { name: 'Save & Personalize My Feed' });
+    if (await save.count()) await save.click();
+    await page.getByText('Research Publications').first().waitFor({ timeout: 30000 });
+    // Laptop: the About page's hero. Phone: the county field forecast on the feed.
+    if (page.viewportSize().width > 600) {
+      await page.getByRole('button', { name: 'About', exact: true }).click();
+      await page.locator('#about-title').waitFor();
+    }
+  } },
   { id: 'vedam', url: 'https://wearvedam.com', async ready(page) {
     const vp = page.viewportSize();
     await page.mouse.click(vp.width / 2, vp.height / 2);
     await page.waitForTimeout(3500);
   } },
 ];
+const only = process.argv.slice(2);
 const browser = await chromium.launch({ channel: 'chrome' });
-for (const s of sites) {
+for (const s of sites.filter((x) => !only.length || only.includes(x.id))) {
   for (const [kind, viewport, out] of [['desktop', { width: 1440, height: 900 }, [1280, 800]], ['phone', { width: 390, height: 844 }, [390, 844]]]) {
     const ctx = await browser.newContext({ viewport, deviceScaleFactor: kind === 'phone' ? 2 : 1, isMobile: kind === 'phone', hasTouch: kind === 'phone', colorScheme: 'dark', permissions: [] });
     const page = await ctx.newPage();

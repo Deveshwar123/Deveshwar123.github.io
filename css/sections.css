@@ -166,6 +166,11 @@ html.has-timeline .timeline::before { background: var(--border-strong); }
 .project-title { font-size: clamp(2rem, 3.6vw, 3rem); }
 .project-title:focus { outline: none; }
 .project-text .meta { margin: 6px 0 var(--s3); }
+/* A competition result shown in place of a role: its own copper line with a
+   trophy, the date on the line below. */
+.project-award { display: flex; align-items: flex-start; gap: 6px; margin: 8px 0 0; color: var(--copper); font-weight: 600; }
+.project-award .glyph { width: 1.15em; height: 1.15em; margin-top: 0.2em; }
+.project-text .project-award + .meta { margin-top: 2px; }
 .chips { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s3); }
 .chips li {
   padding: 4px 12px;

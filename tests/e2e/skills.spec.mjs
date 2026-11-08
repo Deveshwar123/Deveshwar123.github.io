@@ -46,8 +46,12 @@ test.describe('desktop board', () => {
     await page.goto('/#skills');
     await page.waitForTimeout(800);
     await expect(page.locator('.skills-board-svg path')).toHaveCount(resume.skillRelations.length);
+    // Clicking the selected skill again deselects it, so click only when the skill changes
+    // (a skill can have consecutive relations, e.g. Gemini API -> AgriLife and TideCast).
+    let selected = null;
     for (const r of resume.skillRelations) {
-      await page.getByRole('button', { name: label(r.skillId), exact: true }).click();
+      if (r.skillId !== selected) await page.getByRole('button', { name: label(r.skillId), exact: true }).click();
+      selected = r.skillId;
       await expect(page.locator('.skills-status')).toContainText(entity(r.entityId));
     }
   });
@@ -86,7 +90,7 @@ test.describe('narrow screens', () => {
     await select.selectOption({ label: 'Git/GitHub' });
     await expect(page.locator('.skills-filter-status')).toHaveText('Git/GitHub: No documented project link for this skill.');
     await select.selectOption({ index: 0 });
-    await expect(page.locator('.skill:not(.is-filtered-out)')).toHaveCount(15);
+    await expect(page.locator('.skill:not(.is-filtered-out)')).toHaveCount(resume.skills.languages.length + resume.skills.tools.length);
     await expect(page.locator('.cert-items li')).toHaveCount(3);
   });
 });

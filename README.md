@@ -52,7 +52,7 @@ Rules the validator enforces: the major is "Computer Engineering"; a changed bul
 | `npm run art` | the inspectable line-art SVGs in `assets/svg/` from `js/art.js` |
 | `node scripts/build-board.mjs` | `js/board-data.js` (the card's real outline, five antenna turns, traces, pads, vias, parts) and the PBR texture maps in `assets/board/`, rendered from `hardware/gerbers/` with pcb-stackup |
 | `node scripts/render-stills.mjs` (server) | photoreal stills of the card (`assets/board/card-*.webp`) for the no-JS frames, the NFC fallback and the social card |
-| `node scripts/capture-projects.mjs` | fresh screenshots of the live TideCast and Vedam sites (`assets/projects/`) |
+| `node scripts/capture-projects.mjs` | fresh screenshots of the live AgriLife, TideCast and Vedam sites (`assets/projects/`); pass ids to capture only some, e.g. `agrilife` |
 | `node scripts/process-photos.mjs` | crops and encodes the credited Wikimedia Commons photos listed in `site-config.json → photos` |
 | `node scripts/fetch-github-projects.mjs` | for each "More on GitHub" repo: its README at the pinned commit and its language stats (`tests/fixtures/github/<id>/`), and its screenshot as two WebP sizes (`assets/projects/<id>-<width>.webp`) |
 | `node scripts/fetch-market.mjs` | `data/market/mchp-daily.json`: a one-year snapshot of daily MCHP prices from Yahoo Finance for the hero chart (finished sessions only; the site never fetches market data itself) |

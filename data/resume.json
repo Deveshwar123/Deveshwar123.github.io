@@ -18,6 +18,7 @@
       "location": "College Station, TX",
       "degree": "B.S. Computer Engineering",
       "minor": "Minor in Computer Science",
+      "graduateProgram": "M.S. Finance (4+1 Program)",
       "dateDisplay": "Expected May 2030",
       "dateRange": { "start": null, "end": "2030-05" },
       "gpa": "4.0/4.0",
@@ -74,6 +75,20 @@
     }
   ],
   "projects": [
+    {
+      "id": "agrilife",
+      "title": "AgriLife Research-to-Field",
+      "role": "Winner, Google x Aggies in Tech Hackathon",
+      "award": true,
+      "dateDisplay": "Nov 2026",
+      "dateRange": { "start": "2026-11", "end": "2026-11" },
+      "liveUrl": "https://deveshwar123.github.io/AgriLife-Project/",
+      "codeUrl": "https://github.com/Deveshwar123/AgriLife-Project",
+      "bullets": [
+        { "id": "b1", "text": "Built a bilingual (EN/ES) web app turning Texas A&M AgriLife research into practical farm guidance." },
+        { "id": "b2", "text": "Built in React/TypeScript with a Gemini research chatbot and 5-day county forecasts via Open-Meteo." }
+      ]
+    },
     {
       "id": "tidecast",
       "title": "TideCast",
@@ -171,12 +186,15 @@
       { "id": "python", "label": "Python" },
       { "id": "java", "label": "Java" },
       { "id": "javascript", "label": "JavaScript" },
+      { "id": "typescript", "label": "TypeScript" },
       { "id": "html-css", "label": "HTML/CSS" },
       { "id": "pine-script", "label": "Pine Script" }
     ],
     "tools": [
       { "id": "playwright", "label": "Playwright" },
       { "id": "git-github", "label": "Git/GitHub" },
+      { "id": "react", "label": "React" },
+      { "id": "gemini-api", "label": "Gemini API" },
       { "id": "easyeda", "label": "EasyEDA (PCB design)" },
       { "id": "onnx", "label": "ONNX" },
       { "id": "webgpu", "label": "WebGPU" },
@@ -200,7 +218,7 @@
   ],
   "snapshot": [
     { "id": "gpa", "value": "4.0", "label": "GPA", "basis": "education.tamu.gpa" },
-    { "id": "shipped", "value": "3", "label": "shipped projects", "basis": "TideCast, Vedam and the NFC Business Card (owner confirmed 2026-10-29)" },
+    { "id": "shipped", "value": "4", "label": "shipped projects", "basis": "AgriLife Research-to-Field (live since 2026-11-07), plus TideCast, Vedam and the NFC Business Card (owner confirmed 2026-10-29)" },
     { "id": "tutoring", "value": "120+", "label": "tutoring hours", "basis": "leadership.engin.description" }
   ],
   "assets": {
@@ -218,7 +236,11 @@
     { "skillId": "webgpu", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b2", "sourceType": "supplied" },
     { "skillId": "python", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b3", "sourceType": "supplied" },
     { "skillId": "sqlite", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b3", "sourceType": "supplied" },
-    { "skillId": "raspberry-pi", "entityId": "goldman-steam", "evidenceRef": "leadership.goldman-steam.description", "sourceType": "supplied" }
+    { "skillId": "raspberry-pi", "entityId": "goldman-steam", "evidenceRef": "leadership.goldman-steam.description", "sourceType": "supplied" },
+    { "skillId": "typescript", "entityId": "agrilife", "evidenceRef": "projects.agrilife.b2", "sourceType": "supplied" },
+    { "skillId": "react", "entityId": "agrilife", "evidenceRef": "projects.agrilife.b2", "sourceType": "supplied" },
+    { "skillId": "gemini-api", "entityId": "agrilife", "evidenceRef": "projects.agrilife.b2", "sourceType": "supplied" },
+    { "skillId": "gemini-api", "entityId": "tidecast", "evidenceRef": "projects.tidecast.b3", "sourceType": "supplied" }
   ],
   "experienceChips": {
     "vantashala": [
@@ -235,6 +257,12 @@
     ]
   },
   "projectChips": {
+    "agrilife": [
+      { "label": "React", "evidenceRef": "projects.agrilife.b2" },
+      { "label": "TypeScript", "evidenceRef": "projects.agrilife.b2" },
+      { "label": "Gemini", "evidenceRef": "projects.agrilife.b2" },
+      { "label": "Open-Meteo", "evidenceRef": "projects.agrilife.b2" }
+    ],
     "tidecast": [
       { "label": "ONNX", "evidenceRef": "projects.tidecast.b2" },
       { "label": "WebGPU", "evidenceRef": "projects.tidecast.b2" },

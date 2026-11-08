@@ -159,6 +159,7 @@ ${d.resume.snapshot.map((s) => html`        <li class="stat"><span class="stat-v
         <h3 class="education-name" id="edu-${edu.id}">${edu.institution}</h3>
         <p class="meta"><span>${edu.location}</span> · ${time(edu.dateDisplay, edu.dateRange?.end)}</p>
         <p class="education-degree">${edu.degree}, ${edu.minor}</p>
+        ${edu.graduateProgram ? html`<p class="education-degree education-grad">${edu.graduateProgram}</p>` : ''}
         <ul class="education-honors">
           <li>GPA ${edu.gpa}</li>
 ${edu.honors.map((h) => html`          <li>${h}</li>\n`)}        </ul>
@@ -226,6 +227,13 @@ ${W.steps.map((s, i) => html`                <li class="pipeline-step" data-step
             <figcaption class="world-caption">${W.description}</figcaption>
           </figure>`;
   }
+  if (p.id === 'agrilife') {
+    return html`
+          <figure class="project-world world-agrilife">
+            <div class="world-art">${devices('agrilife')}</div>
+            <figcaption class="world-caption">${W.description}</figcaption>
+          </figure>`;
+  }
   if (p.id === 'vedam') {
     return html`
           <figure class="project-world world-vedam">
@@ -259,7 +267,10 @@ export function renderProjects(d, art) {
 ${d.resume.projects.map((p) => html`      <article class="project project--${p.id}" id="project-${p.id}" aria-labelledby="project-${p.id}-title">
         <div class="project-text">
           ${titled(html`<h3 class="project-title" id="project-${p.id}-title">${p.title}</h3>`, d.config.fields.items[p.id], d.config.labels.fields)}
-          <p class="meta"><span>${p.role}</span> · ${time(p.dateDisplay, rangeIso(p.dateRange))}</p>
+          ${p.award
+            ? html`<p class="project-award">${glyph('trophy')}<span>${p.role}</span></p>
+          <p class="meta">${time(p.dateDisplay, rangeIso(p.dateRange))}</p>`
+            : html`<p class="meta"><span>${p.role}</span> · ${time(p.dateDisplay, rangeIso(p.dateRange))}</p>`}
           <ul class="bullets">
 ${p.bullets.map((b) => html`            <li>${b.text}</li>\n`)}          </ul>
           <ul class="chips" aria-label="${L.chipsLabel}">

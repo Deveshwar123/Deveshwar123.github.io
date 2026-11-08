@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "meta": {
     "title": "Deveshwar Vankeswaram — Computer Engineering, Texas A&M",
-    "description": "Deveshwar Vankeswaram is a Computer Engineering student at Texas A&M University who builds software, hardware and the things between. Projects: TideCast, Vedam and an NFC business card PCB.",
+    "description": "Deveshwar Vankeswaram is a Computer Engineering student at Texas A&M University who builds software, hardware and the things between. Projects: AgriLife Research-to-Field (Google x Aggies in Tech Hackathon winner), TideCast, Vedam and an NFC business card PCB.",
     "deployUrl": "https://deveshwar123.github.io/",
     "deployApproved": true,
     "socialImage": "assets/social-card.png",
@@ -221,6 +221,9 @@
       }
     ],
     "projects": {
+      "agrilife": {
+        "description": "Screenshots of the live site: its About page on a laptop and the county field forecast on a phone."
+      },
       "tidecast": {
         "description": "Screenshots of the live site on a laptop and phone, and the knuckle-reference measuring mode drawn as four steps.",
         "modeLabel": "Knuckle-reference mode (illustrative)",
@@ -487,6 +490,7 @@
       "vantashala": ["Computer Science"],
       "quant-research": ["Finance"],
       "radicubs": ["Computer Engineering"],
+      "agrilife": ["Computer Science"],
       "tidecast": ["Computer Science"],
       "vedam": ["Web"],
       "nfc-card": ["Computer Engineering"]

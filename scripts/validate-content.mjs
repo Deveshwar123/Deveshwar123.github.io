@@ -87,6 +87,7 @@ export function validateResume(r) {
   for (const [i, e] of (r.education ?? []).entries()) {
     uniq(e.id, `education[${i}]`);
     for (const f of ['institution', 'location', 'degree', 'dateDisplay', 'gpa']) str(e[f], `education[${i}].${f}`);
+    if (e.graduateProgram !== undefined) str(e.graduateProgram, `education[${i}].graduateProgram`);
   }
   if (!r.education?.length) err('education must not be empty');
 
@@ -112,6 +113,7 @@ export function validateResume(r) {
   for (const [i, p] of (r.projects ?? []).entries()) {
     uniq(p.id, `projects[${i}]`);
     for (const f of ['title', 'role', 'dateDisplay']) str(p[f], `projects[${i}].${f}`);
+    if (p.award !== undefined && typeof p.award !== 'boolean') err(`projects[${i}].award must be true or false`);
     for (const f of ['liveUrl', 'codeUrl']) {
       if (p[f] !== null && !isAllowedUrl(p[f])) err(`projects[${i}].${f} must be null or an https URL`);
     }

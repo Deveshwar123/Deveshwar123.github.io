@@ -146,7 +146,7 @@ test('ids are unique and every in-page link has a target', () => {
     } else if (/^(https:|mailto:)/.test(href)) {
       new URL(href);
     } else {
-      assert.ok(existsSync(join(root, href)), `missing local file ${href}`);
+      assert.ok(existsSync(join(root, href.split('?')[0])), `missing local file ${href}`); // ?v= is a cache-busting version
     }
   }
   assert.doesNotMatch(html, /href="http:/);
@@ -164,7 +164,7 @@ test('missing destinations render no buttons; supplied ones do', () => {
   assert.match(article('nfc-card'), /href="https:\/\/github\.com\/Deveshwar123\/nfc-pcb-business-card"/);
   assert.doesNotMatch(article('nfc-card'), /Live site/);
   const pdf = resume.assets.resumePdf;
-  const links = html.match(/href="assets\/Deveshwar_Vankeswaram_Resume\.pdf" type="application\/pdf"/g) || [];
+  const links = html.match(/href="assets\/Deveshwar_Vankeswaram_Resume\.pdf\?v=[0-9a-f]{10}" type="application\/pdf" download="Deveshwar_Vankeswaram_Resume\.pdf"/g) || [];
   if (!pdf.approved) return assert.equal(links.length, 0, 'no résumé link until an approved PDF exists');
   assert.equal(links.length, 3, 'header, hero and contact link the résumé');
   const bytes = readFileSync(join(root, pdf.path));

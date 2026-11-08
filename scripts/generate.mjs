@@ -20,7 +20,10 @@ if (errors.length) {
   console.error('✗ refusing to generate; content problems:\n  - ' + errors.join('\n  - '));
   process.exit(1);
 }
-const d = { resume, config, github };
+// The résumé keeps one path, so its links carry a content hash: a new PDF gets a
+// new URL and browsers can't keep showing a cached older copy.
+const resumeVersion = createHash('sha256').update(readFileSync(join(root, resume.assets.resumePdf.path))).digest('hex').slice(0, 10);
+const d = { resume, config, github, resumeVersion };
 
 // --- SVG artwork ------------------------------------------------------------
 function parseSvg(rel) {

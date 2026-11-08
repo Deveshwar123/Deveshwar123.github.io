@@ -25,7 +25,9 @@ test.describe('without JavaScript', () => {
 test('every résumé link serves the PDF', async ({ page, request }) => {
   await page.goto('/');
   const hrefs = await page.locator('a[type="application/pdf"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-  expect(hrefs).toEqual(Array(3).fill(resume.assets.resumePdf.path));
+  expect(hrefs).toHaveLength(3);
+  expect(new Set(hrefs).size).toBe(1); // one versioned URL, e.g. assets/…Resume.pdf?v=<content hash>
+  expect(hrefs[0]).toMatch(new RegExp(`^${resume.assets.resumePdf.path.replace(/\./g, '\\.')}\\?v=[0-9a-f]{10}$`));
   const res = await request.get(`/${hrefs[0]}`);
   expect(res.status()).toBe(200);
   expect(res.headers()['content-type']).toContain('application/pdf');

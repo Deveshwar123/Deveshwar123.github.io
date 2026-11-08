@@ -33,6 +33,9 @@ export function safeUrl(u) {
 // JSON for <script type="application/json|ld+json">: never lets content close the tag.
 export const jsonForScript = (obj) => JSON.stringify(obj).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
 
+// Résumé links: versioned by content (see generate.mjs) and downloaded under a readable name.
+const resumeHref = (d) => d.resumeVersion ? `${d.resume.assets.resumePdf.path}?v=${d.resumeVersion}` : d.resume.assets.resumePdf.path;
+const RESUME_FILE = 'Deveshwar_Vankeswaram_Resume.pdf';
 const glyph = (name, cls = 'glyph') => html`<svg class="${cls}" aria-hidden="true" focusable="false"><use href="#glyph-${name}"></use></svg>`;
 const time = (display, iso) => (iso ? html`<time datetime="${iso}">${display}</time>` : html`<span>${display}</span>`);
 const rangeIso = (r) => (r && r.start && r.end && r.start === r.end ? r.start : null);
@@ -66,7 +69,7 @@ export function renderHeader(d) {
 ${L.nav.map((n) => html`          <li><a href="${n.href}">${n.label}</a></li>\n`)}        </ul>
       </nav>
       <div class="header-tools">
-        ${resume.approved ? html`<a class="header-resume" href="${resume.path}" type="application/pdf">${L.hero.resume}</a>` : ''}
+        ${resume.approved ? html`<a class="header-resume" href="${resumeHref(d)}" type="application/pdf" download="${RESUME_FILE}">${L.hero.resume}</a>` : ''}
         <button class="pause-toggle" type="button" aria-pressed="false" hidden>${glyph('pause')}<span class="pause-label">${L.pauseMotion}</span></button>
       </div>
     </div>
@@ -107,7 +110,7 @@ ${d.resume.projects.map((p) => html`            <li><a href="#project-${p.id}">$
         </nav>
         <div class="hero-actions">
           <a class="button button--primary" href="#projects">${H.seeWork}${glyph('arrow')}</a>
-          ${resume.approved ? html`<a class="button" href="${resume.path}" type="application/pdf">${H.resume}</a>` : ''}
+          ${resume.approved ? html`<a class="button" href="${resumeHref(d)}" type="application/pdf" download="${RESUME_FILE}">${H.resume}</a>` : ''}
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
@@ -431,7 +434,7 @@ export function renderContact(d, art) {
       <ul class="contact-links">
         <li><a href="${safeUrl(links.linkedin.url)}"><span class="contact-link-kind">${C.linkedin}</span> <span class="contact-link-url">${links.linkedin.display}</span></a></li>
         <li><a href="${safeUrl(links.github.url)}"><span class="contact-link-kind">${C.github}</span> <span class="contact-link-url">${links.github.display}</span></a></li>
-        ${resume.approved ? html`<li><a href="${resume.path}" type="application/pdf"><span class="contact-link-kind">${d.config.labels.hero.resume}</span></a></li>` : ''}
+        ${resume.approved ? html`<li><a href="${resumeHref(d)}" type="application/pdf" download="${RESUME_FILE}"><span class="contact-link-kind">${d.config.labels.hero.resume}</span></a></li>` : ''}
       </ul>
     </section>`;
 }

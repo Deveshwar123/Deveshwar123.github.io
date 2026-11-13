@@ -9,7 +9,7 @@ import { scanExclusions, loadExclusions } from './validate-content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, '_site');
-const ALLOW = ['index.html', '.nojekyll', 'css', 'js', 'vendor', 'assets'];
+const ALLOW = ['index.html', '.nojekyll', 'css', 'js', 'vendor', 'assets', 'privacy'];
 const SKIP = [/^assets\/fonts\/source\//];
 
 rmSync(out, { recursive: true, force: true });
